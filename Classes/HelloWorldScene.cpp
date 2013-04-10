@@ -29,7 +29,7 @@ bool HelloWorld::init(){
     GameManager::sharedManager()->gameIsActive = true;
     
     for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
-        Player *p = new Player::Player();
+        Player *p = new Player();
         p->init();
         p->spawnNewTargetWithLayer(this);
         GameManager::sharedManager()->players->push_back(p);
