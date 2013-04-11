@@ -27,7 +27,7 @@ public:
     
     Player();
     void init();
-    void spawnNewTargetWithLayer(CCLayer * layer);
+    void spawnNewTarget(CCPoint position, CCLayer * layer);
     void killOldTarget();
     int getID();
     

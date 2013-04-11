@@ -24,22 +24,20 @@ void Player::init(){
     this->touch = NULL;
 }
 
-void Player::spawnNewTargetWithLayer(CCLayer * layer) {
+void Player::spawnNewTarget(CCPoint position, CCLayer * layer) {
     if(this->touchLock) return;
-    
-    CCPoint randPos = *new CCPoint(arc4random() % (int)layer->boundingBox().size.width, arc4random() % (int)layer->boundingBox().size.height);
-    
+
     if(this->currentTarget == NULL){
         this->currentTarget = new SquareTarget();
         this->currentTarget->initWithPlayer(this);
-        this->currentTarget->setPosition(randPos);
+        this->currentTarget->setPosition(position);
         layer->addChild(this->currentTarget);
         return;
     }
     
     this->currentTarget->runAction(
         CCSequence::actions(
-            CCMoveTo::actionWithDuration(.05, randPos),
+            CCMoveTo::actionWithDuration(.05, position),
             // to get this to work, this class needs to conform to the selector_protocol.h?
             //CCCallFunc::actionWithTarget((CCObject *)this, callfunc_selector(Player::unlockTouch)),
             NULL

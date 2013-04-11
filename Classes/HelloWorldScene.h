@@ -16,6 +16,8 @@ public:
     virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
     void tick(float dt);
     void resolveTargetCollision();
+    CCPoint nextTargetPosition(int player);
+    int scoreTotal();
 };
 
 #endif // __HELLOWORLD_SCENE_H__

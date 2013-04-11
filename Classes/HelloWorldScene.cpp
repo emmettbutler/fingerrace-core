@@ -31,7 +31,7 @@ bool HelloWorld::init(){
     for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
         Player *p = new Player();
         p->init();
-        p->spawnNewTargetWithLayer(this);
+        p->spawnNewTarget(nextTargetPosition(i), this);
         GameManager::sharedManager()->players->push_back(p);
     }
     
@@ -65,7 +65,7 @@ void HelloWorld::resolveTargetCollision(){
     for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
         Player *p1 = *iter;
         printf("Resolving collision\n");
-        p1->spawnNewTargetWithLayer(this);
+        p1->spawnNewTarget(nextTargetPosition(std::distance(players->begin(), iter)), this);
     }
     
 }
@@ -98,7 +98,7 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
             Player *p1 = *iter;
             if((CCTouch *)*it == p1->touch && CCRect::CCRectContainsPoint(p1->currentTarget->boundingBox(), touchLocation)){
                 if(!p1->touchLock){
-                    p1->spawnNewTargetWithLayer(this);
+                    p1->spawnNewTarget(nextTargetPosition(std::distance(players->begin(), iter)), this);
                     p1->checkpointCount += 1;
                     // uncomment this when cccallfunc gets figured out
                     //p1->touchLock = true;
@@ -122,6 +122,32 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
             }
         }
     }
+}
+
+CCPoint HelloWorld::nextTargetPosition(int player) {
+    float x, y;
+
+    if (scoreTotal() == 0) {
+        x = this->boundingBox().size.width / 4 + player * this->boundingBox().size.width / 2;
+        y = this->boundingBox().getMidY();
+    } else {
+        x = arc4random() % (int)this->boundingBox().size.width;
+        y = arc4random() % (int)this->boundingBox().size.height;
+    }
+
+    return *new CCPoint(x, y);
+}
+
+int HelloWorld::scoreTotal() {
+    int score = 0;
+
+    std::list<Player *> *players = GameManager::sharedManager()->players;
+    for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter) {
+        Player *p1 = *iter;
+        score += p1->checkpointCount;
+    }
+
+    return score;
 }
 
 bool HelloWorld::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
