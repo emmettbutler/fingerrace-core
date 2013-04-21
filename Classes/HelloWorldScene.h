@@ -4,6 +4,8 @@
 #include "cocos2d.h"
 using namespace cocos2d;
 
+class Player;
+
 class HelloWorld : public CCLayer
 {
 public:
@@ -17,6 +19,8 @@ public:
     void tick(float dt);
     void resolveTargetCollision();
     CCPoint nextTargetPosition(int player);
+    void adjustTargetSize(Player *p);
+    Player *currentWinner();
     int scoreTotal();
 };
 

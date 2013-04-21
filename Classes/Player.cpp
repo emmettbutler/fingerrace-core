@@ -22,6 +22,7 @@ void Player::init(){
     this->checkpointCount = 0;
     this->_identifier = 11011;
     this->touch = NULL;
+    this->baseScale = 4;
 }
 
 void Player::spawnNewTarget(CCPoint position, CCLayer * layer) {
@@ -43,6 +44,30 @@ void Player::spawnNewTarget(CCPoint position, CCLayer * layer) {
             NULL
         )
     );
+}
+
+void Player::shrinkTarget(){
+    printf("in shrinktarget\n");
+    if(this->currentTarget->getScale() > .1){
+        this->currentTarget->runAction(
+            CCSequence::actions(
+                CCScaleBy::actionWithDuration(.5, .9),
+                NULL
+            )
+        );
+    }
+}
+
+void Player::growTarget(){
+    printf("in growtarget: scale: %0.2f\n", this->currentTarget->getScale());
+    if(this->currentTarget->getScale() < this->baseScale){
+        this->currentTarget->runAction(
+            CCSequence::actions(
+                CCScaleBy::actionWithDuration(.5, 1.1),
+                NULL
+            )
+        );
+    }
 }
 
 void Player::unlockTouch(){

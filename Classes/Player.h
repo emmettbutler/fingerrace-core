@@ -23,12 +23,15 @@ public:
     SquareTarget *currentTarget;
     bool touchLock;
     int checkpointCount;
+    float baseScale;
     CCTouch *touch;
     
     Player();
     void init();
     void spawnNewTarget(CCPoint position, CCLayer * layer);
     void killOldTarget();
+    void shrinkTarget();
+    void growTarget();
     int getID();
     
 private:

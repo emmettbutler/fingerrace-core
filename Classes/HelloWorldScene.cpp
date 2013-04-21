@@ -67,7 +67,6 @@ void HelloWorld::resolveTargetCollision(){
         printf("Resolving collision\n");
         p1->spawnNewTarget(nextTargetPosition(std::distance(players->begin(), iter)), this);
     }
-    
 }
 
 void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
@@ -100,6 +99,7 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                 if(!p1->touchLock){
                     p1->spawnNewTarget(nextTargetPosition(std::distance(players->begin(), iter)), this);
                     p1->checkpointCount += 1;
+                    adjustTargetSize(p1);
                     // uncomment this when cccallfunc gets figured out
                     //p1->touchLock = true;
                 }
@@ -121,6 +121,35 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                 p1->touch = NULL;
             }
         }
+    }
+}
+
+Player *HelloWorld::currentWinner(){
+    Player *top = NULL;
+    std::list<Player *> *players = GameManager::sharedManager()->players;
+    for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
+        Player *p1 = *iter;
+        if(top == NULL || p1->checkpointCount > top->checkpointCount){
+            top = p1;
+        }
+    }
+    return top;
+}
+
+void HelloWorld::adjustTargetSize(Player *p){
+    // called when this player's score just increased
+    if(p->checkpointCount == currentWinner()->checkpointCount){
+        // loop over all other players and shrink them
+        std::list<Player *> *players = GameManager::sharedManager()->players;
+        for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
+            Player *p1 = *iter;
+            if(p1 != p){
+                p1->shrinkTarget();
+            }
+        }
+    } else {
+        // grow this player
+        p->growTarget();
     }
 }
 

@@ -18,7 +18,7 @@ SquareTarget::SquareTarget() {
 
 void SquareTarget::initWithPlayer(Player *p) {
     this->initWithFile("square.png");
-    this->setScale(4);
+    this->setScale(p->baseScale);
     this->setColor(p->color);
 }
 
