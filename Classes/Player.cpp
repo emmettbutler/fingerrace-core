@@ -11,6 +11,7 @@ using namespace cocos2d;
 
 #import "SquareTarget.h"
 #include "Player.h"
+#include "GameManager.h"
 
 Player::Player() {
     this->currentTarget = NULL;
@@ -23,6 +24,16 @@ void Player::init(){
     this->_identifier = 11011;
     this->touch = NULL;
     this->baseScale = 4;
+    this->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - this->checkpointCount;
+    
+    this->scoreLabel = CCLabelTTF::labelWithString("10", "Courier New", 20);
+    this->scoreLabel->setColor(this->color);
+}
+
+void Player::initScoreLabel(CCLayer *parent){
+    CCPoint pos = this->currentTarget->getPosition();
+    this->scoreLabel->setPosition(CCPoint(pos.x, this->currentTarget->boundingBox().getMaxY()+10));
+    parent->addChild(scoreLabel);
 }
 
 void Player::spawnNewTarget(CCPoint position, CCLayer * layer) {
@@ -39,16 +50,26 @@ void Player::spawnNewTarget(CCPoint position, CCLayer * layer) {
     this->currentTarget->runAction(
         CCSequence::actions(
             CCMoveTo::actionWithDuration(.05, position),
-            // to get this to work, this class needs to conform to the selector_protocol.h?
-            //CCCallFunc::actionWithTarget((CCObject *)this, callfunc_selector(Player::unlockTouch)),
+            NULL
+        )
+    );
+    
+    float halfHeight = this->currentTarget->boundingBox().getMaxY() - this->currentTarget->boundingBox().getMidY();
+    
+    char buff[3];
+    sprintf(buff, "%d", this->remainingCheckpoints);
+    this->scoreLabel->setString(buff);
+    
+    this->scoreLabel->runAction(
+        CCSequence::actions(
+            CCMoveTo::actionWithDuration(.05, CCPoint(position.x, position.y+halfHeight+10)),
             NULL
         )
     );
 }
 
 void Player::shrinkTarget(){
-    printf("in shrinktarget\n");
-    if(this->currentTarget->getScale() > .1){
+    if(this->currentTarget->getScale() > this->baseScale*.5){
         this->currentTarget->runAction(
             CCSequence::actions(
                 CCScaleBy::actionWithDuration(.5, .9),
@@ -59,7 +80,6 @@ void Player::shrinkTarget(){
 }
 
 void Player::growTarget(){
-    printf("in growtarget: scale: %0.2f\n", this->currentTarget->getScale());
     if(this->currentTarget->getScale() < this->baseScale){
         this->currentTarget->runAction(
             CCSequence::actions(
@@ -68,10 +88,6 @@ void Player::growTarget(){
             )
         );
     }
-}
-
-void Player::unlockTouch(){
-    this->touchLock = false;
 }
 
 int Player::getID(){

@@ -32,6 +32,7 @@ bool HelloWorld::init(){
         Player *p = new Player();
         p->init();
         p->spawnNewTarget(nextTargetPosition(i), this);
+        p->initScoreLabel(this);
         GameManager::sharedManager()->players->push_back(p);
     }
     
@@ -95,13 +96,17 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
         std::list<Player *> *players = GameManager::sharedManager()->players;
         for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
             Player *p1 = *iter;
-            if((CCTouch *)*it == p1->touch && CCRect::CCRectContainsPoint(p1->currentTarget->boundingBox(), touchLocation)){
-                if(!p1->touchLock){
-                    p1->spawnNewTarget(nextTargetPosition(std::distance(players->begin(), iter)), this);
-                    p1->checkpointCount += 1;
-                    adjustTargetSize(p1);
-                    // uncomment this when cccallfunc gets figured out
-                    //p1->touchLock = true;
+            if((CCTouch *)*it == p1->touch){
+                if(CCRect::CCRectContainsPoint(p1->currentTarget->boundingBox(), touchLocation)){
+                    if(!p1->touchLock){
+                        p1->spawnNewTarget(nextTargetPosition(std::distance(players->begin(), iter)), this);
+                        p1->touchLock = true;
+                        p1->checkpointCount += 1;
+                        p1->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - p1->checkpointCount;
+                        adjustTargetSize(p1);
+                    }
+                } else {
+                    p1->touchLock = false;
                 }
             }
         }

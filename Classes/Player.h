@@ -16,13 +16,14 @@ using namespace cocos2d;
 
 class SquareTarget;
 
-class Player {
+class Player : CCNode {
     
 public:
     ccColor3B color;
     SquareTarget *currentTarget;
+    CCLabelTTF *scoreLabel;
     bool touchLock;
-    int checkpointCount;
+    int checkpointCount, remainingCheckpoints;
     float baseScale;
     CCTouch *touch;
     
@@ -33,11 +34,11 @@ public:
     void shrinkTarget();
     void growTarget();
     int getID();
+    void initScoreLabel(CCLayer *parent);
+    void unlockTouch(CCNode *sender);
     
 private:
     int _identifier;
-    
-    void unlockTouch();
 };
 
 #endif /* defined(__CocosTest__Player__) */
