@@ -17,12 +17,12 @@ Player::Player() {
     this->currentTarget = NULL;
 }
 
-bool Player::init(int id){
+bool Player::init(int id, CCTouch *t){
     this->color = ccc3(arc4random() % 255, arc4random() % 255, arc4random() % 255);
     this->touchLock = false;
     this->checkpointCount = 0;
     this->_identifier = id;
-    this->touch = NULL;
+    this->touch = t;
     this->baseScale = 4;
     this->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - this->checkpointCount;
     
@@ -30,6 +30,7 @@ bool Player::init(int id){
     this->scoreLabel->setColor(this->color);
 
     this->initWithFile("circle.png");
+    this->setScale(3);
     this->setColor(this->color);
 
     return true;
