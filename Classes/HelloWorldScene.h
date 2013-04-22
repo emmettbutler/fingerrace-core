@@ -6,8 +6,7 @@ using namespace cocos2d;
 
 class Player;
 
-class HelloWorld : public CCLayer
-{
+class HelloWorld : public CCLayer{
 public:
     virtual bool init();
     static CCScene* scene();
@@ -18,10 +17,17 @@ public:
     virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
     void tick(float dt);
     void resolveTargetCollision();
+    void setupTitleScreen();
+    void dismissTitleScreen();
+    void setupEndgameScreen();
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
     Player *currentWinner();
     int scoreTotal();
+    std::list<CCSprite *> *titleSprites;
+    
+    int numQueuedPlayers;
+    long double lastPlayerQueueTime, startTime, ttime;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

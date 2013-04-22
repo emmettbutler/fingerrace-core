@@ -19,8 +19,18 @@ public:
     std::list<Player *> *players;
     static GameManager *sharedManager();
     void init();
-    bool gameIsActive;
-    int numPlayers, goalCheckpoints;
+    void startGame();
+    void endGame();
+    bool gameIsActive();
+    bool titleScreenIsActive();
+    long double getCurrentTimeSeconds();
+    long double getElapsed();
+    int numPlayers, maxPlayers, goalCheckpoints, currentState;
+    long double ttime, startTime;
+    
+    enum kScreenState{
+        kTitleState, kInGameState, kGameOverState
+    };
 };
 
 
