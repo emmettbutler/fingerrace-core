@@ -29,7 +29,7 @@ public:
     CCRect territory;
     
     Player();
-    bool init(int id, CCTouch *t);
+    bool init(int id, CCTouch *t, ccColor3B c);
     void spawnNewTarget(CCPoint position, CCLayer * layer);
     void killOldTarget();
     void shrinkTarget();

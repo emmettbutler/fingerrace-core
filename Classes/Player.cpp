@@ -17,8 +17,8 @@ Player::Player() {
     this->currentTarget = NULL;
 }
 
-bool Player::init(int id, CCTouch *t){
-    this->color = ccc3(arc4random() % 255, arc4random() % 255, arc4random() % 255);
+bool Player::init(int id, CCTouch *t, ccColor3B c){
+    this->color = c;
     this->touchLock = false;
     this->checkpointCount = 0;
     this->_identifier = id;
@@ -26,7 +26,7 @@ bool Player::init(int id, CCTouch *t){
     this->baseScale = 4;
     this->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - this->checkpointCount;
     
-    this->scoreLabel = CCLabelTTF::labelWithString("10", "Courier New", 20);
+    this->scoreLabel = CCLabelTTF::labelWithString("10", "Courier New", 70);
     this->scoreLabel->setColor(this->color);
 
     this->initWithFile("circle.png");
@@ -38,7 +38,7 @@ bool Player::init(int id, CCTouch *t){
 
 void Player::initScoreLabel(CCLayer *parent){
     CCPoint pos = this->currentTarget->getPosition();
-    this->scoreLabel->setPosition(CCPoint(pos.x, this->currentTarget->boundingBox().getMaxY()+10));
+    this->scoreLabel->setPosition(CCPoint(pos.x, this->currentTarget->boundingBox().getMaxY()+30));
     parent->addChild(scoreLabel);
 }
 
