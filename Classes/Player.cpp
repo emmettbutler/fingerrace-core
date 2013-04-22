@@ -17,11 +17,10 @@ Player::Player() {
     this->currentTarget = NULL;
 }
 
-bool Player::init(int id, CCTouch *t){
+bool Player::init(CCTouch *t){
     this->color = ccc3(arc4random() % 255, arc4random() % 255, arc4random() % 255);
     this->touchLock = false;
     this->checkpointCount = 0;
-    this->_identifier = id;
     this->touch = t;
     this->baseScale = 4;
     this->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - this->checkpointCount;
@@ -43,9 +42,20 @@ void Player::initScoreLabel(CCLayer *parent){
 }
 
 void Player::initTerritory(CCRect screenBox) {
+
     this->territory = CCRectMake(screenBox.origin.x, screenBox.origin.y, screenBox.size.width, screenBox.size.height);
     territory.size.width /= 2;
-    territory.origin.x = screenBox.origin.x / 2 + this->getID() * screenBox.size.width / 2;
+
+    CCPoint touchLocation = this->touch->getLocationInView();
+    touchLocation = CCDirector::sharedDirector()->convertToGL(touchLocation);
+
+    if (touchLocation.x < screenBox.getMidX()) {
+        territory.origin.x = screenBox.origin.x / 2 ;
+        this->_identifier = 0;
+    } else {
+        territory.origin.x = screenBox.origin.x / 2 + screenBox.size.width / 2;
+        this->_identifier = 1;
+    }
 }
 
 void Player::spawnNewTarget(CCPoint position, CCLayer * layer) {

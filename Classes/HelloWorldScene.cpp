@@ -140,7 +140,7 @@ void HelloWorld::setupGameScreen(){
             t = (CCTouch *)ts->getUserData();
         }
         Player *p = new Player();
-        p->init(i, t);
+        p->init(t);
         p->initTerritory(this->boundingBox());
         p->spawnNewTarget(nextTargetPosition(p), this);
         p->initScoreLabel(this);
@@ -296,8 +296,12 @@ CCPoint HelloWorld::nextTargetPosition(Player *p) {
     float x, y;
 
     if (scoreTotal() == 0) {
-        x = p->territory.getMidX();
-        y = p->territory.getMidY();
+        CCTouch *touch = p->touch;
+        CCPoint touchLocation = touch->getLocationInView();
+        touchLocation = CCDirector::sharedDirector()->convertToGL(touchLocation);
+
+        x = touchLocation.x;
+        y = touchLocation.y;
     } else if (p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.75) {
         int territoryAddition = this->boundingBox().size.width / GameManager::sharedManager()->goalCheckpoints * 0.75 / 2;
         p->territory.size.width += territoryAddition;
