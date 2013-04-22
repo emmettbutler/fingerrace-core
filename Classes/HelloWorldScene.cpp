@@ -31,6 +31,7 @@ bool HelloWorld::init(){
     for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
         Player *p = new Player();
         p->init(i);
+        p->initTerritory(this->boundingBox());
         p->spawnNewTarget(nextTargetPosition(p), this);
         p->initScoreLabel(this);
         GameManager::sharedManager()->players->push_back(p);
@@ -165,11 +166,22 @@ void HelloWorld::adjustTargetSize(Player *p){
 }
 
 CCPoint HelloWorld::nextTargetPosition(Player *p) {
+
     float x, y;
 
     if (scoreTotal() == 0) {
-        x = this->boundingBox().size.width / 4 + p->getID() * this->boundingBox().size.width / 2;
-        y = this->boundingBox().getMidY();
+        x = p->territory.getMidX();
+        y = p->territory.getMidY();
+    } else if (p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.75) {
+        int territoryAddition = this->boundingBox().size.width / GameManager::sharedManager()->goalCheckpoints * 0.75 / 2;
+        p->territory.size.width += territoryAddition;
+
+        if (p->getID() == 1) {
+            p->territory.origin.x -= territoryAddition;
+        }
+
+        x = arc4random() % (int)p->territory.size.width + p->territory.getMinX();
+        y = arc4random() % (int)p->territory.size.height;
     } else {
         x = arc4random() % (int)this->boundingBox().size.width;
         y = arc4random() % (int)this->boundingBox().size.height;

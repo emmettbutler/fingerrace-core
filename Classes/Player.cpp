@@ -41,6 +41,12 @@ void Player::initScoreLabel(CCLayer *parent){
     parent->addChild(scoreLabel);
 }
 
+void Player::initTerritory(CCRect screenBox) {
+    this->territory = CCRectMake(screenBox.origin.x, screenBox.origin.y, screenBox.size.width, screenBox.size.height);
+    territory.size.width /= 2;
+    territory.origin.x = screenBox.origin.x / 2 + this->getID() * screenBox.size.width / 2;
+}
+
 void Player::spawnNewTarget(CCPoint position, CCLayer * layer) {
     if(this->touchLock) return;
 

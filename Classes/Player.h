@@ -26,6 +26,7 @@ public:
     int checkpointCount, remainingCheckpoints;
     float baseScale;
     CCTouch *touch;
+    CCRect territory;
     
     Player();
     bool init(int id);
@@ -37,6 +38,7 @@ public:
     void initScoreLabel(CCLayer *parent);
     void unlockTouch(CCNode *sender);
     void updatePosition(CCPoint glPosition);
+    void initTerritory(CCRect screenBox);
     
 private:
     int _identifier;
