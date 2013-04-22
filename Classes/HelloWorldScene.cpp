@@ -82,6 +82,8 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
 
             if(p1->touch == NULL && CCRect::CCRectContainsPoint(p1->currentTarget->boundingBox(), touchLocation)){
                 p1->touch = (CCTouch *)*it;
+                p1->updatePosition(touchLocation);
+                this->addChild(p1);
             }
         }
     }
@@ -96,7 +98,10 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
         std::list<Player *> *players = GameManager::sharedManager()->players;
         for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
             Player *p1 = *iter;
+
             if((CCTouch *)*it == p1->touch){
+                p1->updatePosition(touchLocation);
+
                 if(CCRect::CCRectContainsPoint(p1->currentTarget->boundingBox(), touchLocation)){
                     if(!p1->touchLock){
                         p1->spawnNewTarget(nextTargetPosition(p1), this);
@@ -124,6 +129,7 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
             Player *p1 = *iter;
             if((CCTouch *)*it == p1->touch){
                 p1->touch = NULL;
+                this->removeChild(p1, false);
             }
         }
     }

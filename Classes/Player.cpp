@@ -17,7 +17,7 @@ Player::Player() {
     this->currentTarget = NULL;
 }
 
-void Player::init(int id){
+bool Player::init(int id){
     this->color = ccc3(arc4random() % 255, arc4random() % 255, arc4random() % 255);
     this->touchLock = false;
     this->checkpointCount = 0;
@@ -28,6 +28,11 @@ void Player::init(int id){
     
     this->scoreLabel = CCLabelTTF::labelWithString("10", "Courier New", 20);
     this->scoreLabel->setColor(this->color);
+
+    this->initWithFile("circle.png");
+    this->setColor(this->color);
+
+    return true;
 }
 
 void Player::initScoreLabel(CCLayer *parent){
@@ -87,6 +92,12 @@ void Player::growTarget(){
                 NULL
             )
         );
+    }
+}
+
+void Player::updatePosition(CCPoint glPosition) {
+    if (this->touch != NULL) {
+        this->setPosition(glPosition);
     }
 }
 
