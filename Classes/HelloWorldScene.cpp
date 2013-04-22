@@ -198,6 +198,7 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
             for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
                 CCSprite *sp = *iter;
                 if(CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation) && (CCTouch *)sp->getUserData() != touch){
+                    sp->setUserData(NULL);
                     if(numQueuedPlayers > 0){
                         printf("lost queued player\n");
                         numQueuedPlayers--;
