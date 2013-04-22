@@ -30,8 +30,8 @@ bool HelloWorld::init(){
     
     for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
         Player *p = new Player();
-        p->init();
-        p->spawnNewTarget(nextTargetPosition(i), this);
+        p->init(i);
+        p->spawnNewTarget(nextTargetPosition(p), this);
         p->initScoreLabel(this);
         GameManager::sharedManager()->players->push_back(p);
     }
@@ -66,7 +66,7 @@ void HelloWorld::resolveTargetCollision(){
     for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
         Player *p1 = *iter;
         printf("Resolving collision\n");
-        p1->spawnNewTarget(nextTargetPosition(std::distance(players->begin(), iter)), this);
+        p1->spawnNewTarget(nextTargetPosition(p1), this);
     }
 }
 
@@ -99,7 +99,7 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
             if((CCTouch *)*it == p1->touch){
                 if(CCRect::CCRectContainsPoint(p1->currentTarget->boundingBox(), touchLocation)){
                     if(!p1->touchLock){
-                        p1->spawnNewTarget(nextTargetPosition(std::distance(players->begin(), iter)), this);
+                        p1->spawnNewTarget(nextTargetPosition(p1), this);
                         p1->touchLock = true;
                         p1->checkpointCount += 1;
                         p1->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - p1->checkpointCount;
@@ -158,11 +158,11 @@ void HelloWorld::adjustTargetSize(Player *p){
     }
 }
 
-CCPoint HelloWorld::nextTargetPosition(int player) {
+CCPoint HelloWorld::nextTargetPosition(Player *p) {
     float x, y;
 
     if (scoreTotal() == 0) {
-        x = this->boundingBox().size.width / 4 + player * this->boundingBox().size.width / 2;
+        x = this->boundingBox().size.width / 4 + p->getID() * this->boundingBox().size.width / 2;
         y = this->boundingBox().getMidY();
     } else {
         x = arc4random() % (int)this->boundingBox().size.width;

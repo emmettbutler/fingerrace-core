@@ -18,7 +18,7 @@ public:
     virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
     void tick(float dt);
     void resolveTargetCollision();
-    CCPoint nextTargetPosition(int player);
+    CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
     Player *currentWinner();
     int scoreTotal();

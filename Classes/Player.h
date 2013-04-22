@@ -28,7 +28,7 @@ public:
     CCTouch *touch;
     
     Player();
-    void init();
+    void init(int id);
     void spawnNewTarget(CCPoint position, CCLayer * layer);
     void killOldTarget();
     void shrinkTarget();

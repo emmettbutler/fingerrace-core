@@ -17,11 +17,11 @@ Player::Player() {
     this->currentTarget = NULL;
 }
 
-void Player::init(){
+void Player::init(int id){
     this->color = ccc3(arc4random() % 255, arc4random() % 255, arc4random() % 255);
     this->touchLock = false;
     this->checkpointCount = 0;
-    this->_identifier = 11011;
+    this->_identifier = id;
     this->touch = NULL;
     this->baseScale = 4;
     this->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - this->checkpointCount;
