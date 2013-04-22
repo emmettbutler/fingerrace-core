@@ -28,6 +28,7 @@ public:
     std::list<CCSprite *> *titleSprites;
     
     int numQueuedPlayers;
+    CCLayer *titleLayer;
     long double lastPlayerQueueTime, startTime, ttime;
 };
 

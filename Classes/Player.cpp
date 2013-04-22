@@ -30,6 +30,7 @@ bool Player::init(int id, CCTouch *t){
     this->scoreLabel->setColor(this->color);
 
     this->initWithFile("circle.png");
+    this->setScale(3);
     this->setColor(this->color);
 
     return true;

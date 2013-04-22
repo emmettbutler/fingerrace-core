@@ -20,6 +20,8 @@ CCScene* HelloWorld::scene(){
 void HelloWorld::setupTitleScreen(){
     titleSprites = new std::list<CCSprite *>();
     
+    titleLayer = CCLayer::node();
+    
     CCSize screenDimensions = CCEGLView::sharedOpenGLView()->getFrameSize();
     printf("Screen: %0.2f x %0.2f\n", screenDimensions.width, screenDimensions.height);
     if(screenDimensions.width <= 960 && screenDimensions.height <= 640){
@@ -33,7 +35,7 @@ void HelloWorld::setupTitleScreen(){
         p1->setScaleX(this->getContentSize().width/p1->getContentSize().width/2);
         p1->setScaleY(this->getContentSize().height/p1->getContentSize().height);
         p1->setColor(ccc3(255, 0, 0));
-        this->addChild(p1, 1000);
+        this->addChild(p1, 10);
         titleSprites->push_back(p1);
 
         CCSprite *p2 = new CCSprite();
@@ -42,17 +44,25 @@ void HelloWorld::setupTitleScreen(){
         p2->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
         p2->setScaleY(this->getContentSize().height/p2->getContentSize().height);
         p2->setColor(ccc3(0, 0, 255));
-        this->addChild(p2, 1000);
+        this->addChild(p2, 10);
         titleSprites->push_back(p2);
+        
+        CCLabelTTF *label = CCLabelTTF::labelWithString("Trundle", "Courier New", 80);
+        label->setRotation(-90);
+        label->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY()));
+        label->setColor(ccc3(0, 0, 0));
+        titleLayer->addChild(label, 11);
         
     } else if(screenDimensions.width > 960 && screenDimensions.height > 640){
         printf("Detected large screen\n");
         GameManager::sharedManager()->maxPlayers = 4;
     }
+    this->addChild(titleLayer, 11);
 }
 
 void HelloWorld::dismissTitleScreen(){
     float animationDuration = 1;
+    titleLayer->removeFromParentAndCleanup(true);
     for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
         CCSprite *sp = *iter;
         sp->runAction(CCScaleTo::actionWithDuration(animationDuration, 0));
@@ -94,7 +104,7 @@ void HelloWorld::tick(float dt){
             
             if(p1->checkpointCount >= GameManager::sharedManager()->goalCheckpoints){
                 //GameManager::sharedManager()->endGame();
-                //_gameEnded = true;
+                //_gameEnded = true; // TODO uncomment for endgame
             }
             
             for(std::list<Player *>::iterator iter2 = players->begin(); iter2 != players->end(); ++iter2){
@@ -110,7 +120,7 @@ void HelloWorld::tick(float dt){
             setupEndgameScreen();
         }
     } else if(GameManager::sharedManager()->titleScreenIsActive()){
-        if(GameManager::sharedManager()->getCurrentTimeSeconds() - lastPlayerQueueTime > 3 &&
+        if(GameManager::sharedManager()->getCurrentTimeSeconds() - lastPlayerQueueTime > 2 &&
            numQueuedPlayers <= GameManager::sharedManager()->maxPlayers && numQueuedPlayers > 1){
             printf("Starting game\n");
             GameManager::sharedManager()->startGame();
