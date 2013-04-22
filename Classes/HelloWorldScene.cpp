@@ -99,8 +99,8 @@ void HelloWorld::tick(float dt){
             Player *p1 = *iter;
             
             if(p1->checkpointCount >= GameManager::sharedManager()->goalCheckpoints){
-                GameManager::sharedManager()->endGame();
-                _gameEnded = true;
+                //GameManager::sharedManager()->endGame();
+                //_gameEnded = true;
             }
             
             for(std::list<Player *>::iterator iter2 = players->begin(); iter2 != players->end(); ++iter2){
@@ -154,8 +154,10 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
             for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
                 CCSprite *sp = *iter;
-                if(CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){
+                if(sp->getUserData() == NULL && CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){
                     if(numQueuedPlayers < GameManager::sharedManager()->maxPlayers){
+                        printf("gained queued player\n");
+                        sp->setUserData(touch);  // use userdata as a lightweight "touched" indicator
                         numQueuedPlayers++;
                         lastPlayerQueueTime = GameManager::sharedManager()->getCurrentTimeSeconds();
                     }
@@ -193,7 +195,15 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
-            
+            for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
+                CCSprite *sp = *iter;
+                if(CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation) && (CCTouch *)sp->getUserData() != touch){
+                    if(numQueuedPlayers > 0){
+                        printf("lost queued player\n");
+                        numQueuedPlayers--;
+                    }
+                }
+            }
         }
     }
 }
@@ -203,7 +213,7 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
         CCTouch *touch = (CCTouch *)*it;
         CCPoint touchLocation = touch->getLocationInView();
         touchLocation = CCDirector::sharedDirector()->convertToGL(touchLocation);
-        
+
         if(GameManager::sharedManager()->gameIsActive()){
             std::list<Player *> *players = GameManager::sharedManager()->players;
             for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
@@ -214,7 +224,16 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
-            numQueuedPlayers--;
+            for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
+                CCSprite *sp = *iter;
+                if((CCTouch *)sp->getUserData() == touch){
+                    sp->setUserData(NULL);
+                    if(numQueuedPlayers > 0){
+                        printf("lost queued player\n");
+                        numQueuedPlayers--;
+                    }
+                }
+            }
         }
     }
 }
