@@ -52,11 +52,13 @@ void HelloWorld::setupTitleScreen(){
 }
 
 void HelloWorld::dismissTitleScreen(){
+    float animationDuration = 1;
     for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
         CCSprite *sp = *iter;
-        sp->runAction(
-            CCSequence::actions(CCScaleTo::actionWithDuration(1, 0), NULL)
-        );
+        sp->runAction(CCScaleTo::actionWithDuration(animationDuration, 0));
+        
+        CCPoint p = CCDirector::sharedDirector()->convertToGL(((CCTouch *)sp->getUserData())->getLocationInView());
+        sp->runAction(CCMoveTo::actionWithDuration(animationDuration, p));
     }
 }
 
