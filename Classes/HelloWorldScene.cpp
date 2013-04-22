@@ -134,13 +134,14 @@ void HelloWorld::tick(float dt){
 void HelloWorld::setupGameScreen(){
     for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
         CCTouch *t = NULL;
+        CCSprite *ts = NULL;
         if(titleSprites->size() > 0){
-            CCSprite *ts = titleSprites->front();
+            ts = titleSprites->front();
             titleSprites->pop_front();
             t = (CCTouch *)ts->getUserData();
         }
         Player *p = new Player();
-        p->init(t);
+        p->init(t, ts->getColor());
         p->initTerritory(this->boundingBox());
         p->spawnNewTarget(nextTargetPosition(p), this);
         p->initScoreLabel(this);
