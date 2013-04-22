@@ -76,14 +76,6 @@ bool HelloWorld::init(){
     
     setupTitleScreen();
     
-    for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
-        Player *p = new Player();
-        p->init(i);
-        p->spawnNewTarget(nextTargetPosition(p), this);
-        p->initScoreLabel(this);
-        GameManager::sharedManager()->players->push_back(p);
-    }
-    
     this->schedule(schedule_selector(HelloWorld::tick), .0001);
     
     return true;
@@ -121,7 +113,25 @@ void HelloWorld::tick(float dt){
             printf("Starting game\n");
             GameManager::sharedManager()->startGame();
             dismissTitleScreen();
+            GameManager::sharedManager()->numPlayers = numQueuedPlayers;
+            setupGameScreen();
         }
+    }
+}
+
+void HelloWorld::setupGameScreen(){
+    for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
+        CCTouch *t = NULL;
+        if(titleSprites->size() > 0){
+            CCSprite *ts = titleSprites->front();
+            titleSprites->pop_front();
+            t = (CCTouch *)ts->getUserData();
+        }
+        Player *p = new Player();
+        p->init(i, t);
+        p->spawnNewTarget(nextTargetPosition(p), this);
+        p->initScoreLabel(this);
+        GameManager::sharedManager()->players->push_back(p);
     }
 }
 

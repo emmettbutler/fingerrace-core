@@ -19,6 +19,7 @@ public:
     void resolveTargetCollision();
     void setupTitleScreen();
     void dismissTitleScreen();
+    void setupGameScreen();
     void setupEndgameScreen();
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
