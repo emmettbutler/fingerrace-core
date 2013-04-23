@@ -221,9 +221,9 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                         if(!p1->touchLock){
                             p1->spawnNewTarget(nextTargetPosition(p1), this);
                             p1->touchLock = true;
+                            adjustTargetSize(p1);
                             p1->checkpointCount += 1;
                             p1->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - p1->checkpointCount;
-                            adjustTargetSize(p1);
                         }
                     } else {
                         p1->touchLock = false;
