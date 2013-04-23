@@ -366,6 +366,7 @@ CCPoint HelloWorld::initialTargetPosition(Player *p) {
 CCPoint HelloWorld::nextTargetPosition(Player *p) {
 
     float x, y;
+    int targetSize = p->currentTarget->boundingBox().size.width;
 
     if (p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.75) {
         int territoryAddition = this->boundingBox().size.width / GameManager::sharedManager()->goalCheckpoints * 0.75 / 2;
@@ -375,11 +376,11 @@ CCPoint HelloWorld::nextTargetPosition(Player *p) {
             p->territory.origin.x -= territoryAddition;
         }
 
-        x = arc4random() % (int)p->territory.size.width + p->territory.getMinX();
-        y = arc4random() % (int)p->territory.size.height;
+        x = arc4random() % ((int)p->territory.size.width - targetSize) + p->territory.getMinX() + targetSize / 2;
+        y = arc4random() % ((int)p->territory.size.height - targetSize) + targetSize / 2;
     } else {
-        x = arc4random() % (int)this->boundingBox().size.width;
-        y = arc4random() % (int)this->boundingBox().size.height;
+        x = arc4random() % ((int)this->boundingBox().size.width - targetSize) + targetSize / 2;
+        y = arc4random() % ((int)this->boundingBox().size.height - targetSize) + targetSize / 2;
     }
 
     return *new CCPoint(x, y);
