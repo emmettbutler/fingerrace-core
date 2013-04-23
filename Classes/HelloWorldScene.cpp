@@ -38,6 +38,7 @@ void HelloWorld::setupEndgameScreenTextOverlay(){
 
 void HelloWorld::setupTitleScreen(){
     titleSprites = new std::list<CCSprite *>();
+    titleTouchPoints = new std::list<CCPoint>();
     
     CCSize screenDimensions = CCEGLView::sharedOpenGLView()->getFrameSize();
     printf("Screen: %0.2f x %0.2f\n", screenDimensions.width, screenDimensions.height);
@@ -107,6 +108,8 @@ void HelloWorld::dismissTitleScreen(){
         
         CCPoint p = CCDirector::sharedDirector()->convertToGL(((CCTouch *)sp->getUserData())->getLocationInView());
         sp->runAction(CCMoveTo::actionWithDuration(animationDuration, p));
+
+        titleTouchPoints->push_back(p);
     }
 }
 
@@ -197,16 +200,20 @@ void HelloWorld::tick(float dt){
 void HelloWorld::setupGameScreen(){
     for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
         CCTouch *t = NULL;
+        CCPoint tp;
         CCSprite *ts = NULL;
         if(titleSprites->size() > 0){
             ts = titleSprites->front();
             titleSprites->pop_front();
             t = (CCTouch *)ts->getUserData();
+            tp = titleTouchPoints->front();
+            titleTouchPoints->pop_front();
         }
         Player *p = new Player();
-        p->init(t, ts->getColor());
+        p->init(tp, ts->getColor());
         p->initTerritory(this->boundingBox());
-        p->spawnNewTarget(initialTargetPosition(p), this);
+        p->touch = t;
+        p->spawnNewTarget(p->startingPoint, this);
         p->initScoreLabel(this);
         this->addChild(p);
         GameManager::sharedManager()->players->push_back(p);
@@ -323,6 +330,15 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                     }
                 }
             }
+        } else if(GameManager::sharedManager()->pregameIsActive()){
+            std::list<Player *> *players = GameManager::sharedManager()->players;
+            for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
+                Player *p1 = *iter;
+                if((CCTouch *)*it == p1->touch){
+                    p1->touch = NULL;
+                    this->removeChild(p1, false);
+                }
+            }
         }
     }
 }
@@ -354,13 +370,6 @@ void HelloWorld::adjustTargetSize(Player *p){
         // grow this player
         p->growTarget();
     }
-}
-
-CCPoint HelloWorld::initialTargetPosition(Player *p) {
-    CCTouch *touch = p->touch;
-    CCPoint touchLocation = touch->getLocationInView();
-    touchLocation = CCDirector::sharedDirector()->convertToGL(touchLocation);
-    return *new CCPoint(touchLocation.x, touchLocation.y);
 }
 
 CCPoint HelloWorld::nextTargetPosition(Player *p) {

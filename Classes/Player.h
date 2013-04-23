@@ -27,9 +27,10 @@ public:
     float baseScale;
     CCTouch *touch;
     CCRect territory;
+    CCPoint startingPoint;
     
     Player();
-    bool init(CCTouch *t, ccColor3B c);
+    bool init(CCPoint p, ccColor3B c);
     void spawnNewTarget(CCPoint position, CCLayer * layer);
     void killOldTarget();
     void shrinkTarget();

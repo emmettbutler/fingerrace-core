@@ -31,6 +31,7 @@ public:
     Player *currentWinner();
     int scoreTotal();
     std::list<CCSprite *> *titleSprites;
+    std::list<CCPoint> *titleTouchPoints;
     
     int numQueuedPlayers;
     CCLayer *titleLayer, *endgameLayer;
