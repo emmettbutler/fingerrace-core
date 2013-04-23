@@ -145,6 +145,7 @@ void HelloWorld::setupGameScreen(){
         p->initTerritory(this->boundingBox());
         p->spawnNewTarget(nextTargetPosition(p), this);
         p->initScoreLabel(this);
+        this->addChild(p);
         GameManager::sharedManager()->players->push_back(p);
     }
 }
