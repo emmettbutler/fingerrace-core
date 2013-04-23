@@ -18,9 +18,13 @@ public:
     void tick(float dt);
     void resolveTargetCollision();
     void setupTitleScreen();
+    void setupTitleScreenTextOverlay();
+    void setupTitleScreenFromEndgameScreen();
     void dismissTitleScreen();
+    void dismissEndgameScreen();
     void setupGameScreen();
-    void setupEndgameScreen();
+    void setupEndgameScreen(Player *winner);
+    void setupEndgameScreenTextOverlay();
     CCPoint initialTargetPosition(Player *p);
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
@@ -29,8 +33,8 @@ public:
     std::list<CCSprite *> *titleSprites;
     
     int numQueuedPlayers;
-    CCLayer *titleLayer;
-    long double lastPlayerQueueTime, startTime, ttime;
+    CCLayer *titleLayer, *endgameLayer;
+    long double lastPlayerQueueTime, ttime;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
