@@ -63,6 +63,31 @@ void HelloWorld::setupTitleScreen(){
     }
 }
 
+void HelloWorld::setupTitleScreenFromEndgameScreen(){
+    float initTime = .5;
+    CCSprite *p1 = titleSprites->front();
+    p1->runAction(CCSequence::actions(
+                                      CCScaleTo::actionWithDuration(initTime, this->getContentSize().width/p1->getContentSize().width/2, this->getContentSize().height/p1->getContentSize().height),
+                                      NULL));
+    p1->runAction(CCSequence::actions(
+                                      CCMoveTo::actionWithDuration(initTime, CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY())),
+                                      NULL));
+    
+    CCSprite *p2 = new CCSprite();
+    p2->initWithFile("square.png");
+    p2->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
+    p2->setScaleY(this->getContentSize().height/p2->getContentSize().height);
+    p2->setPosition(CCPoint(this->boundingBox().getMinX()-p2->getContentSize().width*p2->getScaleX(), this->boundingBox().getMidY()));
+    p2->setColor(GameManager::sharedManager()->getNextColor());
+    this->addChild(p2, 10);
+    titleSprites->push_back(p2);
+    
+    p2->runAction(CCSequence::actions(
+                                      CCMoveTo::actionWithDuration(.5, CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY())),
+                                      NULL));
+    setupTitleScreenTextOverlay();
+}
+
 void HelloWorld::dismissTitleScreen(){
     float animationDuration = 1;
     if(titleLayer != NULL){
@@ -91,30 +116,8 @@ void HelloWorld::setupEndgameScreen(Player *winner){
     
     GameManager::sharedManager()->usedColors->push_back(winner->color);
     
-    CCSprite *p2 = new CCSprite();
-    p2->initWithFile("square.png");
-    p2->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
-    p2->setScaleY(this->getContentSize().height/p2->getContentSize().height);
-    p2->setPosition(CCPoint(this->boundingBox().getMinX()-p2->getContentSize().width*p2->getScaleX(), this->boundingBox().getMidY()));
-    p2->setColor(GameManager::sharedManager()->getNextColor());
-    this->addChild(p2, 10);
-    titleSprites->push_back(p2);
-    
-    p1->runAction(CCSequence::actions(
-                                      CCScaleTo::actionWithDuration(initTime, this->getContentSize().width/p1->getContentSize().width, this->getContentSize().height/p1->getContentSize().height),
-                                      CCDelayTime::actionWithDuration(waitTime),
-                                      CCScaleTo::actionWithDuration(initTime, this->getContentSize().width/p1->getContentSize().width/2, this->getContentSize().height/p1->getContentSize().height),
-                                      NULL));
-    p1->runAction(CCSequence::actions(
-                                      CCMoveTo::actionWithDuration(initTime, CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY())),
-                                      CCDelayTime::actionWithDuration(waitTime),
-                                      CCMoveTo::actionWithDuration(initTime, CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY())),
-                                      NULL));
-    
-    p2->runAction(CCSequence::actions(
-                                      CCDelayTime::actionWithDuration(initTime+waitTime),
-                                      CCMoveTo::actionWithDuration(initTime, CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY())),
-                                      NULL));
+    p1->runAction(CCScaleTo::actionWithDuration(initTime, this->getContentSize().width/p1->getContentSize().width, this->getContentSize().height/p1->getContentSize().height));
+    p1->runAction(CCMoveTo::actionWithDuration(initTime, CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY())));
 }
 
 bool HelloWorld::init(){
@@ -124,8 +127,6 @@ bool HelloWorld::init(){
     
     CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 0, false);
     this->setTouchEnabled(true);
-    
-    numQueuedPlayers = 0;
     
     setupTitleScreen();
     
@@ -167,11 +168,11 @@ void HelloWorld::tick(float dt){
             numQueuedPlayers = 0;
         }
     } else if(GameManager::sharedManager()->endgameScreenIsActive()){
-        if(GameManager::sharedManager()->timeSinceLastStateChange() > 2){
+        if(GameManager::sharedManager()->timeSinceLastStateChange() > 4){
+            GameManager::sharedManager()->resetGameState();
+            setupTitleScreenFromEndgameScreen();
             GameManager::sharedManager()->setTitleState();
             GameManager::sharedManager()->resetColors();
-            setupTitleScreenTextOverlay();
-            GameManager::sharedManager()->resetGameState();
         }
     }
 }

@@ -19,6 +19,7 @@ public:
     void resolveTargetCollision();
     void setupTitleScreen();
     void setupTitleScreenTextOverlay();
+    void setupTitleScreenFromEndgameScreen();
     void dismissTitleScreen();
     void setupGameScreen();
     void setupEndgameScreen(Player *winner);
