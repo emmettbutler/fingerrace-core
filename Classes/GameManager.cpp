@@ -41,12 +41,20 @@ long double GameManager::getElapsed(){
     return getCurrentTimeSeconds() - startTime;
 }
 
+bool GameManager::pregameIsActive(){
+    return currentState == kPreGameState;
+}
+
 bool GameManager::gameIsActive(){
     return currentState == kInGameState;
 }
 
 bool GameManager::titleScreenIsActive(){
     return currentState == kTitleState;
+}
+
+void GameManager::setupGame(){
+    currentState = kPreGameState;
 }
 
 void GameManager::startGame(){

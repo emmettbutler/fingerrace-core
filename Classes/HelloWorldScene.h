@@ -21,6 +21,7 @@ public:
     void dismissTitleScreen();
     void setupGameScreen();
     void setupEndgameScreen();
+    CCPoint initialTargetPosition(Player *p);
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
     Player *currentWinner();

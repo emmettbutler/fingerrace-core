@@ -122,11 +122,22 @@ void HelloWorld::tick(float dt){
     } else if(GameManager::sharedManager()->titleScreenIsActive()){
         if(GameManager::sharedManager()->getCurrentTimeSeconds() - lastPlayerQueueTime > 2 &&
            numQueuedPlayers <= GameManager::sharedManager()->maxPlayers && numQueuedPlayers > 1){
-            printf("Starting game\n");
-            GameManager::sharedManager()->startGame();
+            printf("Starting pregame\n");
             dismissTitleScreen();
             GameManager::sharedManager()->numPlayers = numQueuedPlayers;
             setupGameScreen();
+            GameManager::sharedManager()->setupGame();
+            startTime = GameManager::sharedManager()->getCurrentTimeSeconds();
+        }
+    } else if(GameManager::sharedManager()->pregameIsActive()){
+        if (GameManager::sharedManager()->getCurrentTimeSeconds() - startTime > 1.25){
+            printf("Starting game\n");
+            std::list<Player *> *players = GameManager::sharedManager()->players;
+            for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
+                Player *p = *iter;
+                p->spawnNewTarget(nextTargetPosition(p), this);
+            }
+            GameManager::sharedManager()->startGame();
         }
     }
 }
@@ -143,7 +154,7 @@ void HelloWorld::setupGameScreen(){
         Player *p = new Player();
         p->init(t, ts->getColor());
         p->initTerritory(this->boundingBox());
-        p->spawnNewTarget(nextTargetPosition(p), this);
+        p->spawnNewTarget(initialTargetPosition(p), this);
         p->initScoreLabel(this);
         this->addChild(p);
         GameManager::sharedManager()->players->push_back(p);
@@ -293,18 +304,18 @@ void HelloWorld::adjustTargetSize(Player *p){
     }
 }
 
+CCPoint HelloWorld::initialTargetPosition(Player *p) {
+    CCTouch *touch = p->touch;
+    CCPoint touchLocation = touch->getLocationInView();
+    touchLocation = CCDirector::sharedDirector()->convertToGL(touchLocation);
+    return *new CCPoint(touchLocation.x, touchLocation.y);
+}
+
 CCPoint HelloWorld::nextTargetPosition(Player *p) {
 
     float x, y;
 
-    if (scoreTotal() == 0) {
-        CCTouch *touch = p->touch;
-        CCPoint touchLocation = touch->getLocationInView();
-        touchLocation = CCDirector::sharedDirector()->convertToGL(touchLocation);
-
-        x = touchLocation.x;
-        y = touchLocation.y;
-    } else if (p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.75) {
+    if (p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.75) {
         int territoryAddition = this->boundingBox().size.width / GameManager::sharedManager()->goalCheckpoints * 0.75 / 2;
         p->territory.size.width += territoryAddition;
 

@@ -19,8 +19,10 @@ public:
     std::list<Player *> *players;
     static GameManager *sharedManager();
     void init();
+    void setupGame();
     void startGame();
     void endGame();
+    bool pregameIsActive();
     bool gameIsActive();
     bool titleScreenIsActive();
     long double getCurrentTimeSeconds();
@@ -29,7 +31,7 @@ public:
     long double ttime, startTime;
     
     enum kScreenState{
-        kTitleState, kInGameState, kGameOverState
+        kTitleState, kPreGameState, kInGameState, kGameOverState
     };
 };
 
