@@ -33,7 +33,7 @@ GameManager *GameManager::sharedManager(){
 void GameManager::init(){
     players = new std::list<Player *>();
     currentState = kTitleState;
-    goalCheckpoints = 10;
+    goalCheckpoints = 20;
     
     startTime = getCurrentTimeSeconds();
     

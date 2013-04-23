@@ -78,16 +78,18 @@ void Player::spawnNewTarget(CCPoint position, CCLayer * layer) {
     
     float halfHeight = this->currentTarget->boundingBox().getMaxY() - this->currentTarget->boundingBox().getMidY();
     
-    char buff[3];
-    sprintf(buff, "%d", this->remainingCheckpoints);
-    this->scoreLabel->setString(buff);
-    
     this->scoreLabel->runAction(
         CCSequence::actions(
             CCMoveTo::actionWithDuration(.05, CCPoint(position.x, position.y+halfHeight+10)),
             NULL
         )
     );
+}
+
+void Player::updateScoreText(){
+    char buff[3];
+    sprintf(buff, "%d", this->remainingCheckpoints);
+    this->scoreLabel->setString(buff);
 }
 
 void Player::shrinkTarget(){
