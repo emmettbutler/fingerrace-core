@@ -18,9 +18,10 @@ public:
     void tick(float dt);
     void resolveTargetCollision();
     void setupTitleScreen();
+    void setupTitleScreenTextOverlay();
     void dismissTitleScreen();
     void setupGameScreen();
-    void setupEndgameScreen();
+    void setupEndgameScreen(Player *winner);
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
     Player *currentWinner();
