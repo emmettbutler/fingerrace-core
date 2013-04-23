@@ -11,13 +11,15 @@ using namespace cocos2d;
 
 #import "SquareTarget.h"
 #include "Player.h"
+#include "ScoreCounter.h"
 #include "GameManager.h"
 
 Player::Player() {
     this->currentTarget = NULL;
 }
 
-bool Player::init(CCTouch *t, ccColor3B c){
+bool Player::init(CCTouch *t, ccColor3B c, CCLayer *parent){
+    this->parent = parent;
     this->color = c;
     this->touchLock = false;
     this->checkpointCount = 0;
@@ -27,6 +29,12 @@ bool Player::init(CCTouch *t, ccColor3B c){
     
     this->scoreLabel = CCLabelTTF::labelWithString("10", "Courier New", 70);
     this->scoreLabel->setColor(this->color);
+    
+    ScoreCounter *sc = new ScoreCounter();
+    sc->init(GameManager::sharedManager()->goalCheckpoints, this->color, this);
+    sc->setPosition(GameManager::sharedManager()->getNextScoreCounterPosition());
+    parent->addChild(sc);
+    this->scoreCounter = sc;
 
     this->initWithFile("circle.png");
     this->setScale(3);
@@ -35,7 +43,7 @@ bool Player::init(CCTouch *t, ccColor3B c){
     return true;
 }
 
-void Player::initScoreLabel(CCLayer *parent){
+void Player::initScoreLabel(){
     CCPoint pos = this->currentTarget->getPosition();
     this->scoreLabel->setPosition(CCPoint(pos.x, this->currentTarget->boundingBox().getMaxY()+30));
     parent->addChild(scoreLabel);
@@ -58,14 +66,14 @@ void Player::initTerritory(CCRect screenBox) {
     }
 }
 
-void Player::spawnNewTarget(CCPoint position, CCLayer * layer) {
+void Player::spawnNewTarget(CCPoint position) {
     if(this->touchLock) return;
 
     if(this->currentTarget == NULL){
         this->currentTarget = new SquareTarget();
         this->currentTarget->initWithPlayer(this);
         this->currentTarget->setPosition(position);
-        layer->addChild(this->currentTarget);
+        parent->addChild(this->currentTarget);
         return;
     }
     
@@ -75,6 +83,8 @@ void Player::spawnNewTarget(CCPoint position, CCLayer * layer) {
             NULL
         )
     );
+    
+    this->scoreCounter->removePoint();
     
     float halfHeight = this->currentTarget->boundingBox().getMaxY() - this->currentTarget->boundingBox().getMidY();
     

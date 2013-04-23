@@ -15,27 +15,30 @@
 using namespace cocos2d;
 
 class SquareTarget;
+class ScoreCounter;
 
 class Player : public CCSprite {
     
 public:
     ccColor3B color;
     SquareTarget *currentTarget;
+    CCLayer *parent;
     CCLabelTTF *scoreLabel;
     bool touchLock;
+    ScoreCounter *scoreCounter;
     int checkpointCount, remainingCheckpoints;
     float baseScale;
     CCTouch *touch;
     CCRect territory;
     
     Player();
-    bool init(CCTouch *t, ccColor3B c);
-    void spawnNewTarget(CCPoint position, CCLayer * layer);
+    bool init(CCTouch *t, ccColor3B c, CCLayer *parent);
+    void spawnNewTarget(CCPoint position);
     void killOldTarget();
     void shrinkTarget();
     void growTarget();
     int getID();
-    void initScoreLabel(CCLayer *parent);
+    void initScoreLabel();
     void unlockTouch(CCNode *sender);
     void updateScoreText();
     void updatePosition(CCPoint glPosition);

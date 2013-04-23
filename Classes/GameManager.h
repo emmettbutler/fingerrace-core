@@ -15,6 +15,7 @@ using namespace cocos2d;
 
 class Player;
 class SquareTarget;
+class ScoreCounter;
 
 class GameManager
 {
@@ -33,6 +34,7 @@ public:
     long double getCurrentTimeSeconds();
     long double timeSinceLastStateChange();
     long double getElapsed();
+    CCLayer *baseLayer;
     int numPlayers, maxPlayers, goalCheckpoints, currentState;
     long double ttime, startTime, lastStateChangeTime;
     
@@ -40,6 +42,8 @@ public:
     
     std::list<ccColor3B> *allowedColors;
     std::list<ccColor3B> *usedColors;
+    std::list<CCPoint> *counterPositions;
+    std::list<CCPoint> *usedCounterPositions;
     
     enum kScreenState{
         kTitleState, kPreGameState, kInGameState, kGameOverState
@@ -47,6 +51,10 @@ public:
     
     ccColor3B getNextColor();
     void resetColors();
+    
+    CCPoint getNextScoreCounterPosition();
+    void resetCounterPositions();
+    void setupCounterPositions(CCLayer *b);
 };
 
 
