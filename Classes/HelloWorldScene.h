@@ -21,8 +21,10 @@ public:
     void setupTitleScreenTextOverlay();
     void setupTitleScreenFromEndgameScreen();
     void dismissTitleScreen();
+    void dismissEndgameScreen();
     void setupGameScreen();
     void setupEndgameScreen(Player *winner);
+    void setupEndgameScreenTextOverlay();
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
     Player *currentWinner();
@@ -30,7 +32,7 @@ public:
     std::list<CCSprite *> *titleSprites;
     
     int numQueuedPlayers;
-    CCLayer *titleLayer;
+    CCLayer *titleLayer, *endgameLayer;
     long double lastPlayerQueueTime, startTime, ttime;
 };
 

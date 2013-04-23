@@ -19,13 +19,21 @@ CCScene* HelloWorld::scene(){
 
 void HelloWorld::setupTitleScreenTextOverlay(){
     titleLayer = CCLayer::node();
-    CCLabelTTF *label = CCLabelTTF::labelWithString("Trundle", "Courier New", 80);
-    label->setRotation(-90);
+    CCLabelTTF *label = CCLabelTTF::labelWithString("Bump Map", "Courier New", 80);
+    //label->setRotation(-90);
     label->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY()));
     label->setColor(ccc3(0, 0, 0));
-    titleLayer->addChild(label, 11);
-    
+    titleLayer->addChild(label);
     this->addChild(titleLayer, 11);
+}
+
+void HelloWorld::setupEndgameScreenTextOverlay(){
+    endgameLayer = CCLayer::node();
+    CCLabelTTF *label = CCLabelTTF::labelWithString("You're win", "Courier New", 80);
+    label->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY()));
+    label->setColor(ccc3(0, 0, 0));
+    endgameLayer->addChild(label);
+    this->addChild(endgameLayer, 11);
 }
 
 void HelloWorld::setupTitleScreen(){
@@ -102,9 +110,15 @@ void HelloWorld::dismissTitleScreen(){
     }
 }
 
+void HelloWorld::dismissEndgameScreen(){
+    if(endgameLayer != NULL){
+        endgameLayer->removeFromParentAndCleanup(true);
+    }
+}
+
 void HelloWorld::setupEndgameScreen(Player *winner){
     printf("Game over screen\n");
-    float initTime = .5, waitTime = 1;
+    float initTime = .5;
     
     CCSprite *p1 = new CCSprite();
     p1->initWithFile("square.png");
@@ -118,6 +132,8 @@ void HelloWorld::setupEndgameScreen(Player *winner){
     
     p1->runAction(CCScaleTo::actionWithDuration(initTime, this->getContentSize().width/p1->getContentSize().width, this->getContentSize().height/p1->getContentSize().height));
     p1->runAction(CCMoveTo::actionWithDuration(initTime, CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY())));
+    
+    setupEndgameScreenTextOverlay();
 }
 
 bool HelloWorld::init(){
@@ -142,19 +158,9 @@ void HelloWorld::tick(float dt){
         std::list<Player *> *players = GameManager::sharedManager()->players;
         for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
             Player *p1 = *iter;
-            
-            if(p1->checkpointCount >= GameManager::sharedManager()->goalCheckpoints){
+            if(p1->checkpointCount > GameManager::sharedManager()->goalCheckpoints){
                 GameManager::sharedManager()->endGame();
                 setupEndgameScreen(p1);
-            }
-            
-            for(std::list<Player *>::iterator iter2 = players->begin(); iter2 != players->end(); ++iter2){
-                Player *p2 = *iter2;
-                if(p1 == p2) continue;
-                
-                if(CCRect::CCRectIntersectsRect(p1->currentTarget->boundingBox(), p2->currentTarget->boundingBox())){
-                    //this->resolveTargetCollision();
-                }
             }
         }
     } else if(GameManager::sharedManager()->titleScreenIsActive()){
@@ -170,6 +176,7 @@ void HelloWorld::tick(float dt){
     } else if(GameManager::sharedManager()->endgameScreenIsActive()){
         if(GameManager::sharedManager()->timeSinceLastStateChange() > 4){
             GameManager::sharedManager()->resetGameState();
+            dismissEndgameScreen();
             setupTitleScreenFromEndgameScreen();
             GameManager::sharedManager()->setTitleState();
             GameManager::sharedManager()->resetColors();
