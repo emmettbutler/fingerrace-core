@@ -38,6 +38,7 @@ public:
     int getID();
     void initScoreLabel(CCLayer *parent);
     void unlockTouch(CCNode *sender);
+    void updateScoreText();
     void updatePosition(CCPoint glPosition);
     void initTerritory(CCRect screenBox);
     

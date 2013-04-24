@@ -161,6 +161,8 @@ void HelloWorld::tick(float dt){
         std::list<Player *> *players = GameManager::sharedManager()->players;
         for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
             Player *p1 = *iter;
+            p1->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - p1->checkpointCount;
+            p1->updateScoreText();
             if(p1->checkpointCount > GameManager::sharedManager()->goalCheckpoints){
                 GameManager::sharedManager()->endGame();
                 setupEndgameScreen(p1);
@@ -282,7 +284,6 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                             p1->touchLock = true;
                             adjustTargetSize(p1);
                             p1->checkpointCount += 1;
-                            p1->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - p1->checkpointCount;
                         }
                     } else {
                         p1->touchLock = false;
@@ -316,6 +317,7 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                 Player *p1 = *iter;
                 if((CCTouch *)*it == p1->touch){
                     p1->touch = NULL;
+                    p1->checkpointCount--;
                     this->removeChild(p1, false);
                 }
             }
@@ -372,8 +374,7 @@ void HelloWorld::adjustTargetSize(Player *p){
     }
 }
 
-CCPoint HelloWorld::nextTargetPosition(Player *p) {
-
+CCPoint HelloWorld::nextTargetPosition(Player *p){
     float x, y;
     int targetSize = p->currentTarget->boundingBox().size.width;
 
