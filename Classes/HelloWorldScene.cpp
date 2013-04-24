@@ -4,6 +4,7 @@
 #import "Player.h"
 #import "SquareTarget.h"
 #import "GameManager.h"
+#import "ScoreCounter.h"
 
 #include <sys/timeb.h>
 
@@ -144,6 +145,8 @@ bool HelloWorld::init(){
     
     GameManager::sharedManager();
     
+    this->setContentSize(CCEGLView::sharedOpenGLView()->getFrameSize());
+    
     CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 0, false);
     this->setTouchEnabled(true);
     
@@ -163,15 +166,16 @@ void HelloWorld::tick(float dt){
             Player *p1 = *iter;
             p1->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - p1->checkpointCount;
             p1->updateScoreText();
-            if(p1->checkpointCount > GameManager::sharedManager()->goalCheckpoints){
+            if(p1->checkpointCount >= GameManager::sharedManager()->goalCheckpoints){
                 GameManager::sharedManager()->endGame();
                 setupEndgameScreen(p1);
             }
         }
     } else if(GameManager::sharedManager()->titleScreenIsActive()){
-        if(GameManager::sharedManager()->getCurrentTimeSeconds() - lastPlayerQueueTime > 2 &&
+        if(GameManager::sharedManager()->getCurrentTimeSeconds() - lastPlayerQueueTime > 1 &&
            numQueuedPlayers <= GameManager::sharedManager()->maxPlayers && numQueuedPlayers > 1){
             printf("Starting pregame\n");
+            GameManager::sharedManager()->setupCounterPositions(this);
             dismissTitleScreen();
             GameManager::sharedManager()->numPlayers = numQueuedPlayers;
             setupGameScreen();
@@ -184,7 +188,7 @@ void HelloWorld::tick(float dt){
             std::list<Player *> *players = GameManager::sharedManager()->players;
             for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
                 Player *p = *iter;
-                p->spawnNewTarget(nextTargetPosition(p), this);
+                p->spawnNewTarget(nextTargetPosition(p));
             }
             GameManager::sharedManager()->startGame();            
         }
@@ -195,6 +199,7 @@ void HelloWorld::tick(float dt){
             setupTitleScreenFromEndgameScreen();
             GameManager::sharedManager()->setTitleState();
             GameManager::sharedManager()->resetColors();
+            GameManager::sharedManager()->resetCounterPositions();
         }
     }
 }
@@ -212,11 +217,12 @@ void HelloWorld::setupGameScreen(){
             titleTouchPoints->pop_front();
         }
         Player *p = new Player();
-        p->init(tp, ts->getColor());
+        p->init(tp, ts->getColor(), this);
         p->initTerritory(this->boundingBox());
         p->touch = t;
-        p->spawnNewTarget(p->startingPoint, this);
-        p->initScoreLabel(this);
+        p->spawnNewTarget(p->startingPoint);
+        p->initScoreLabel();
+        
         this->addChild(p);
         GameManager::sharedManager()->players->push_back(p);
     }
@@ -227,7 +233,7 @@ void HelloWorld::resolveTargetCollision(){
     for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
         Player *p1 = *iter;
         printf("Resolving collision\n");
-        p1->spawnNewTarget(nextTargetPosition(p1), this);
+        p1->spawnNewTarget(nextTargetPosition(p1));
     }
 }
 
@@ -280,7 +286,7 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                     
                     if(CCRect::CCRectContainsPoint(p1->currentTarget->boundingBox(), touchLocation)){
                         if(!p1->touchLock){
-                            p1->spawnNewTarget(nextTargetPosition(p1), this);
+                            p1->spawnNewTarget(nextTargetPosition(p1));
                             p1->touchLock = true;
                             adjustTargetSize(p1);
                             p1->checkpointCount += 1;

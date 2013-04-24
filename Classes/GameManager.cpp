@@ -10,6 +10,7 @@
 
 #include "Player.h"
 #include "SquareTarget.h"
+#include "ScoreCounter.h"
 
 #include <sys/timeb.h>
 
@@ -46,12 +47,22 @@ void GameManager::init(){
     usedColors = new std::list<ccColor3B>();
 }
 
+void GameManager::setupCounterPositions(CCLayer *b){
+    baseLayer = b;
+    
+    counterPositions = new std::list<CCPoint>();
+    counterPositions->push_back(CCPoint(b->boundingBox().getMinX()+20, b->boundingBox().getMinY()-50));
+    counterPositions->push_back(CCPoint(b->boundingBox().getMinX()+620, b->boundingBox().getMinY()-620));
+    usedCounterPositions = new std::list<CCPoint>();
+}
+
 void GameManager::resetGameState(){
     std::list<Player *> *players = this->players;
     for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
         Player *p1 = *iter;
         p1->currentTarget->removeFromParentAndCleanup(true);
         p1->scoreLabel->removeFromParentAndCleanup(true);
+        p1->scoreCounter->removeFromParentAndCleanup(true);
         p1->removeFromParentAndCleanup(true);
     }
     this->players->clear();
@@ -78,6 +89,29 @@ ccColor3B GameManager::getNextColor(){
 
 void GameManager::resetColors(){
     usedColors->clear();
+}
+
+CCPoint GameManager::getNextScoreCounterPosition(){
+    CCPoint ret;
+    for(std::list<CCPoint>::iterator iter = counterPositions->begin(); iter != counterPositions->end(); ++iter){
+        ret = *iter;
+        bool found = false;
+        for(std::list<CCPoint>::iterator iter2 = usedCounterPositions->begin(); iter2 != usedCounterPositions->end(); ++iter2){
+            CCPoint test = *iter2;
+            if(ret.x == test.x && ret.y == test.y){
+                found = true;
+            }
+        }
+        if(!found){
+            usedCounterPositions->push_back(ret);
+            return ret;
+        }
+    }
+    return CCPoint(0, 0);
+}
+
+void GameManager::resetCounterPositions(){
+    usedCounterPositions->clear();
 }
 
 long double GameManager::getElapsed(){
