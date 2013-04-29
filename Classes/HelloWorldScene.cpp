@@ -45,6 +45,14 @@ void HelloWorld::setupEndgameScreenTextOverlay(){
     label->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY()));
     label->setColor(ccc3(0, 0, 0));
     endgameLayer->addChild(label);
+
+    char score [3];
+    sprintf(score, "%d-%d", GameManager::sharedManager()->winCounts->at(0), GameManager::sharedManager()->winCounts->at(1));
+    CCLabelTTF *scoreOne = CCLabelTTF::labelWithString(score, "Courier New", 80);
+    scoreOne->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY() - 100));
+    scoreOne->setColor(ccc3(0, 0, 0));
+    endgameLayer->addChild(scoreOne);
+
     this->addChild(endgameLayer, 11);
 }
 
@@ -82,6 +90,8 @@ void HelloWorld::setupTitleScreen(){
         printf("Detected large screen\n");
         GameManager::sharedManager()->maxPlayers = 4;
     }
+
+    GameManager::sharedManager()->initStats();
 }
 
 void HelloWorld::setupTitleScreenFromEndgameScreen(){
@@ -144,6 +154,9 @@ void HelloWorld::setupEndgameScreen(Player *winner){
     titleSprites->push_back(p1);
     
     GameManager::sharedManager()->usedColors->push_back(winner->color);
+
+    // increment win count stat for the winner
+    GameManager::sharedManager()->winCounts->at(winner->getID())++;
     
     p1->runAction(CCScaleTo::actionWithDuration(initTime, this->getContentSize().width/p1->getContentSize().width, this->getContentSize().height/p1->getContentSize().height));
     p1->runAction(CCMoveTo::actionWithDuration(initTime, CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY())));
