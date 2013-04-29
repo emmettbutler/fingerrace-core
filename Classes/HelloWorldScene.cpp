@@ -160,12 +160,82 @@ bool HelloWorld::init(){
     
     CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 0, false);
     this->setTouchEnabled(true);
+    this->kRenderTextureCount = 6;
+    this->currentRenderTextureIndex = 0;
+    
+    CCSize winSize = this->getContentSize();
+    renderTextures = CCArray::arrayWithCapacity(kRenderTextureCount);
+    renderTextures->retain();
+    
+    for (int i = 0; i < kRenderTextureCount; i++){
+        CCRenderTexture *rtx = CCRenderTexture::renderTextureWithWidthAndHeight((int)winSize.width, (int)winSize.height);
+
+        rtx->setPosition(CCPoint::CCPointMake(winSize.width / 2, winSize.height / 2));
+        
+        CCSprite* renderSprite = CCSprite::spriteWithTexture(rtx->getSprite()->getTexture());
+        renderSprite->setPosition(rtx->getPosition());
+        
+        this->addChild(renderSprite, 100 + i);
+        rtx->setUserData(renderSprite);
+        renderTextures->addObject(rtx);
+    }
     
     setupTitleScreen();
+    
+    printf("Finished init\n");
     
     this->schedule(schedule_selector(HelloWorld::tick), .0001);
     
     return true;
+}
+
+void HelloWorld::visit(){
+    //this->CCLayer::visit();
+    // render into next rendertexture
+    CCRenderTexture* rtx = (CCRenderTexture *)renderTextures->objectAtIndex(currentRenderTextureIndex);
+    rtx->beginWithClear(0, 0, 0, 0);
+    
+    CCObject* node;
+    CCARRAY_FOREACH(this->getChildren(), node){
+        if (((CCNode *)node)->getTag() == 10){
+            ((CCNode *)node)->visit();
+        }
+    }
+    
+    rtx->end();
+    
+    // reorder the render textures so that the
+    // most recently rendered texture is drawn last
+    this->selectNextRenderTexture();
+    int index = currentRenderTextureIndex;
+    for (int i = 0; i < kRenderTextureCount; i++){
+        CCRenderTexture* rtx = (CCRenderTexture*)renderTextures->objectAtIndex(currentRenderTextureIndex);
+        CCSprite* renderSprite = (CCSprite*)rtx->getUserData();
+        renderSprite->setOpacity((255.0f / kRenderTextureCount) * (i + 1));
+        renderSprite->setScaleY(-1);
+        this->reorderChild(renderSprite, 100+i);
+        this->selectNextRenderTexture();
+        
+        index++;
+        if (index >= kRenderTextureCount) {
+            index = 0;
+        }
+    }
+    
+    // draw any remaining nodes
+    CCARRAY_FOREACH(this->getChildren(), node){
+        if (((CCNode *)node)->getTag() != 10){
+            ((CCNode *)node)->visit();
+        }
+    }
+}
+
+void HelloWorld::selectNextRenderTexture(){
+	currentRenderTextureIndex++;
+	if (currentRenderTextureIndex >= kRenderTextureCount)
+	{
+		currentRenderTextureIndex = 0;
+	}
 }
 
 void HelloWorld::tick(float dt){

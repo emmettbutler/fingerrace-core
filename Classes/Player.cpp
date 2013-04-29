@@ -24,7 +24,7 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     this->touchLock = false;
     this->touchActive = true;
     this->checkpointCount = 0;
-    this->velocity = 10;
+    this->velocity = 4;
     this->startingPoint = p;
     this->baseScale = 4;
     this->activeColorScaleFactor = 1.8;  // must be greater than 1
@@ -73,6 +73,7 @@ void Player::spawnNewTarget(CCPoint position) {
         this->currentTarget = new SquareTarget();
         this->currentTarget->initWithPlayer(this);
         this->currentTarget->setPosition(position);
+        this->currentTarget->setTag(10);
         parent->addChild(this->currentTarget);
         return;
     }

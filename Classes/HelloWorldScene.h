@@ -17,6 +17,7 @@ public:
     virtual void ccTouchesEnded(CCSet *touches, CCEvent *event);
     virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
     void tick(float dt);
+    virtual void visit();
     void resolveTargetCollision();
     void setupTitleScreen();
     void setupTitleScreenTextOverlay();
@@ -26,6 +27,7 @@ public:
     void setupGameScreen();
     void setupEndgameScreen(Player *winner);
     void setupEndgameScreenTextOverlay();
+    void selectNextRenderTexture();
     CCPoint initialTargetPosition(Player *p);
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
@@ -33,9 +35,10 @@ public:
     int scoreTotal();
     std::list<CCSprite *> *titleSprites;
     std::list<CCPoint> *titleTouchPoints;
+    CCArray *renderTextures;
     
-    int numQueuedPlayers;
-    CCLayer *titleLayer, *endgameLayer;
+    int numQueuedPlayers, kRenderTextureCount, currentRenderTextureIndex;
+    CCLayer *titleLayer, *endgameLayer, *gameBackgroundLayer;
     long double lastPlayerQueueTime, ttime;
 };
 
