@@ -39,11 +39,12 @@ void GameManager::init(){
     startTime = getCurrentTimeSeconds();
     
     allowedColors = new std::list<ccColor3B>();
-    allowedColors->push_back(ccc3(255, 0, 0));
-    allowedColors->push_back(ccc3(0, 0, 255));
-    allowedColors->push_back(ccc3(0, 255, 0));
-    allowedColors->push_back(ccc3(255, 255, 0));
-    allowedColors->push_back(ccc3(255, 0, 255));
+    allowedColors->push_back(ccc3(214, 39, 40));
+    allowedColors->push_back(ccc3(31, 119, 180));
+    allowedColors->push_back(ccc3(44, 160, 44));
+    allowedColors->push_back(ccc3(255, 127, 14));
+    allowedColors->push_back(ccc3(148, 103, 189));
+    allowedColors->push_back(ccc3(227, 119, 194));
     usedColors = new std::list<ccColor3B>();
 }
 

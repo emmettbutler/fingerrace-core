@@ -14,7 +14,6 @@ using namespace cocos2d;
  * TODOs
  *
  * session stats (wins per player)
- * title screen instructions
  */
 
 CCScene* HelloWorld::scene(){
@@ -286,7 +285,9 @@ void HelloWorld::tick(float dt){
             dismissEndgameScreen();
             setupTitleScreenFromEndgameScreen();
             GameManager::sharedManager()->setTitleState();
-            GameManager::sharedManager()->resetColors();
+            if(GameManager::sharedManager()->usedColors->size() >= GameManager::sharedManager()->allowedColors->size()){
+                GameManager::sharedManager()->resetColors();
+            }
             GameManager::sharedManager()->resetCounterPositions();
         }
     }
@@ -430,8 +431,8 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
             for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
                 Player *p1 = *iter;
                 if((CCTouch *)*it == p1->touch){
-                    p1->touch = NULL;
                     this->removeChild(p1, false);
+                    p1->deactivateTouch();
                 }
             }
         }
