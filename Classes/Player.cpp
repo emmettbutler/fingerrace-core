@@ -23,6 +23,7 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     this->color = c;
     this->touchLock = false;
     this->checkpointCount = 0;
+    this->velocity = 8;
     this->startingPoint = p;
     this->baseScale = 4;
     this->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - this->checkpointCount;
@@ -74,9 +75,14 @@ void Player::spawnNewTarget(CCPoint position) {
         return;
     }
     
+    float dX = abs(this->currentTarget->getPosition().x - position.x);
+    float dY = abs(this->currentTarget->getPosition().y - position.y);
+    double distance = sqrt(dX*dX + dY*dY);
+    double timedelta = distance / (this->velocity*1000);
+    
     this->currentTarget->runAction(
         CCSequence::actions(
-            CCMoveTo::actionWithDuration(.05, position),
+            CCMoveTo::actionWithDuration(timedelta, position),
             NULL
         )
     );
@@ -87,7 +93,7 @@ void Player::spawnNewTarget(CCPoint position) {
     
     this->scoreLabel->runAction(
         CCSequence::actions(
-            CCMoveTo::actionWithDuration(.05, CCPoint(position.x, position.y+halfHeight+10)),
+            CCMoveTo::actionWithDuration(timedelta, CCPoint(position.x, position.y+halfHeight+10)),
             NULL
         )
     );

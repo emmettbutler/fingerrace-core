@@ -27,7 +27,7 @@ public:
     bool touchLock;
     ScoreCounter *scoreCounter;
     int checkpointCount, remainingCheckpoints;
-    float baseScale;
+    float baseScale, velocity;
     CCTouch *touch;
     CCRect territory;
     CCPoint startingPoint;

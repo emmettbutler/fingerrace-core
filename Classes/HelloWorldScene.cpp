@@ -10,6 +10,19 @@
 
 using namespace cocos2d;
 
+/*
+ * TODOs
+ *
+ * visual difference between locked and unlocked squares
+ * since players start locked, get them used to the locked version
+ * then have unlocked version look "wrong" somehow
+ *
+ * faster square movement
+ * definitely don't let squares spawn under the finger
+ * motion blur on fingers and/or squares
+ * session stats (wins per player)
+ * title screen instructions
+ */
 
 CCScene* HelloWorld::scene(){
     CCScene *scene = CCScene::create();
