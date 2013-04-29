@@ -23,7 +23,7 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     this->color = c;
     this->touchLock = false;
     this->checkpointCount = 0;
-    this->velocity = 8;
+    this->velocity = 10;
     this->startingPoint = p;
     this->baseScale = 4;
     this->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - this->checkpointCount;

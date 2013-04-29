@@ -17,7 +17,6 @@ using namespace cocos2d;
  * since players start locked, get them used to the locked version
  * then have unlocked version look "wrong" somehow
  *
- * faster square movement
  * definitely don't let squares spawn under the finger
  * motion blur on fingers and/or squares
  * session stats (wins per player)
@@ -396,23 +395,28 @@ void HelloWorld::adjustTargetSize(Player *p){
 CCPoint HelloWorld::nextTargetPosition(Player *p){
     float x, y;
     int targetSize = p->currentTarget->boundingBox().size.width;
-
-    if (p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.75) {
-        int territoryAddition = this->boundingBox().size.width / GameManager::sharedManager()->goalCheckpoints * 0.75 / 2;
-        p->territory.size.width += territoryAddition;
-
-        if (p->getID() == 1) {
-            p->territory.origin.x -= territoryAddition;
+    CCPoint *point = new CCPoint(p->getPosition().x, p->getPosition().y);
+    CCRect playerBounds = p->currentTarget->boundingBox();
+    
+    while((point->x == 0 && point->y == 0) || CCRect::CCRectContainsPoint(playerBounds, *point)){
+        printf("Retrying position after overlap\n");
+        if (p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.75) {
+            int territoryAddition = this->boundingBox().size.width / GameManager::sharedManager()->goalCheckpoints * 0.75 / 2;
+            p->territory.size.width += territoryAddition;
+            
+            if (p->getID() == 1) {
+                p->territory.origin.x -= territoryAddition;
+            }
+            
+            x = arc4random() % ((int)p->territory.size.width - targetSize) + p->territory.getMinX() + targetSize / 2;
+            y = arc4random() % ((int)p->territory.size.height - targetSize) + targetSize / 2;
+        } else {
+            x = arc4random() % ((int)this->boundingBox().size.width - targetSize) + targetSize / 2;
+            y = arc4random() % ((int)this->boundingBox().size.height - targetSize) + targetSize / 2;
         }
-
-        x = arc4random() % ((int)p->territory.size.width - targetSize) + p->territory.getMinX() + targetSize / 2;
-        y = arc4random() % ((int)p->territory.size.height - targetSize) + targetSize / 2;
-    } else {
-        x = arc4random() % ((int)this->boundingBox().size.width - targetSize) + targetSize / 2;
-        y = arc4random() % ((int)this->boundingBox().size.height - targetSize) + targetSize / 2;
+        point->setPoint(x, y);
     }
-
-    return *new CCPoint(x, y);
+    return *point;
 }
 
 int HelloWorld::scoreTotal() {
