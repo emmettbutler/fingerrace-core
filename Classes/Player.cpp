@@ -22,10 +22,12 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     this->parent = parent;
     this->color = c;
     this->touchLock = false;
+    this->touchActive = true;
     this->checkpointCount = 0;
     this->velocity = 10;
     this->startingPoint = p;
     this->baseScale = 4;
+    this->activeColorScaleFactor = 1.8;  // must be greater than 1
     this->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - this->checkpointCount;
     
     this->scoreLabel = CCLabelTTF::labelWithString("10", "Courier New", 70);
@@ -125,6 +127,25 @@ void Player::growTarget(){
             )
         );
     }
+}
+
+void Player::activateTouch(CCTouch *touch){
+    this->touch = touch;
+    ccColor3B newColor = this->currentTarget->getColor();
+    newColor.r *= activeColorScaleFactor;
+    newColor.g *= activeColorScaleFactor;
+    newColor.b *= activeColorScaleFactor;
+    this->currentTarget->setColor(newColor);
+}
+
+void Player::deactivateTouch(){
+    this->touch = NULL;
+    this->checkpointCount--;
+    ccColor3B newColor = this->currentTarget->getColor();
+    newColor.r /= activeColorScaleFactor;
+    newColor.g /= activeColorScaleFactor;
+    newColor.b /= activeColorScaleFactor;
+    this->currentTarget->setColor(newColor);
 }
 
 void Player::updatePosition(CCPoint glPosition) {

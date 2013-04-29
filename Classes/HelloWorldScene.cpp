@@ -17,7 +17,6 @@ using namespace cocos2d;
  * since players start locked, get them used to the locked version
  * then have unlocked version look "wrong" somehow
  *
- * definitely don't let squares spawn under the finger
  * motion blur on fingers and/or squares
  * session stats (wins per player)
  * title screen instructions
@@ -261,7 +260,7 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                 Player *p1 = *iter;
                 
                 if(p1->touch == NULL && CCRect::CCRectContainsPoint(p1->currentTarget->boundingBox(), touchLocation)){
-                    p1->touch = (CCTouch *)*it;
+                    p1->activateTouch((CCTouch *)*it);
                     p1->updatePosition(touchLocation);
                     this->addChild(p1);
                 }
@@ -334,9 +333,8 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
             for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
                 Player *p1 = *iter;
                 if((CCTouch *)*it == p1->touch){
-                    p1->touch = NULL;
-                    p1->checkpointCount--;
                     this->removeChild(p1, false);
+                    p1->deactivateTouch();
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){

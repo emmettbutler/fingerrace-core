@@ -24,7 +24,7 @@ public:
     SquareTarget *currentTarget;
     CCLayer *parent;
     CCLabelTTF *scoreLabel;
-    bool touchLock;
+    bool touchLock, touchActive;
     ScoreCounter *scoreCounter;
     int checkpointCount, remainingCheckpoints;
     float baseScale, velocity;
@@ -38,6 +38,8 @@ public:
     void killOldTarget();
     void shrinkTarget();
     void growTarget();
+    void activateTouch(CCTouch *touch);
+    void deactivateTouch();
     int getID();
     void initScoreLabel();
     void unlockTouch(CCNode *sender);
@@ -47,6 +49,7 @@ public:
     
 private:
     int _identifier;
+    float activeColorScaleFactor;
 };
 
 #endif /* defined(__CocosTest__Player__) */
