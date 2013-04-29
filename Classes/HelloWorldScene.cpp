@@ -13,11 +13,6 @@ using namespace cocos2d;
 /*
  * TODOs
  *
- * visual difference between locked and unlocked squares
- * since players start locked, get them used to the locked version
- * then have unlocked version look "wrong" somehow
- *
- * motion blur on fingers and/or squares
  * session stats (wins per player)
  * title screen instructions
  */
@@ -32,10 +27,22 @@ CCScene* HelloWorld::scene(){
 void HelloWorld::setupTitleScreenTextOverlay(){
     titleLayer = CCLayer::node();
     CCLabelTTF *label = CCLabelTTF::labelWithString("Bump Map", "Courier New", 80);
-    //label->setRotation(-90);
     label->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY()));
     label->setColor(ccc3(0, 0, 0));
     titleLayer->addChild(label);
+    
+    CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p2 hold here", "Courier New", 50);
+    instructionLabel1->setPosition(CCPoint(this->boundingBox().getMaxX() - 30, this->boundingBox().getMidY()));
+    instructionLabel1->setColor(ccc3(0, 0, 0));
+    instructionLabel1->setRotation(-90);
+    titleLayer->addChild(instructionLabel1);
+    
+    CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p1 hold here", "Courier New", 50);
+    instructionLabel2->setPosition(CCPoint(this->boundingBox().getMinX() + 30, this->boundingBox().getMidY()));
+    instructionLabel2->setColor(ccc3(0, 0, 0));
+    instructionLabel2->setRotation(90);
+    titleLayer->addChild(instructionLabel2);
+    
     this->addChild(titleLayer, 11);
 }
 

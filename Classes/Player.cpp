@@ -32,6 +32,7 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     
     this->scoreLabel = CCLabelTTF::labelWithString("10", "Courier New", 70);
     this->scoreLabel->setColor(this->color);
+    this->scoreLabel->setOpacity(0);
     
     ScoreCounter *sc = new ScoreCounter();
     sc->init(GameManager::sharedManager()->goalCheckpoints, this->color, this);
