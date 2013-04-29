@@ -398,8 +398,8 @@ CCPoint HelloWorld::nextTargetPosition(Player *p){
     
     while((point->x == 0 && point->y == 0) || CCRect::CCRectContainsPoint(playerBounds, *point)){
         printf("Retrying position after overlap\n");
-        if (p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.75) {
-            int territoryAddition = this->boundingBox().size.width / GameManager::sharedManager()->goalCheckpoints * 0.75 / 2;
+        if (p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.4) {
+            int territoryAddition = this->boundingBox().size.width / GameManager::sharedManager()->goalCheckpoints * 0.4 / 2;
             p->territory.size.width += territoryAddition;
             
             if (p->getID() == 1) {
