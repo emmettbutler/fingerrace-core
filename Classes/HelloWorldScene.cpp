@@ -103,7 +103,28 @@ void HelloWorld::setupTitleScreen(){
         setupTitleScreenTextOverlay(p1->getColor(), p2->getColor());
     } else if(screenDimensions.width > 960 && screenDimensions.height > 640){
         printf("Detected large screen\n");
-        GameManager::sharedManager()->maxPlayers = 4;
+        GameManager::sharedManager()->maxPlayers = 2;
+        GameManager::sharedManager()->numPlayers = 2;
+
+        CCSprite *p1 = new CCSprite();
+        p1->initWithFile("square.png");
+        p1->setPosition(CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY()));
+        p1->setScaleX(this->getContentSize().width/p1->getContentSize().width/2);
+        p1->setScaleY(this->getContentSize().height/p1->getContentSize().height);
+        p1->setColor(GameManager::sharedManager()->getNextColor());
+        this->addChild(p1, 10);
+        titleSprites->push_back(p1);
+
+        CCSprite *p2 = new CCSprite();
+        p2->initWithFile("square.png");
+        p2->setPosition(CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY()));
+        p2->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
+        p2->setScaleY(this->getContentSize().height/p2->getContentSize().height);
+        p2->setColor(GameManager::sharedManager()->getNextColor());
+        this->addChild(p2, 10);
+        titleSprites->push_back(p2);
+
+        setupTitleScreenTextOverlay(p1->getColor(), p2->getColor());
     }
 
     GameManager::sharedManager()->initStats();
