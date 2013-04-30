@@ -30,7 +30,7 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     this->activeColorScaleFactor = 1.8;  // must be greater than 1
     this->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - this->checkpointCount;
     
-    this->scoreLabel = CCLabelTTF::labelWithString("10", "Roboto-Condensed.ttf", 70);
+    this->scoreLabel = CCLabelTTF::labelWithString("10", ROBOTO_FONT, 70);
     this->scoreLabel->setColor(this->color);
     this->scoreLabel->setOpacity(0);
     

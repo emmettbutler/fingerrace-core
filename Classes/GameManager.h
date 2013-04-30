@@ -13,6 +13,12 @@
 #include "cocos2d.h"
 using namespace cocos2d;
 
+#ifdef TARGET_OS_IPHONE
+#define ROBOTO_FONT "Roboto-Condensed"
+#else
+#define ROBOTO_FONT ROBOTO_FONT
+#endif
+
 class Player;
 class SquareTarget;
 class ScoreCounter;

@@ -20,25 +20,25 @@ CCScene* HelloWorld::scene(){
 
 void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Color){
     titleLayer = CCLayer::node();
-    CCLabelTTF *label = CCLabelTTF::labelWithString("BUMP", "Roboto-Condensed.ttf", 100);
+    CCLabelTTF *label = CCLabelTTF::labelWithString("BUMP", ROBOTO_FONT, 100);
     label->setRotation(-90);
     label->setPosition(CCPoint(this->boundingBox().getMidX() - 63, this->boundingBox().getMinY() + 135));
     label->setColor(p1Color);
     titleLayer->addChild(label);
 
-    CCLabelTTF *subLabel = CCLabelTTF::labelWithString("BUMP", "Roboto-Condensed.ttf", 100);
+    CCLabelTTF *subLabel = CCLabelTTF::labelWithString("MAP", ROBOTO_FONT, 100);
     subLabel->setRotation(-90);
     subLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMinY() + 135));
     subLabel->setColor(p2Color);
     titleLayer->addChild(subLabel);
     
-    CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p1 hold here", "Roboto-Condensed.ttf", 50);
+    CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p1 hold here", ROBOTO_FONT, 50);
     instructionLabel1->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY()));
     instructionLabel1->setColor(p2Color);
     instructionLabel1->setRotation(-90);
     titleLayer->addChild(instructionLabel1);
     
-    CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p2 hold here", "Roboto-Condensed.ttf", 50);
+    CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p2 hold here", ROBOTO_FONT, 50);
     instructionLabel2->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY()));
     instructionLabel2->setColor(p1Color);
     instructionLabel2->setRotation(90);
@@ -49,14 +49,14 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
 
 void HelloWorld::setupEndgameScreenTextOverlay(){
     endgameLayer = CCLayer::node();
-    CCLabelTTF *label = CCLabelTTF::labelWithString("You're win", "Roboto-Condensed.ttf", 80);
+    CCLabelTTF *label = CCLabelTTF::labelWithString("You're win", ROBOTO_FONT, 80);
     label->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY()));
     label->setColor(ccc3(0, 0, 0));
     endgameLayer->addChild(label);
 
     char score [3];
     sprintf(score, "%d-%d", GameManager::sharedManager()->winCounts->at(0), GameManager::sharedManager()->winCounts->at(1));
-    CCLabelTTF *scoreOne = CCLabelTTF::labelWithString(score, "Roboto-Condensed.ttf", 80);
+    CCLabelTTF *scoreOne = CCLabelTTF::labelWithString(score, ROBOTO_FONT, 80);
     scoreOne->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY() - 100));
     scoreOne->setColor(ccc3(0, 0, 0));
     endgameLayer->addChild(scoreOne);
