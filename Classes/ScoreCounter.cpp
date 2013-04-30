@@ -36,7 +36,7 @@ bool ScoreCounter::init(int goalCheckpoints, ccColor3B c, Player *p){
     }
     this->currentPointSpriteIndex = numPoints - 1;
     
-    this->setContentSize(CCSize(300, 80));
+    this->setContentSize(CCSize(345, 46));
     
     return true;
 }
