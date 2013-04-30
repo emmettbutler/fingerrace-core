@@ -20,10 +20,17 @@ CCScene* HelloWorld::scene(){
 
 void HelloWorld::setupTitleScreenTextOverlay(){
     titleLayer = CCLayer::node();
-    CCLabelTTF *label = CCLabelTTF::labelWithString("Bump Map", "Roboto-Condensed.ttf", 80);
-    label->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY()));
+    CCLabelTTF *label = CCLabelTTF::labelWithString("BUMP", "Roboto-Condensed.ttf", 100);
+    label->setRotation(-90);
+    label->setPosition(CCPoint(this->boundingBox().getMidX() - 63, this->boundingBox().getMinY() + 135));
     label->setColor(ccc3(0, 0, 0));
     titleLayer->addChild(label);
+
+    CCLabelTTF *subLabel = CCLabelTTF::labelWithString("BUMP", "Roboto-Condensed.ttf", 100);
+    subLabel->setRotation(-90);
+    subLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMinY() + 135));
+    subLabel->setColor(ccc3(0, 0, 0));
+    titleLayer->addChild(subLabel);
     
     CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p2 hold here", "Roboto-Condensed.ttf", 50);
     instructionLabel1->setPosition(CCPoint(this->boundingBox().getMaxX() - 30, this->boundingBox().getMidY()));
