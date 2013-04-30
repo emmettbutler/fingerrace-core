@@ -26,7 +26,7 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     this->checkpointCount = 0;
     this->velocity = 4;
     this->startingPoint = p;
-    this->baseScale = 4;
+    this->baseScale = 1.0;
     this->activeColorScaleFactor = 1.8;  // must be greater than 1
     this->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - this->checkpointCount;
     
