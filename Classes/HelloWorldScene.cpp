@@ -425,7 +425,7 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                             p1->spawnNewTarget(nextTargetPosition(p1));
                             p1->touchLock = true;
                             adjustTargetSize(p1);
-                            p1->checkpointCount += 1;
+                            p1->gainPoint();
                         }
                     } else {
                         p1->touchLock = false;
@@ -460,6 +460,7 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                 if((CCTouch *)*it == p1->touch){
                     this->removeChild(p1, false);
                     p1->deactivateTouch();
+                    p1->losePoint();
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
@@ -480,6 +481,7 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                 if((CCTouch *)*it == p1->touch){
                     this->removeChild(p1, false);
                     p1->deactivateTouch();
+                    p1->losePoint();
                 }
             }
         }

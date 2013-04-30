@@ -27,7 +27,7 @@ public:
     bool touchLock, touchActive;
     ScoreCounter *scoreCounter;
     int checkpointCount, remainingCheckpoints;
-    float baseScale, velocity;
+    float baseScale, velocity, opacityDelta;
     CCTouch *touch;
     CCRect territory;
     CCPoint startingPoint;
@@ -38,6 +38,8 @@ public:
     void killOldTarget();
     void shrinkTarget();
     void growTarget();
+    void gainPoint();
+    void losePoint();
     void activateTouch(CCTouch *touch);
     void deactivateTouch();
     int getID();

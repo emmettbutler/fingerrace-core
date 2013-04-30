@@ -27,6 +27,7 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     this->velocity = 4;
     this->startingPoint = p;
     this->baseScale = 4;
+    this->opacityDelta = .05;
     this->activeColorScaleFactor = 1.8;  // must be greater than 1
     this->remainingCheckpoints = GameManager::sharedManager()->goalCheckpoints - this->checkpointCount;
     
@@ -40,8 +41,9 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     parent->addChild(sc);
     this->scoreCounter = sc;
 
-    this->initWithFile("circle.png");
-    this->setScale(3);
+    this->initWithFile("circle_blur.png");
+    this->setScale(1.5);
+    this->setOpacity(255*.2);
     this->setColor(this->color);
 
     return true;
@@ -113,7 +115,7 @@ void Player::shrinkTarget(){
     if(this->currentTarget->getScale() > this->baseScale*.5){
         this->currentTarget->runAction(
             CCSequence::actions(
-                CCScaleBy::actionWithDuration(.5, .9),
+                CCScaleBy::actionWithDuration(.5, .8),
                 NULL
             )
         );
@@ -131,6 +133,22 @@ void Player::growTarget(){
     }
 }
 
+void Player::gainPoint(){
+    this->checkpointCount++;
+    float op = this->getOpacity()+255*this->opacityDelta;
+    if(op <= 255){
+        this->setOpacity(op);
+    }
+}
+
+void Player::losePoint(){
+    this->checkpointCount--;
+    float op = this->getOpacity()-255*this->opacityDelta;
+    if(op >= .2){
+        this->setOpacity(op);
+    }
+}
+
 void Player::activateTouch(CCTouch *touch){
     this->touch = touch;
     ccColor3B newColor = this->currentTarget->getColor();
@@ -142,7 +160,6 @@ void Player::activateTouch(CCTouch *touch){
 
 void Player::deactivateTouch(){
     this->touch = NULL;
-    this->checkpointCount--;
     ccColor3B newColor = this->currentTarget->getColor();
     newColor.r /= activeColorScaleFactor;
     newColor.g /= activeColorScaleFactor;
