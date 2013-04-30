@@ -28,7 +28,7 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
 
     CCLabelTTF *subLabel = CCLabelTTF::labelWithString("MAP", ROBOTO_FONT, 100);
     subLabel->setRotation(-90);
-    subLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMinY() + 135));
+    subLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMinY() + 115));
     subLabel->setColor(p2Color);
     titleLayer->addChild(subLabel);
     
@@ -43,6 +43,18 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
     instructionLabel2->setColor(p1Color);
     instructionLabel2->setRotation(90);
     titleLayer->addChild(instructionLabel2);
+    
+    tutButton = CCSprite::spriteWithFile("square.png");
+    tutButton->setScale(1.8);
+    tutButton->setColor(p2Color);
+    tutButton->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMinY() + 500));
+    titleLayer->addChild(tutButton);
+    
+    CCLabelTTF *tutLabel = CCLabelTTF::labelWithString("?", ROBOTO_FONT, 70);
+    tutLabel->setRotation(90);
+    tutLabel->setColor(p1Color);
+    tutLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMinY() + 500));
+    titleLayer->addChild(tutLabel);
     
     this->addChild(titleLayer, 11);
 }
@@ -392,6 +404,10 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
+            if(CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
+                GameManager::sharedManager()->tutorialActive = true;
+                printf("tutorial activated\n");
+            }
             for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
                 CCSprite *sp = *iter;
                 if(sp->getUserData() == NULL && CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){

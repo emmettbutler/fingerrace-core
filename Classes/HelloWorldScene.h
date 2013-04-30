@@ -32,6 +32,7 @@ public:
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
     Player *currentWinner();
+    CCSprite *tutButton;
     int scoreTotal();
     std::list<CCSprite *> *titleSprites;
     std::list<CCPoint> *titleTouchPoints;
