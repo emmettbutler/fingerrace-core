@@ -73,6 +73,7 @@ void GameManager::resetGameState(){
         Player *p1 = *iter;
         p1->currentTarget->removeFromParentAndCleanup(true);
         p1->scoreLabel->removeFromParentAndCleanup(true);
+        p1->shineSprite->removeFromParentAndCleanup(true);
         p1->scoreCounter->removeFromParentAndCleanup(true);
         p1->removeFromParentAndCleanup(true);
     }

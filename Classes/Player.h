@@ -22,6 +22,7 @@ class Player : public CCSprite {
 public:
     ccColor3B color;
     SquareTarget *currentTarget;
+    CCSprite *shineSprite;
     CCLayer *parent;
     CCLabelTTF *scoreLabel;
     bool touchLock, touchActive;
