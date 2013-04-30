@@ -13,25 +13,28 @@ bool ScoreCounter::init(int goalCheckpoints, ccColor3B c, Player *p){
     if(!CCLayer::init()){ return false; }
     
     this->player = p;
-    this->pointSprites = new std::list<CCSprite *>();
+    this->pointSprites = CCArray::array();
+    this->pointSprites->retain();
     
     int rowLength = 15;
     
     for(int i = 0; i <= (int)((double)goalCheckpoints/(double)rowLength); i++){
         for(int j = 0; j < rowLength; j++){
-            if(numPoints <= goalCheckpoints){
+            CCSprite *sp = CCSprite::spriteWithFile("square.png");
+            sp->setColor(c);
+            sp->setScale(.5);
+            sp->setPosition(CCPoint(this->boundingBox().getMinX()+((sp->getContentSize().width*sp->getScaleX()+3)*j),
+                                    this->boundingBox().getMaxY()+((sp->getContentSize().height*sp->getScaleY()+3)*i)));
+            if(numPoints > goalCheckpoints){
+                sp->setOpacity(0);
+            } else {
                 numPoints++;
-                
-                CCSprite *sp = CCSprite::spriteWithFile("square.png");
-                sp->setColor(c);
-                sp->setScale(.5);
-                sp->setPosition(CCPoint(this->boundingBox().getMinX()+((sp->getContentSize().width*sp->getScaleX()+3)*j),
-                                        this->boundingBox().getMaxY()+((sp->getContentSize().height*sp->getScaleY()+3)*i)));
-                this->addChild(sp);
-                pointSprites->push_back(sp);
             }
+            this->addChild(sp);
+            pointSprites->addObject(sp);
         }
     }
+    this->currentPointSpriteIndex = numPoints - 1;
     
     this->setContentSize(CCSize(300, 80));
     
@@ -41,14 +44,21 @@ bool ScoreCounter::init(int goalCheckpoints, ccColor3B c, Player *p){
 void ScoreCounter::removePoint(){
     if(numPoints < player->remainingCheckpoints) return;
     
-    CCSprite *sp = this->pointSprites->back();
+    CCSprite *sp = (CCSprite *)this->pointSprites->objectAtIndex(currentPointSpriteIndex);
     if(sp != NULL){
         sp->setOpacity(0);
     }
     numPoints--;
-    this->pointSprites->pop_back();
+    currentPointSpriteIndex--;
 }
 
 void ScoreCounter::addPoint(){
+    if(numPoints > player->remainingCheckpoints || currentPointSpriteIndex+1 > pointSprites->count()-1) return;
     
+    CCSprite *sp = (CCSprite *)this->pointSprites->objectAtIndex(currentPointSpriteIndex+1);
+    if(sp != NULL){
+        sp->setOpacity(255);
+    }
+    numPoints++;
+    currentPointSpriteIndex++;
 }

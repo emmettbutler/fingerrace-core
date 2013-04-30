@@ -148,6 +148,8 @@ void Player::deactivateTouch(){
     newColor.g /= activeColorScaleFactor;
     newColor.b /= activeColorScaleFactor;
     this->currentTarget->setColor(newColor);
+    
+    this->scoreCounter->addPoint();
 }
 
 void Player::updatePosition(CCPoint glPosition) {
