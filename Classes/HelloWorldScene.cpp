@@ -386,6 +386,7 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                         p1->updatePosition(touchLocation);
                         this->addChild(p1);
                         p1->spawnNewTarget(nextTargetPosition(p1));
+                        break;
                     }
                 }
             }
