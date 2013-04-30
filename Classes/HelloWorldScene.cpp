@@ -500,17 +500,16 @@ Player *HelloWorld::currentWinner(){
 void HelloWorld::adjustTargetSize(Player *p){
     // called when this player's score just increased
     if(p->checkpointCount == currentWinner()->checkpointCount){
-        // loop over all other players and shrink them
+        p->shrinkTarget();
+    } else {
         std::list<Player *> *players = GameManager::sharedManager()->players;
         for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
             Player *p1 = *iter;
             if(p1 != p){
-                p1->shrinkTarget();
+                // grow this player
+                p1->growTarget();
             }
         }
-    } else {
-        // grow this player
-        p->growTarget();
     }
 }
 
