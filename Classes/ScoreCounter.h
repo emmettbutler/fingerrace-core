@@ -18,9 +18,9 @@ class ScoreCounter : public CCLayer
 {
 public:
     Player *player;
-    int numPoints;
+    int numPoints, currentPointSpriteIndex;
     CCSprite *current;
-    std::list<CCSprite *> *pointSprites;
+    CCArray *pointSprites;
     
     bool init(int goalCheckpoints, ccColor3B c, Player *p);
     void removePoint();

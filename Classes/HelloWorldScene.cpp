@@ -10,11 +10,6 @@
 
 using namespace cocos2d;
 
-/*
- * TODOs
- *
- * session stats (wins per player)
- */
 
 CCScene* HelloWorld::scene(){
     CCScene *scene = CCScene::create();
@@ -350,10 +345,13 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
             for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
                 Player *p1 = *iter;
                 
-                if(p1->touch == NULL && CCRect::CCRectContainsPoint(p1->currentTarget->boundingBox(), touchLocation)){
-                    p1->activateTouch((CCTouch *)*it);
-                    p1->updatePosition(touchLocation);
-                    this->addChild(p1);
+                if(CCRect::CCRectContainsPoint(p1->currentTarget->boundingBox(), touchLocation)){
+                    if(p1->touch == NULL){
+                        p1->activateTouch((CCTouch *)*it);
+                        p1->updatePosition(touchLocation);
+                        this->addChild(p1);
+                        p1->spawnNewTarget(nextTargetPosition(p1));
+                    }
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
