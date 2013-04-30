@@ -407,15 +407,16 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
             if(CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
                 GameManager::sharedManager()->tutorialActive = true;
                 printf("tutorial activated\n");
-            }
-            for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
-                CCSprite *sp = *iter;
-                if(sp->getUserData() == NULL && CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){
-                    if(numQueuedPlayers < GameManager::sharedManager()->maxPlayers){
-                        printf("gained queued player\n");
-                        sp->setUserData(touch);  // use userdata as a lightweight "touched" indicator
-                        numQueuedPlayers++;
-                        lastPlayerQueueTime = GameManager::sharedManager()->getCurrentTimeSeconds();
+            } else {
+                for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
+                    CCSprite *sp = *iter;
+                    if(sp->getUserData() == NULL && CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){
+                        if(numQueuedPlayers < GameManager::sharedManager()->maxPlayers){
+                            printf("gained queued player\n");
+                            sp->setUserData(touch);  // use userdata as a lightweight "touched" indicator
+                            numQueuedPlayers++;
+                            lastPlayerQueueTime = GameManager::sharedManager()->getCurrentTimeSeconds();
+                        }
                     }
                 }
             }
