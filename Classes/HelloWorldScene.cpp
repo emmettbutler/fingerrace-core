@@ -48,18 +48,25 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
 }
 
 void HelloWorld::setupEndgameScreenTextOverlay(){
-    endgameLayer = CCLayer::node();
-    CCLabelTTF *label = CCLabelTTF::labelWithString("You're win", ROBOTO_FONT, 80);
-    label->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY()));
-    label->setColor(ccc3(0, 0, 0));
-    endgameLayer->addChild(label);
 
-    char score [3];
-    sprintf(score, "%d-%d", GameManager::sharedManager()->winCounts->at(0), GameManager::sharedManager()->winCounts->at(1));
-    CCLabelTTF *scoreOne = CCLabelTTF::labelWithString(score, ROBOTO_FONT, 80);
-    scoreOne->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY() - 100));
-    scoreOne->setColor(ccc3(0, 0, 0));
-    endgameLayer->addChild(scoreOne);
+    ccColor3B statColor = GameManager::sharedManager()->getNextColor();
+    endgameLayer = CCLayer::node();
+
+    char p1Score [1];
+    sprintf(p1Score, "%d", GameManager::sharedManager()->winCounts->at(0));
+    CCLabelTTF *p1ScoreLabel = CCLabelTTF::labelWithString(p1Score, ROBOTO_FONT, 200);
+    p1ScoreLabel->setPosition(CCPoint(this->boundingBox().getMidX() - 300, this->boundingBox().getMidY()));
+    p1ScoreLabel->setRotation(90);
+    p1ScoreLabel->setColor(statColor);
+    endgameLayer->addChild(p1ScoreLabel);
+
+    char p2Score [1];
+    sprintf(p2Score, "%d", GameManager::sharedManager()->winCounts->at(1));
+    CCLabelTTF *p2ScoreLabel = CCLabelTTF::labelWithString(p2Score, ROBOTO_FONT, 200);
+    p2ScoreLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 300, this->boundingBox().getMidY()));
+    p2ScoreLabel->setRotation(-90);
+    p2ScoreLabel->setColor(statColor);
+    endgameLayer->addChild(p2ScoreLabel);
 
     this->addChild(endgameLayer, 11);
 }
