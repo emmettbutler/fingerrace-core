@@ -386,6 +386,7 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                         p1->updatePosition(touchLocation);
                         this->addChild(p1);
                         p1->spawnNewTarget(nextTargetPosition(p1));
+                        break;
                     }
                 }
             }
@@ -424,7 +425,7 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                             p1->spawnNewTarget(nextTargetPosition(p1));
                             p1->touchLock = true;
                             adjustTargetSize(p1);
-                            p1->checkpointCount += 1;
+                            p1->gainPoint();
                         }
                     } else {
                         p1->touchLock = false;
@@ -459,6 +460,7 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                 if((CCTouch *)*it == p1->touch){
                     this->removeChild(p1, false);
                     p1->deactivateTouch();
+                    p1->losePoint();
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
@@ -479,6 +481,7 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                 if((CCTouch *)*it == p1->touch){
                     this->removeChild(p1, false);
                     p1->deactivateTouch();
+                    p1->losePoint();
                 }
             }
         }
@@ -500,17 +503,16 @@ Player *HelloWorld::currentWinner(){
 void HelloWorld::adjustTargetSize(Player *p){
     // called when this player's score just increased
     if(p->checkpointCount == currentWinner()->checkpointCount){
-        // loop over all other players and shrink them
+        p->shrinkTarget();
+    } else {
         std::list<Player *> *players = GameManager::sharedManager()->players;
         for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
             Player *p1 = *iter;
             if(p1 != p){
-                p1->shrinkTarget();
+                // grow this player
+                p1->growTarget();
             }
         }
-    } else {
-        // grow this player
-        p->growTarget();
     }
 }
 
