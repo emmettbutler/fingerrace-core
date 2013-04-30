@@ -18,29 +18,29 @@ CCScene* HelloWorld::scene(){
     return scene;
 }
 
-void HelloWorld::setupTitleScreenTextOverlay(){
+void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Color){
     titleLayer = CCLayer::node();
     CCLabelTTF *label = CCLabelTTF::labelWithString("BUMP", "Roboto-Condensed.ttf", 100);
     label->setRotation(-90);
     label->setPosition(CCPoint(this->boundingBox().getMidX() - 63, this->boundingBox().getMinY() + 135));
-    label->setColor(ccc3(0, 0, 0));
+    label->setColor(p1Color);
     titleLayer->addChild(label);
 
     CCLabelTTF *subLabel = CCLabelTTF::labelWithString("BUMP", "Roboto-Condensed.ttf", 100);
     subLabel->setRotation(-90);
     subLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMinY() + 135));
-    subLabel->setColor(ccc3(0, 0, 0));
+    subLabel->setColor(p2Color);
     titleLayer->addChild(subLabel);
     
-    CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p2 hold here", "Roboto-Condensed.ttf", 50);
-    instructionLabel1->setPosition(CCPoint(this->boundingBox().getMaxX() - 30, this->boundingBox().getMidY()));
-    instructionLabel1->setColor(ccc3(0, 0, 0));
+    CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p1 hold here", "Roboto-Condensed.ttf", 50);
+    instructionLabel1->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY()));
+    instructionLabel1->setColor(p2Color);
     instructionLabel1->setRotation(-90);
     titleLayer->addChild(instructionLabel1);
     
-    CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p1 hold here", "Roboto-Condensed.ttf", 50);
-    instructionLabel2->setPosition(CCPoint(this->boundingBox().getMinX() + 30, this->boundingBox().getMidY()));
-    instructionLabel2->setColor(ccc3(0, 0, 0));
+    CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p2 hold here", "Roboto-Condensed.ttf", 50);
+    instructionLabel2->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY()));
+    instructionLabel2->setColor(p1Color);
     instructionLabel2->setRotation(90);
     titleLayer->addChild(instructionLabel2);
     
@@ -93,7 +93,7 @@ void HelloWorld::setupTitleScreen(){
         this->addChild(p2, 10);
         titleSprites->push_back(p2);
         
-        setupTitleScreenTextOverlay();
+        setupTitleScreenTextOverlay(p1->getColor(), p2->getColor());
     } else if(screenDimensions.width > 960 && screenDimensions.height > 640){
         printf("Detected large screen\n");
         GameManager::sharedManager()->maxPlayers = 4;
@@ -124,7 +124,7 @@ void HelloWorld::setupTitleScreenFromEndgameScreen(){
     p2->runAction(CCSequence::actions(
                                       CCMoveTo::actionWithDuration(.5, CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY())),
                                       NULL));
-    setupTitleScreenTextOverlay();
+    setupTitleScreenTextOverlay(p1->getColor(), p2->getColor());
 }
 
 void HelloWorld::dismissTitleScreen(){

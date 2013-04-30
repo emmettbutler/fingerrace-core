@@ -20,7 +20,7 @@ public:
     virtual void visit();
     void resolveTargetCollision();
     void setupTitleScreen();
-    void setupTitleScreenTextOverlay();
+    void setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Color);
     void setupTitleScreenFromEndgameScreen();
     void dismissTitleScreen();
     void dismissEndgameScreen();
