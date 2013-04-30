@@ -44,7 +44,7 @@ public:
     std::list<ccColor3B> *usedColors;
     std::list<CCPoint> *counterPositions;
     std::list<CCPoint> *usedCounterPositions;
-    
+
     enum kScreenState{
         kTitleState, kPreGameState, kInGameState, kGameOverState
     };
@@ -55,6 +55,9 @@ public:
     CCPoint getNextScoreCounterPosition();
     void resetCounterPositions();
     void setupCounterPositions(CCLayer *b);
+
+    void initStats();
+    std::vector<int> *winCounts;
 };
 
 

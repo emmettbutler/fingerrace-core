@@ -158,3 +158,7 @@ void GameManager::setTitleState(){
 long double GameManager::timeSinceLastStateChange(){
     return getCurrentTimeSeconds() - lastStateChangeTime;
 }
+
+void GameManager::initStats() {
+    winCounts = new std::vector<int>(maxPlayers, 0);
+}
