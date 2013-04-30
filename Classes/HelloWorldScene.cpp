@@ -156,7 +156,7 @@ void HelloWorld::setupTitleScreenFromEndgameScreen(){
 }
 
 void HelloWorld::dismissTitleScreen(){
-    float animationDuration = 1;
+    float animationDuration = .4;
     if(titleLayer != NULL){
         titleLayer->removeFromParentAndCleanup(true);
     }
@@ -313,7 +313,7 @@ void HelloWorld::tick(float dt){
             numQueuedPlayers = 0;
         }
     } else if(GameManager::sharedManager()->pregameIsActive()){
-        if (GameManager::sharedManager()->timeSinceLastStateChange() > 1.25){
+        if (GameManager::sharedManager()->timeSinceLastStateChange() > .5){
             printf("Starting game\n");
             std::list<Player *> *players = GameManager::sharedManager()->players;
             for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
@@ -385,6 +385,7 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                         p1->activateTouch((CCTouch *)*it);
                         p1->updatePosition(touchLocation);
                         this->addChild(p1);
+                        this->addChild(p1->shineSprite);
                         p1->spawnNewTarget(nextTargetPosition(p1));
                         break;
                     }
@@ -459,6 +460,7 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                 Player *p1 = *iter;
                 if((CCTouch *)*it == p1->touch){
                     this->removeChild(p1, false);
+                    this->removeChild(p1->shineSprite, false);
                     p1->deactivateTouch();
                     p1->losePoint();
                 }
@@ -480,6 +482,7 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                 Player *p1 = *iter;
                 if((CCTouch *)*it == p1->touch){
                     this->removeChild(p1, false);
+                    this->removeChild(p1->shineSprite, false);
                     p1->deactivateTouch();
                     p1->losePoint();
                 }

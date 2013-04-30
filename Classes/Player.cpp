@@ -40,9 +40,16 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     sc->setPosition(GameManager::sharedManager()->getNextScoreCounterPosition());
     parent->addChild(sc);
     this->scoreCounter = sc;
+    
+    this->shineSprite = CCSprite::spriteWithFile("circle_blur.png");
+    this->shineSprite->setColor(ccc3(255, 255, 255));
+    this->shineSprite->setScale(1);
+    this->shineSprite->setOpacity(255*.05);
+    this->shineSprite->retain();
+    parent->addChild(this->shineSprite);
 
     this->initWithFile("circle_blur.png");
-    this->setScale(1.5);
+    this->setScale(1.1);
     this->setOpacity(255*.2);
     this->setColor(this->color);
 
@@ -139,6 +146,10 @@ void Player::gainPoint(){
     if(op <= 255){
         this->setOpacity(op);
     }
+    op = this->shineSprite->getOpacity()+255*.3*this->opacityDelta;
+    if(op <= 255){
+        this->shineSprite->setOpacity(op);
+    }
 }
 
 void Player::losePoint(){
@@ -146,6 +157,10 @@ void Player::losePoint(){
     float op = this->getOpacity()-255*this->opacityDelta;
     if(op >= .2){
         this->setOpacity(op);
+    }
+    op = this->shineSprite->getOpacity()-255*.3*this->opacityDelta;
+    if(op >= .2){
+        this->shineSprite->setOpacity(op);
     }
 }
 
@@ -172,6 +187,7 @@ void Player::deactivateTouch(){
 void Player::updatePosition(CCPoint glPosition) {
     if (this->touch != NULL) {
         this->setPosition(glPosition);
+        this->shineSprite->setPosition(glPosition);
     }
 }
 
