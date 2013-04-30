@@ -189,7 +189,7 @@ bool HelloWorld::init(){
     for (int i = 0; i < kRenderTextureCount; i++){
         CCRenderTexture *rtx = CCRenderTexture::renderTextureWithWidthAndHeight((int)winSize.width, (int)winSize.height);
 
-        rtx->setPosition(CCPoint::CCPointMake(winSize.width / 2, winSize.height / 2));
+        rtx->setPosition(CCPointMake(winSize.width / 2, winSize.height / 2));
         
         CCSprite* renderSprite = CCSprite::spriteWithTexture(rtx->getSprite()->getTexture());
         renderSprite->setPosition(rtx->getPosition());
