@@ -50,13 +50,36 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
     tutButton->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
     titleLayer->addChild(tutButton);
     
-    CCLabelTTF *tutLabel = CCLabelTTF::labelWithString("?", ROBOTO_FONT, 70);
-    tutLabel->setRotation(90);
-    tutLabel->setColor(p1Color);
-    tutLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
-    titleLayer->addChild(tutLabel);
+    tutQLabel = CCLabelTTF::labelWithString("?", ROBOTO_FONT, 70);
+    tutQLabel->setRotation(90);
+    tutQLabel->setColor(p1Color);
+    tutQLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
+    titleLayer->addChild(tutQLabel);
+    
+    tutELabel = CCLabelTTF::labelWithString("!", ROBOTO_FONT, 70);
+    tutELabel->setRotation(90);
+    tutELabel->setColor(p1Color);
+    tutELabel->setOpacity(0);
+    tutELabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
+    titleLayer->addChild(tutELabel);
     
     this->addChild(titleLayer, 11);
+}
+
+void HelloWorld::animateTutButtonActivation(){
+    tutQLabel->runAction(CCSequence::actions(CCRotateTo::actionWithDuration(.3, -90), NULL));
+    tutQLabel->runAction(CCSequence::actions(CCFadeTo::actionWithDuration(.3, 0), NULL));
+    
+    tutELabel->runAction(CCSequence::actions(CCRotateTo::actionWithDuration(.3, -90), NULL));
+    tutELabel->runAction(CCSequence::actions(CCFadeTo::actionWithDuration(.3, 255), NULL));
+}
+
+void HelloWorld::animateTutButtonDeactivation(){
+    tutQLabel->runAction(CCSequence::actions(CCRotateTo::actionWithDuration(.3, 90), NULL));
+    tutQLabel->runAction(CCSequence::actions(CCFadeTo::actionWithDuration(.3, 255), NULL));
+    
+    tutELabel->runAction(CCSequence::actions(CCRotateTo::actionWithDuration(.3, 90), NULL));
+    tutELabel->runAction(CCSequence::actions(CCFadeTo::actionWithDuration(.3, 0), NULL));
 }
 
 void HelloWorld::setupEndgameScreenTextOverlay(){
@@ -441,8 +464,15 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
             if(CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
-                GameManager::sharedManager()->tutorialActive = true;
-                printf("tutorial activated\n");
+                if(GameManager::sharedManager()->tutorialActive == false){
+                    GameManager::sharedManager()->tutorialActive = true;
+                    printf("tutorial activated\n");
+                    animateTutButtonActivation();
+                } else {
+                    GameManager::sharedManager()->tutorialActive = false;
+                    printf("tutorial deactivated\n");
+                    animateTutButtonDeactivation();
+                }
             } else {
                 for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
                     CCSprite *sp = *iter;
