@@ -41,7 +41,7 @@ public:
     long double timeSinceLastStateChange();
     long double getElapsed();
     CCLayer *baseLayer;
-    int numPlayers, maxPlayers, goalCheckpoints, currentState;
+    int numPlayers, maxPlayers, goalCheckpoints, currentState, matchPoints;
     long double ttime, startTime, lastStateChangeTime;
     bool tutorialActive;
     

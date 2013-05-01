@@ -35,6 +35,7 @@ void GameManager::init(){
     players = new std::list<Player *>();
     currentState = kTitleState;
     goalCheckpoints = 20;
+    matchPoints = 3;
     
     startTime = getCurrentTimeSeconds();
     

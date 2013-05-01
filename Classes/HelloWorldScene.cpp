@@ -206,6 +206,9 @@ void HelloWorld::setupEndgameScreen(Player *winner){
     GameManager::sharedManager()->usedColors->push_back(winner->color);
 
     // increment win count stat for the winner
+    if(GameManager::sharedManager()->winCounts->at(winner->getID()) == GameManager::sharedManager()->matchPoints){
+        GameManager::sharedManager()->initStats();
+    }
     GameManager::sharedManager()->winCounts->at(winner->getID())++;
     
     p1->runAction(CCFadeIn::actionWithDuration(initTime));
