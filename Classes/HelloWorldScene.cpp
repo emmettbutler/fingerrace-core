@@ -93,6 +93,7 @@ void HelloWorld::setupEndgameScreenTextOverlay(){
     p1ScoreLabel->setPosition(CCPoint(this->boundingBox().getMidX() - 300, this->boundingBox().getMidY()));
     p1ScoreLabel->setRotation(90);
     p1ScoreLabel->setColor(statColor);
+    p1ScoreLabel->setOpacity(0);
     endgameLayer->addChild(p1ScoreLabel);
 
     char p2Score [1];
@@ -101,7 +102,11 @@ void HelloWorld::setupEndgameScreenTextOverlay(){
     p2ScoreLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 300, this->boundingBox().getMidY()));
     p2ScoreLabel->setRotation(-90);
     p2ScoreLabel->setColor(statColor);
+    p2ScoreLabel->setOpacity(0);
     endgameLayer->addChild(p2ScoreLabel);
+
+    p1ScoreLabel->runAction(CCFadeIn::actionWithDuration(1.0));
+    p2ScoreLabel->runAction(CCFadeIn::actionWithDuration(1.0));
 
     this->addChild(endgameLayer, 11);
 }
@@ -214,7 +219,7 @@ void HelloWorld::dismissEndgameScreen(){
 
 void HelloWorld::setupEndgameScreen(Player *winner){
     printf("Game over screen\n");
-    float initTime = 1;
+    float initTime = 0.5;
     
     CCSprite *p1 = new CCSprite();
     p1->initWithFile("square.png");
