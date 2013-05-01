@@ -43,6 +43,7 @@ public:
     CCLayer *baseLayer;
     int numPlayers, maxPlayers, goalCheckpoints, currentState;
     long double ttime, startTime, lastStateChangeTime;
+    bool tutorialActive;
     
     void resetGameState();
     

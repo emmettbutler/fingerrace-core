@@ -26,12 +26,15 @@ public:
     void dismissEndgameScreen();
     void setupGameScreen();
     void setupEndgameScreen(Player *winner);
+    void iterateBackground(bool lots);
     void setupEndgameScreenTextOverlay();
     void selectNextRenderTexture();
+    void RemoveChildSeq(CCNode* pObj);
     CCPoint initialTargetPosition(Player *p);
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
     Player *currentWinner();
+    CCSprite *tutButton;
     int scoreTotal();
     std::list<CCSprite *> *titleSprites;
     std::list<CCPoint> *titleTouchPoints;

@@ -78,6 +78,7 @@ void GameManager::resetGameState(){
         p1->removeFromParentAndCleanup(true);
     }
     this->players->clear();
+    this->tutorialActive = false;
 }
 
 ccColor3B GameManager::getNextColor(){
