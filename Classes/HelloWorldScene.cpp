@@ -338,8 +338,6 @@ bool HelloWorld::init(){
 }
 
 void HelloWorld::visit(){
-    //this->CCLayer::visit();
-    // render into next rendertexture
     CCRenderTexture* rtx = (CCRenderTexture *)renderTextures->objectAtIndex(currentRenderTextureIndex);
     rtx->beginWithClear(0, 0, 0, 0);
     
@@ -400,6 +398,9 @@ void HelloWorld::tick(float dt){
                 setupEndgameScreen(p1);
             }
         }
+        if(GameManager::sharedManager()->tutorialActive && currentWinner()->checkpointCount > GameManager::sharedManager()->goalCheckpoints - 5){
+            tutMessage->setString("Faster!!");
+        }
     } else if(GameManager::sharedManager()->titleScreenIsActive()){
         if(GameManager::sharedManager()->getCurrentTimeSeconds() - lastPlayerQueueTime > 1 &&
            numQueuedPlayers <= GameManager::sharedManager()->maxPlayers && numQueuedPlayers > 1){
@@ -419,7 +420,16 @@ void HelloWorld::tick(float dt){
                 Player *p = *iter;
                 p->spawnNewTarget(nextTargetPosition(p));
             }
-            GameManager::sharedManager()->startGame();            
+            GameManager::sharedManager()->startGame();
+            
+            if(GameManager::sharedManager()->tutorialActive){
+                tutMessage->runAction(CCSequence::actions(
+                                                          CCDelayTime::actionWithDuration(2),
+                                                          CCFadeTo::actionWithDuration(.3, 255),
+                                                          //CCDelayTime::actionWithDuration(5),
+                                                          //CCFadeTo::actionWithDuration(.3, 0),
+                                      NULL));
+            }
         }
     } else if(GameManager::sharedManager()->endgameScreenIsActive()){
         iterateBackground(true);
@@ -433,10 +443,22 @@ void HelloWorld::tick(float dt){
             }
             GameManager::sharedManager()->resetCounterPositions();
         }
+        if(GameManager::sharedManager()->tutorialActive){
+            tutMessage->setOpacity(0);
+            GameManager::sharedManager()->tutorialActive = false;
+            tut_touchHasRestarted = false;
+            tut_touchHasEnded = false;
+        }
     }
 }
 
 void HelloWorld::setupGameScreen(){
+    if(GameManager::sharedManager()->tutorialActive){
+        tutMessage = CCLabelTTF::labelWithString("Slide to your color", ROBOTO_FONT, 70);
+        tutMessage->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMinY() + 180));
+        tutMessage->setOpacity(0);
+        this->addChild(tutMessage);
+    }
     for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
         CCTouch *t = NULL;
         CCPoint tp;
@@ -488,6 +510,12 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                         this->addChild(p1);
                         this->addChild(p1->shineSprite);
                         p1->spawnNewTarget(nextTargetPosition(p1));
+                        
+                        if(GameManager::sharedManager()->tutorialActive && tut_touchHasEnded){
+                            tut_touchHasEnded = false;
+                            tutMessage->setString("Keep your finger on the screen");
+                        }
+                        
                         break;
                     }
                 }
@@ -576,6 +604,11 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                     this->removeChild(p1->shineSprite, false);
                     p1->deactivateTouch();
                     p1->losePoint();
+                    
+                    if(GameManager::sharedManager()->tutorialActive && !tut_touchHasEnded){
+                        tut_touchHasEnded = true;
+                        tutMessage->setString("Hold your color to continue");
+                    }
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){

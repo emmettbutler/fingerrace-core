@@ -36,12 +36,14 @@ public:
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
     Player *currentWinner();
-    CCSprite *tutButton;
-    CCLabelTTF *tutQLabel, *tutELabel, *tutNotify;
     int scoreTotal();
+    
+    CCSprite *tutButton;
+    CCLabelTTF *tutQLabel, *tutELabel, *tutNotify, *tutMessage;
     std::list<CCSprite *> *titleSprites;
     std::list<CCPoint> *titleTouchPoints;
     CCArray *renderTextures;
+    bool tut_touchHasEnded, tut_touchHasRestarted;
     
     int numQueuedPlayers, kRenderTextureCount, currentRenderTextureIndex;
     CCLayer *titleLayer, *endgameLayer, *gameBackgroundLayer;
