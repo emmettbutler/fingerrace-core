@@ -191,7 +191,7 @@ void HelloWorld::dismissEndgameScreen(){
 
 void HelloWorld::setupEndgameScreen(Player *winner){
     printf("Game over screen\n");
-    float initTime = 2;
+    float initTime = 1;
     
     CCSprite *p1 = new CCSprite();
     p1->initWithFile("square.png");
@@ -217,7 +217,7 @@ void HelloWorld::RemoveChildSeq(CCNode* pObj){
 }
 
 void HelloWorld::iterateBackground(bool lots){
-    int limit = 2;
+    int limit = 1 + currentWinner()->checkpointCount;
     if(lots){
         limit = 20;
     }
