@@ -37,7 +37,7 @@ public:
     void adjustTargetSize(Player *p);
     Player *currentWinner();
     CCSprite *tutButton;
-    CCLabelTTF *tutQLabel, *tutELabel;
+    CCLabelTTF *tutQLabel, *tutELabel, *tutNotify;
     int scoreTotal();
     std::list<CCSprite *> *titleSprites;
     std::list<CCPoint> *titleTouchPoints;
