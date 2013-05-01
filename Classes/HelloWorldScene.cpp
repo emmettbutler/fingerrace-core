@@ -45,23 +45,30 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
     titleLayer->addChild(instructionLabel2);
     
     tutButton = CCSprite::spriteWithFile("square.png");
-    tutButton->setScale(1.8);
+    tutButton->setScale(2);
     tutButton->setColor(p2Color);
     tutButton->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
     titleLayer->addChild(tutButton);
     
-    tutQLabel = CCLabelTTF::labelWithString("?", ROBOTO_FONT, 70);
+    tutQLabel = CCLabelTTF::labelWithString("?", ROBOTO_FONT, 80);
     tutQLabel->setRotation(90);
     tutQLabel->setColor(p1Color);
     tutQLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
     titleLayer->addChild(tutQLabel);
     
-    tutELabel = CCLabelTTF::labelWithString("!", ROBOTO_FONT, 70);
+    tutELabel = CCLabelTTF::labelWithString("!", ROBOTO_FONT, 80);
     tutELabel->setRotation(90);
     tutELabel->setColor(p1Color);
     tutELabel->setOpacity(0);
     tutELabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
     titleLayer->addChild(tutELabel);
+    
+    tutNotify = CCLabelTTF::labelWithString("Tutorial ON", ROBOTO_FONT, 40);
+    tutNotify->setPosition(CCPoint(tutButton->getPosition().x, tutButton->getPosition().y - 150));
+    tutNotify->setRotation(90);
+    tutNotify->setColor(p2Color);
+    tutNotify->setOpacity(0);
+    titleLayer->addChild(tutNotify);
     
     this->addChild(titleLayer, 11);
 }
@@ -72,6 +79,14 @@ void HelloWorld::animateTutButtonActivation(){
     
     tutELabel->runAction(CCSequence::actions(CCRotateTo::actionWithDuration(.3, -90), NULL));
     tutELabel->runAction(CCSequence::actions(CCFadeTo::actionWithDuration(.3, 255), NULL));
+    
+    tutNotify->setString("Tutorial ON");
+    tutNotify->runAction(
+                 CCSequence::actions(
+                                     CCFadeTo::actionWithDuration(.2, 255),
+                                     CCFadeTo::actionWithDuration(1, 0),
+                 NULL)
+    );
 }
 
 void HelloWorld::animateTutButtonDeactivation(){
@@ -80,6 +95,14 @@ void HelloWorld::animateTutButtonDeactivation(){
     
     tutELabel->runAction(CCSequence::actions(CCRotateTo::actionWithDuration(.3, 90), NULL));
     tutELabel->runAction(CCSequence::actions(CCFadeTo::actionWithDuration(.3, 0), NULL));
+    
+    tutNotify->setString("Tutorial OFF");
+    tutNotify->runAction(
+                         CCSequence::actions(
+                                             CCFadeTo::actionWithDuration(.2, 255),
+                                             CCFadeTo::actionWithDuration(1, 0),
+                                             NULL)
+                         );
 }
 
 void HelloWorld::setupEndgameScreenTextOverlay(){
@@ -249,6 +272,9 @@ void HelloWorld::RemoveChildSeq(CCNode* pObj){
 
 void HelloWorld::iterateBackground(bool lots){
     int limit = 1 + currentWinner()->checkpointCount;
+    if(limit == 0){
+        limit = 1;
+    }
     if(lots){
         limit = 20;
     }
@@ -354,8 +380,7 @@ void HelloWorld::visit(){
 
 void HelloWorld::selectNextRenderTexture(){
 	currentRenderTextureIndex++;
-	if (currentRenderTextureIndex >= kRenderTextureCount)
-	{
+	if (currentRenderTextureIndex >= kRenderTextureCount){
 		currentRenderTextureIndex = 0;
 	}
 }
