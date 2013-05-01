@@ -351,6 +351,7 @@ void HelloWorld::setupGameScreen(){
         Player *p = new Player();
         p->init(tp, ts->getColor(), this);
         p->initTerritory(this->boundingBox());
+        p->initScoreCounter();
         p->touch = t;
         p->spawnNewTarget(p->startingPoint);
         p->initScoreLabel();

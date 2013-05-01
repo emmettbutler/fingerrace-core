@@ -35,12 +35,6 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     this->scoreLabel->setColor(this->color);
     this->scoreLabel->setOpacity(0);
     
-    ScoreCounter *sc = new ScoreCounter();
-    sc->init(GameManager::sharedManager()->goalCheckpoints, this->color, this);
-    sc->setPosition(GameManager::sharedManager()->getNextScoreCounterPosition());
-    parent->addChild(sc);
-    this->scoreCounter = sc;
-    
     this->shineSprite = CCSprite::spriteWithFile("circle_blur.png");
     this->shineSprite->setColor(ccc3(255, 255, 255));
     this->shineSprite->setScale(1);
@@ -74,6 +68,23 @@ void Player::initTerritory(CCRect screenBox) {
         territory.origin.x = screenBox.origin.x / 2 + screenBox.size.width / 2;
         this->_identifier = 1;
     }
+}
+
+void Player::initScoreCounter() {
+    ScoreCounter *sc = new ScoreCounter();
+    sc->init(GameManager::sharedManager()->goalCheckpoints, this->color, this);
+    sc->setPosition(GameManager::sharedManager()->getNextScoreCounterPosition());
+
+    if (this->_identifier == 0) {
+        sc->setScaleY(-1.0);
+    } else if (this->_identifier == 1) {
+        sc->setScaleX(-1.0);
+    } else {
+        // 3+ PLAYER STUFF
+    }
+
+    parent->addChild(sc);
+    this->scoreCounter = sc;
 }
 
 void Player::spawnNewTarget(CCPoint position) {

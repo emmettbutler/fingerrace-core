@@ -62,8 +62,8 @@ void GameManager::setupCounterPositions(CCLayer *b){
     baseLayer = b;
     
     counterPositions = new std::list<CCPoint>();
-    counterPositions->push_back(CCPoint(b->boundingBox().getMaxX()-350, -b->boundingBox().getMaxY()+15));
-    counterPositions->push_back(CCPoint(b->boundingBox().getMinX()+15, b->boundingBox().getMinY()-40));
+    counterPositions->push_back(CCPoint(b->boundingBox().getMaxX() - 366, b->boundingBox().getMinY()));
+    counterPositions->push_back(CCPoint(b->boundingBox().getMinX() + 20, b->boundingBox().getMaxY() - 13));
     usedCounterPositions = new std::list<CCPoint>();
 }
 

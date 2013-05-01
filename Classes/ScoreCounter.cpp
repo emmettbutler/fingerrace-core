@@ -11,7 +11,8 @@
 
 bool ScoreCounter::init(int goalCheckpoints, ccColor3B c, Player *p){
     if(!CCLayer::init()){ return false; }
-    
+
+    this->setContentSize(CCSize(345, 46));
     this->player = p;
     this->pointSprites = CCArray::array();
     this->pointSprites->retain();
@@ -35,8 +36,6 @@ bool ScoreCounter::init(int goalCheckpoints, ccColor3B c, Player *p){
         }
     }
     this->currentPointSpriteIndex = numPoints - 1;
-    
-    this->setContentSize(CCSize(345, 46));
     
     return true;
 }

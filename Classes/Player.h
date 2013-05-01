@@ -49,6 +49,7 @@ public:
     void updateScoreText();
     void updatePosition(CCPoint glPosition);
     void initTerritory(CCRect screenBox);
+    void initScoreCounter();
     
 private:
     int _identifier;
