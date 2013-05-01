@@ -47,13 +47,13 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
     tutButton = CCSprite::spriteWithFile("square.png");
     tutButton->setScale(1.8);
     tutButton->setColor(p2Color);
-    tutButton->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMinY() + 500));
+    tutButton->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
     titleLayer->addChild(tutButton);
     
     CCLabelTTF *tutLabel = CCLabelTTF::labelWithString("?", ROBOTO_FONT, 70);
     tutLabel->setRotation(90);
     tutLabel->setColor(p1Color);
-    tutLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMinY() + 500));
+    tutLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
     titleLayer->addChild(tutLabel);
     
     this->addChild(titleLayer, 11);
