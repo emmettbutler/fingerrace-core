@@ -399,6 +399,7 @@ void HelloWorld::tick(float dt){
             }
             if(GameManager::sharedManager()->tutorialActive && currentWinner()->checkpointCount > GameManager::sharedManager()->goalCheckpoints - 5){
                 p1->tutMessage->setString("Faster!!");
+                p1->tutColorMessage->setVisible(false);
             }
         }
     } else if(GameManager::sharedManager()->titleScreenIsActive()){
@@ -423,9 +424,12 @@ void HelloWorld::tick(float dt){
                     p->tutMessage->runAction(CCSequence::actions(
                                                               CCDelayTime::actionWithDuration(2),
                                                               CCFadeTo::actionWithDuration(.3, 255),
-                                                              //CCDelayTime::actionWithDuration(5),
-                                                              //CCFadeTo::actionWithDuration(.3, 0),
                                                               NULL));
+                    
+                    p->tutColorMessage->runAction(CCSequence::actions(
+                                                                 CCDelayTime::actionWithDuration(2),
+                                                                 CCFadeTo::actionWithDuration(.3, 255),
+                                                                 NULL));
                 }
             }
             GameManager::sharedManager()->startGame();
@@ -444,8 +448,12 @@ void HelloWorld::tick(float dt){
         }
         if(GameManager::sharedManager()->tutorialActive){
             GameManager::sharedManager()->tutorialActive = false;
-            tut_touchHasRestarted = false;
-            tut_touchHasEnded = false;
+            std::list<Player *> *players = GameManager::sharedManager()->players;
+            for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
+                Player *p1 = *iter;
+                p1->tutMessage->setVisible(false);
+                p1->tutColorMessage->setVisible(false);
+            }
         }
     }
 }
@@ -471,16 +479,25 @@ void HelloWorld::setupGameScreen(){
         p->initScoreLabel();
         
         if(GameManager::sharedManager()->tutorialActive){
-            p->tutMessage = CCLabelTTF::labelWithString("Slide to your color", ROBOTO_FONT, 40);
+            int sep = 75;
+            p->tutMessage = CCLabelTTF::labelWithString("Slide to", ROBOTO_FONT, 40);
+            p->tutColorMessage = CCLabelTTF::labelWithString("your color", ROBOTO_FONT, 40);
+            p->tutColorMessage->setColor(p->color);
             if(tp.x > this->boundingBox().getMidX()){
-                p->tutMessage->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY()));
+                p->tutMessage->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY() - sep));
                 p->tutMessage->setRotation(-90);
+                p->tutColorMessage->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY() + sep));
+                p->tutColorMessage->setRotation(-90);
             } else {
-                p->tutMessage->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY()));
+                p->tutMessage->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY() + sep));
                 p->tutMessage->setRotation(90);
+                p->tutColorMessage->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY() - sep));
+                p->tutColorMessage->setRotation(90);
             }
             p->tutMessage->setOpacity(0);
+            p->tutColorMessage->setOpacity(0);
             this->addChild(p->tutMessage);
+            this->addChild(p->tutColorMessage);
         }
         
         this->addChild(p);
@@ -516,9 +533,10 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                         this->addChild(p1->shineSprite);
                         p1->spawnNewTarget(nextTargetPosition(p1));
                         
-                        if(GameManager::sharedManager()->tutorialActive && tut_touchHasEnded){
-                            tut_touchHasEnded = false;
+                        if(GameManager::sharedManager()->tutorialActive && p1->tut_touchHasEnded){
+                            p1->tut_touchHasEnded = false;
                             p1->tutMessage->setString("Keep your finger on the screen");
+                            p1->tutColorMessage->setVisible(false);
                         }
                         
                         break;
@@ -584,9 +602,11 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                 CCSprite *sp = *iter;
                 if(CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation) && (CCTouch *)sp->getUserData() != touch){
                     sp->setUserData(NULL);
-                    if(numQueuedPlayers > 0){
-                        printf("lost queued player\n");
-                        numQueuedPlayers--;
+                    if(!CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
+                        if(numQueuedPlayers > 0){
+                            printf("lost queued player\n");
+                            numQueuedPlayers--;
+                        }
                     }
                 }
             }
@@ -610,9 +630,19 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                     p1->deactivateTouch();
                     p1->losePoint();
                     
-                    if(GameManager::sharedManager()->tutorialActive && !tut_touchHasEnded){
-                        tut_touchHasEnded = true;
-                        p1->tutMessage->setString("Hold your color to continue");
+                    if(GameManager::sharedManager()->tutorialActive && !p1->tut_touchHasEnded){
+                        p1->tut_touchHasEnded = true;
+                        p1->tutMessage->setString("Hold                    to continue");
+                        p1->tutColorMessage->setString("your color");
+                        float sep = 52;
+                        if(p1->tutMessage->getPosition().x > this->boundingBox().getMidX()){
+                            p1->tutMessage->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY()));
+                            p1->tutColorMessage->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY() - sep));
+                        } else {
+                            p1->tutMessage->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY()));
+                            p1->tutColorMessage->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY() + sep));
+                        }
+                        p1->tutColorMessage->setVisible(true);
                     }
                 }
             }
@@ -677,7 +707,7 @@ CCPoint HelloWorld::nextTargetPosition(Player *p){
     CCRect playerBounds = p->currentTarget->boundingBox();
     
     while((point->x == 0 && point->y == 0) || CCRect::CCRectContainsPoint(playerBounds, *point)){
-        printf("Retrying position after overlap\n");
+        //printf("Retrying position after overlap\n");
         if (p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.4) {
             int territoryAddition = this->boundingBox().size.width / GameManager::sharedManager()->goalCheckpoints * 0.4 / 2;
             p->territory.size.width += territoryAddition;

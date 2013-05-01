@@ -41,15 +41,6 @@ void GameManager::init(){
     
     allowedColors = new std::list<ccColor3B>();
 
-    // ORIGINAL COLORS
-    // allowedColors->push_back(ccc3(214, 39, 40));
-    // allowedColors->push_back(ccc3(31, 119, 180));
-    // allowedColors->push_back(ccc3(44, 160, 44));
-    // allowedColors->push_back(ccc3(255, 127, 14));
-    // allowedColors->push_back(ccc3(148, 103, 189));
-    // allowedColors->push_back(ccc3(227, 119, 194));
-
-    // KINDA DULL COLORS
     allowedColors->push_back(ccc3(196, 77, 88));
     allowedColors->push_back(ccc3(78, 205, 196));
     allowedColors->push_back(ccc3(199, 244, 100));
@@ -77,8 +68,13 @@ void GameManager::resetGameState(){
         p1->scoreLabel->removeFromParentAndCleanup(true);
         p1->shineSprite->removeFromParentAndCleanup(true);
         p1->scoreCounter->removeFromParentAndCleanup(true);
-        if(tutorialActive){
-            p1->tutMessage->removeFromParentAndCleanup(true);
+        if(this->tutorialActive){
+            if(p1->tutMessage != NULL){
+                p1->tutMessage->removeFromParentAndCleanup(true);
+            }
+            if(p1->tutColorMessage != NULL){
+                p1->tutColorMessage->removeFromParentAndCleanup(true);
+            }
         }
         p1->removeFromParentAndCleanup(true);
     }
