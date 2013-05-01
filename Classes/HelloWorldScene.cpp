@@ -212,6 +212,33 @@ void HelloWorld::setupEndgameScreen(Player *winner){
     setupEndgameScreenTextOverlay();
 }
 
+void HelloWorld::RemoveChildSeq(CCNode* pObj){
+    this->removeChild(pObj, true);
+}
+
+void HelloWorld::iterateBackground(){
+    for(int i = 0; i < 2; i++){
+        CCSprite *p = CCSprite::spriteWithFile("square.png");
+        p->setScale(.04*(arc4random() % 10));
+        p->setColor(currentWinner()->getColor());
+        p->setOpacity(arc4random() % 255);
+        CCFiniteTimeAction *moveAct;
+        CCAction* removeChild = CCCallFuncO::create(this, callfuncO_selector(HelloWorld::RemoveChildSeq), p);
+        if(i % 2 == 0){
+            p->setPosition(CCPoint(this->boundingBox().getMaxX(), arc4random() % (int)this->boundingBox().getMaxY()));
+            moveAct = CCMoveTo::actionWithDuration(.03*(arc4random() % 100), CCPoint(this->boundingBox().getMinX(), p->getPosition().y));
+        } else {
+            p->setPosition(CCPoint(this->boundingBox().getMinX(), arc4random() % (int)this->boundingBox().getMaxY()));
+            moveAct = CCMoveTo::actionWithDuration(.03*(arc4random() % 100), CCPoint(this->boundingBox().getMaxX(), p->getPosition().y));
+        }
+        this->addChild(p, 0);
+        
+        p->runAction(
+            CCSequence::actions(moveAct, removeChild, NULL)
+        );
+    }
+}
+
 bool HelloWorld::init(){
     if(!CCLayer::init()){ return false; }
     
@@ -303,6 +330,7 @@ void HelloWorld::tick(float dt){
     ttime = GameManager::sharedManager()->getElapsed();
     
     if(GameManager::sharedManager()->gameIsActive()){
+        iterateBackground();
         std::list<Player *> *players = GameManager::sharedManager()->players;
         for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
             Player *p1 = *iter;

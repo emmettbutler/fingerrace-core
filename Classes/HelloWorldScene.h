@@ -26,8 +26,10 @@ public:
     void dismissEndgameScreen();
     void setupGameScreen();
     void setupEndgameScreen(Player *winner);
+    void iterateBackground();
     void setupEndgameScreenTextOverlay();
     void selectNextRenderTexture();
+    void RemoveChildSeq(CCNode* pObj);
     CCPoint initialTargetPosition(Player *p);
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);
