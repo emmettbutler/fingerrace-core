@@ -26,7 +26,7 @@ public:
     void dismissEndgameScreen();
     void setupGameScreen();
     void setupEndgameScreen(Player *winner);
-    void iterateBackground();
+    void iterateBackground(bool lots);
     void setupEndgameScreenTextOverlay();
     void selectNextRenderTexture();
     void RemoveChildSeq(CCNode* pObj);

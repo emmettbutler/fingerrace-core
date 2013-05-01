@@ -191,12 +191,14 @@ void HelloWorld::dismissEndgameScreen(){
 
 void HelloWorld::setupEndgameScreen(Player *winner){
     printf("Game over screen\n");
-    float initTime = .5;
+    float initTime = 2;
     
     CCSprite *p1 = new CCSprite();
     p1->initWithFile("square.png");
-    p1->setPosition(winner->getPosition());
-    p1->setScale(0);
+    p1->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY()));
+    p1->setOpacity(0);
+    p1->setScaleX(this->getContentSize().width/p1->getContentSize().width);
+    p1->setScaleY(this->getContentSize().height/p1->getContentSize().height);
     p1->setColor(winner->color);
     this->addChild(p1, 10);
     titleSprites->push_back(p1);
@@ -206,9 +208,7 @@ void HelloWorld::setupEndgameScreen(Player *winner){
     // increment win count stat for the winner
     GameManager::sharedManager()->winCounts->at(winner->getID())++;
     
-    p1->runAction(CCScaleTo::actionWithDuration(initTime, this->getContentSize().width/p1->getContentSize().width, this->getContentSize().height/p1->getContentSize().height));
-    p1->runAction(CCMoveTo::actionWithDuration(initTime, CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY())));
-    
+    p1->runAction(CCFadeIn::actionWithDuration(initTime));
     setupEndgameScreenTextOverlay();
 }
 
@@ -216,26 +216,29 @@ void HelloWorld::RemoveChildSeq(CCNode* pObj){
     this->removeChild(pObj, true);
 }
 
-void HelloWorld::iterateBackground(){
-    for(int i = 0; i < 2; i++){
+void HelloWorld::iterateBackground(bool lots){
+    int limit = 2;
+    if(lots){
+        limit = 20;
+    }
+    for(int i = 0; i < limit; i++){
         CCSprite *p = CCSprite::spriteWithFile("square.png");
         p->setScale(.04*(arc4random() % 10));
         p->setColor(currentWinner()->getColor());
         p->setOpacity(arc4random() % 255);
         CCFiniteTimeAction *moveAct;
+        float speedFactor = (.1*(GameManager::sharedManager()->goalCheckpoints - currentWinner()->checkpointCount+1));
         CCAction* removeChild = CCCallFuncO::create(this, callfuncO_selector(HelloWorld::RemoveChildSeq), p);
         if(i % 2 == 0){
             p->setPosition(CCPoint(this->boundingBox().getMaxX(), arc4random() % (int)this->boundingBox().getMaxY()));
-            moveAct = CCMoveTo::actionWithDuration(.03*(arc4random() % 100), CCPoint(this->boundingBox().getMinX(), p->getPosition().y));
+            moveAct = CCMoveTo::actionWithDuration(.02*speedFactor*(arc4random() % 100), CCPoint(this->boundingBox().getMinX(), p->getPosition().y));
         } else {
             p->setPosition(CCPoint(this->boundingBox().getMinX(), arc4random() % (int)this->boundingBox().getMaxY()));
-            moveAct = CCMoveTo::actionWithDuration(.03*(arc4random() % 100), CCPoint(this->boundingBox().getMaxX(), p->getPosition().y));
+            moveAct = CCMoveTo::actionWithDuration(.02*speedFactor*(arc4random() % 100), CCPoint(this->boundingBox().getMaxX(), p->getPosition().y));
         }
         this->addChild(p, 0);
         
-        p->runAction(
-            CCSequence::actions(moveAct, removeChild, NULL)
-        );
+        p->runAction(CCSequence::actions(moveAct, removeChild, NULL));
     }
 }
 
@@ -330,7 +333,7 @@ void HelloWorld::tick(float dt){
     ttime = GameManager::sharedManager()->getElapsed();
     
     if(GameManager::sharedManager()->gameIsActive()){
-        iterateBackground();
+        iterateBackground(false);
         std::list<Player *> *players = GameManager::sharedManager()->players;
         for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
             Player *p1 = *iter;
@@ -363,6 +366,7 @@ void HelloWorld::tick(float dt){
             GameManager::sharedManager()->startGame();            
         }
     } else if(GameManager::sharedManager()->endgameScreenIsActive()){
+        iterateBackground(true);
         if(GameManager::sharedManager()->timeSinceLastStateChange() > 4){
             GameManager::sharedManager()->resetGameState();
             dismissEndgameScreen();
