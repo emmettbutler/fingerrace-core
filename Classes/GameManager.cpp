@@ -37,6 +37,7 @@ void GameManager::init(){
     currentState = kTitleState;
     goalCheckpoints = 20;
     matchPoints = 3;
+    queueingTime = 1;
     
     startTime = getCurrentTimeSeconds();
     

@@ -181,6 +181,9 @@ void HelloWorld::setupTitleScreen(){
         titleSprites->push_back(p2);
         
         setupTitleScreenTextOverlay(p1->getColor(), p2->getColor());
+        
+        p1->button = insBox1;
+        p2->button = insBox2;
     } else if(screenDimensions.width > 960 && screenDimensions.height > 640){
         printf("Detected large screen\n");
         GameManager::sharedManager()->maxPlayers = 2;
@@ -205,6 +208,9 @@ void HelloWorld::setupTitleScreen(){
         titleSprites->push_back(p2);
 
         setupTitleScreenTextOverlay(p1->getColor(), p2->getColor());
+        
+        p1->button = insBox1;
+        p2->button = insBox2;
     }
 
     GameManager::sharedManager()->initStats();
@@ -420,7 +426,7 @@ void HelloWorld::tick(float dt){
             }
         }
     } else if(GameManager::sharedManager()->titleScreenIsActive()){
-        if(GameManager::sharedManager()->getCurrentTimeSeconds() - lastPlayerQueueTime > 1 &&
+        if(GameManager::sharedManager()->getCurrentTimeSeconds() - lastPlayerQueueTime > GameManager::sharedManager()->queueingTime &&
            numQueuedPlayers <= GameManager::sharedManager()->maxPlayers && numQueuedPlayers > 1){
             printf("Starting pregame\n");
             GameManager::sharedManager()->setupCounterPositions(this);
@@ -561,7 +567,6 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
-
             if(!GameManager::sharedManager()->firstRun()) {
                 if(CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
                     if(GameManager::sharedManager()->tutorialActive == false){
@@ -582,6 +587,7 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                     if(numQueuedPlayers < GameManager::sharedManager()->maxPlayers){
                         printf("gained queued player\n");
                         sp->touch = touch;
+                        sp->runQueueingAnimation(titleLayer);
                         numQueuedPlayers++;
                         lastPlayerQueueTime = GameManager::sharedManager()->getCurrentTimeSeconds();
                     }
@@ -671,6 +677,7 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                 TitleSprite *sp = *iter;
                 if(sp->touch == touch){
                     sp->touch = NULL;
+                    sp->stopQueueingAnimation();
                     if(numQueuedPlayers > 0){
                         printf("lost queued player\n");
                         numQueuedPlayers--;
