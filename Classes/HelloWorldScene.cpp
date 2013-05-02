@@ -451,9 +451,13 @@ void HelloWorld::tick(float dt){
                 GameManager::sharedManager()->endGame();
                 setupEndgameScreen(p1);
             }
-            if(GameManager::sharedManager()->tutorialActive && currentWinner()->checkpointCount > GameManager::sharedManager()->goalCheckpoints - 5){
-                p1->tutMessage->setString("Faster!!");
-                p1->tutColorMessage->setVisible(false);
+            if(GameManager::sharedManager()->tutorialActive){
+                if(currentWinner()->checkpointCount > GameManager::sharedManager()->goalCheckpoints - 5){
+                    p1->tutMessage->setString("Faster!!");
+                    p1->tutColorMessage->setVisible(false);
+                } else if(p1->timeSinceLastCheckpoint() > 5 && p1->touchActive){
+                    showTutorialSlideToNotify(p1, p1->tutMessage->getPosition());
+                }
             }
         }
     } else if(GameManager::sharedManager()->titleScreenIsActive()){
@@ -474,17 +478,6 @@ void HelloWorld::tick(float dt){
             for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
                 Player *p = *iter;
                 p->spawnNewTarget(nextTargetPosition(p));
-                if(GameManager::sharedManager()->tutorialActive){
-                    p->tutMessage->runAction(CCSequence::actions(
-                                                              CCDelayTime::actionWithDuration(2),
-                                                              CCFadeTo::actionWithDuration(.3, 255),
-                                                              NULL));
-                    
-                    p->tutColorMessage->runAction(CCSequence::actions(
-                                                                 CCDelayTime::actionWithDuration(2),
-                                                                 CCFadeTo::actionWithDuration(.3, 255),
-                                                                 NULL));
-                }
             }
             GameManager::sharedManager()->startGame();
         }
@@ -533,30 +526,46 @@ void HelloWorld::setupGameScreen(){
         p->initScoreLabel();
         
         if(GameManager::sharedManager()->tutorialActive){
-            int sep = 75;
             p->tutMessage = CCLabelTTF::labelWithString("Slide to", ROBOTO_FONT, 40);
             p->tutColorMessage = CCLabelTTF::labelWithString("your color", ROBOTO_FONT, 40);
-            p->tutColorMessage->setColor(p->color);
-            if(tp.x > this->boundingBox().getMidX()){
-                p->tutMessage->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY() - sep));
-                p->tutMessage->setRotation(-90);
-                p->tutColorMessage->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY() + sep));
-                p->tutColorMessage->setRotation(-90);
-            } else {
-                p->tutMessage->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY() + sep));
-                p->tutMessage->setRotation(90);
-                p->tutColorMessage->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY() - sep));
-                p->tutColorMessage->setRotation(90);
-            }
             p->tutMessage->setOpacity(0);
             p->tutColorMessage->setOpacity(0);
+            p->tutMessage->runAction(CCSequence::actions(
+                                                         CCFadeTo::actionWithDuration(.3, 255),
+                                                         NULL));
+            
+            p->tutColorMessage->runAction(CCSequence::actions(
+                                                              CCFadeTo::actionWithDuration(.3, 255),
+                                                              NULL));
             this->addChild(p->tutMessage);
             this->addChild(p->tutColorMessage);
+            
+            showTutorialSlideToNotify(p, tp);
         }
         
         this->addChild(p);
         GameManager::sharedManager()->players->push_back(p);
     }
+}
+
+void HelloWorld::showTutorialSlideToNotify(Player *p, CCPoint tp){
+    int sep = 75;
+    p->tutMessage->setString("Slide to");
+    p->tutColorMessage->setString("your color");
+    p->tutColorMessage->setColor(p->color);
+    if(tp.x > this->boundingBox().getMidX()){
+        p->tutMessage->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY() - sep));
+        p->tutMessage->setRotation(-90);
+        p->tutColorMessage->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY() + sep));
+        p->tutColorMessage->setRotation(-90);
+    } else {
+        p->tutMessage->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY() + sep));
+        p->tutMessage->setRotation(90);
+        p->tutColorMessage->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY() - sep));
+        p->tutColorMessage->setRotation(90);
+    }
+    p->tutColorMessage->setVisible(true);
+    p->tutColorMessage->setOpacity(255);
 }
 
 void HelloWorld::resolveTargetCollision(){
@@ -697,9 +706,9 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                     
                     if(GameManager::sharedManager()->tutorialActive && !p1->tut_touchHasEnded){
                         p1->tut_touchHasEnded = true;
-                        p1->tutMessage->setString("Hold                    to continue");
+                        p1->tutMessage->setString("Touch                     to continue");
                         p1->tutColorMessage->setString("your color");
-                        float sep = 52;
+                        float sep = 42;
                         if(p1->tutMessage->getPosition().x > this->boundingBox().getMidX()){
                             p1->tutMessage->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY()));
                             p1->tutColorMessage->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY() - sep));

@@ -33,6 +33,7 @@ public:
     void animateTutButtonActivation();
     void animateTutButtonDeactivation();
     void RemoveChildSeq(CCNode* pObj);
+    void showTutorialSlideToNotify(Player *p, CCPoint tp);
     CCPoint initialTargetPosition(Player *p);
     CCPoint nextTargetPosition(Player *p);
     void adjustTargetSize(Player *p);

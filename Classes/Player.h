@@ -29,7 +29,7 @@ public:
     ScoreCounter *scoreCounter;
     int checkpointCount, remainingCheckpoints;
     bool tut_touchHasEnded, tut_touchHasRestarted;
-    float baseScale, velocity, opacityDelta;
+    float baseScale, velocity, opacityDelta, lastCheckpointTime;
     CCTouch *touch;
     CCRect territory;
     CCPoint startingPoint;
@@ -38,6 +38,7 @@ public:
     bool init(CCPoint p, ccColor3B c, CCLayer *parent);
     void spawnNewTarget(CCPoint position);
     void killOldTarget();
+    float timeSinceLastCheckpoint();
     void shrinkTarget();
     void growTarget();
     void gainPoint();

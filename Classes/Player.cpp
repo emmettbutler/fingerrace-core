@@ -193,6 +193,8 @@ void Player::deactivateTouch(){
     this->currentTarget->setColor(newColor);
     
     this->scoreCounter->addPoint();
+    
+    this->lastCheckpointTime = GameManager::sharedManager()->getCurrentTimeSeconds();
 }
 
 void Player::updatePosition(CCPoint glPosition) {
@@ -200,6 +202,10 @@ void Player::updatePosition(CCPoint glPosition) {
         this->setPosition(glPosition);
         this->shineSprite->setPosition(glPosition);
     }
+}
+
+float Player::timeSinceLastCheckpoint(){
+    return GameManager::sharedManager()->getCurrentTimeSeconds() - this->lastCheckpointTime;
 }
 
 int Player::getID(){
