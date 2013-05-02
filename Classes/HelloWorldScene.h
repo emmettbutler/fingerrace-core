@@ -39,8 +39,9 @@ public:
     Player *currentWinner();
     int scoreTotal();
     
-    CCSprite *tutButton, *insBox1, *insBox2;
-    CCLabelTTF *tutQLabel, *tutELabel, *tutNotify;
+    bool instructionsVisible;
+    CCSprite *tutButton, *insBox1, *insBox2, *howtoButton;
+    CCLabelTTF *tutQLabel, *tutELabel, *tutNotify, *instructions;
     CCArray *tutMessages;
     std::list<TitleSprite *> *titleSprites;
     std::list<CCPoint> *titleTouchPoints;

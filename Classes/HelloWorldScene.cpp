@@ -58,6 +58,27 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
     instructionLabel2->setColor(p2Color);
     instructionLabel2->setRotation(90);
     titleLayer->addChild(instructionLabel2);
+    
+    howtoButton = CCSprite::spriteWithFile("square.png");
+    howtoButton->setColor(p1Color);
+    howtoButton->setScaleY(5.8);
+    howtoButton->setScaleX(1.5);
+    howtoButton->setPosition(CCPoint(this->boundingBox().getMidX() - 45, this->boundingBox().getMaxY() - 175));
+    titleLayer->addChild(howtoButton);
+    
+    CCLabelTTF *howtoLabel = CCLabelTTF::labelWithString("Instructions", ROBOTO_FONT, 40);
+    howtoLabel->setColor(p2Color);
+    howtoLabel->setRotation(90);
+    howtoLabel->setPosition(howtoButton->getPosition());
+    titleLayer->addChild(howtoLabel);
+    
+    instructions = CCLabelTTF::labelWithString("1. Touch and hold to pick your color.\n2. Keep your finger on the screen.\n3. Slide to your colored square.\n4. Go faster than your opponents.",
+                                               CCSize(0, 0), kCCTextAlignmentLeft, ROBOTO_FONT, 25);
+    instructions->setColor(p2Color);
+    instructions->setOpacity(0);
+    instructions->setAnchorPoint(CCPoint(0, 0));
+    instructions->setPosition(CCPoint(this->boundingBox().getMidX() + 15, this->boundingBox().getMaxY() - 275));
+    titleLayer->addChild(instructions);
 
     if (!GameManager::sharedManager()->firstRun()) {
         tutButton = CCSprite::spriteWithFile("square.png");
@@ -97,13 +118,15 @@ void HelloWorld::animateTutButtonActivation(){
     tutELabel->runAction(CCSequence::actions(CCRotateTo::actionWithDuration(.3, -90), NULL));
     tutELabel->runAction(CCSequence::actions(CCFadeTo::actionWithDuration(.3, 255), NULL));
     
-    tutNotify->setString("Tutorial ON");
-    tutNotify->runAction(
-                 CCSequence::actions(
-                                     CCFadeTo::actionWithDuration(.2, 255),
-                                     CCFadeTo::actionWithDuration(1, 0),
-                 NULL)
-    );
+    if(!instructionsVisible){
+        tutNotify->setString("Tutorial ON");
+        tutNotify->runAction(
+                         CCSequence::actions(
+                                        CCFadeTo::actionWithDuration(.2, 255),
+                                        CCFadeTo::actionWithDuration(1, 0),
+                                     NULL)
+                             );
+    }
 }
 
 void HelloWorld::animateTutButtonDeactivation(){
@@ -113,13 +136,15 @@ void HelloWorld::animateTutButtonDeactivation(){
     tutELabel->runAction(CCSequence::actions(CCRotateTo::actionWithDuration(.3, 90), NULL));
     tutELabel->runAction(CCSequence::actions(CCFadeTo::actionWithDuration(.3, 0), NULL));
     
-    tutNotify->setString("Tutorial OFF");
-    tutNotify->runAction(
-                         CCSequence::actions(
-                                             CCFadeTo::actionWithDuration(.2, 255),
-                                             CCFadeTo::actionWithDuration(1, 0),
-                                             NULL)
-                         );
+    if(!instructionsVisible){
+        tutNotify->setString("Tutorial OFF");
+        tutNotify->runAction(
+                             CCSequence::actions(
+                                                 CCFadeTo::actionWithDuration(.2, 255),
+                                                 CCFadeTo::actionWithDuration(1, 0),
+                                                 NULL)
+                             );
+    }
 }
 
 void HelloWorld::setupEndgameScreenTextOverlay(){
@@ -583,6 +608,14 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                         GameManager::sharedManager()->tutorialActive = false;
                         printf("tutorial deactivated\n");
                         animateTutButtonDeactivation();
+                    }
+                } else if(CCRect::CCRectContainsPoint(howtoButton->boundingBox(), touchLocation)){
+                    if(instructionsVisible){
+                        instructionsVisible = false;
+                        instructions->runAction(CCFadeTo::actionWithDuration(.2, 0));
+                    } else {
+                        instructionsVisible = true;
+                        instructions->runAction(CCFadeTo::actionWithDuration(.2, 255));
                     }
                 }
             }
