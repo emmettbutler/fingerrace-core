@@ -24,10 +24,11 @@ public:
     SquareTarget *currentTarget;
     CCSprite *shineSprite;
     CCLayer *parent;
-    CCLabelTTF *scoreLabel;
+    CCLabelTTF *scoreLabel, *tutMessage, *tutColorMessage;
     bool touchLock, touchActive;
     ScoreCounter *scoreCounter;
     int checkpointCount, remainingCheckpoints;
+    bool tut_touchHasEnded, tut_touchHasRestarted;
     float baseScale, velocity, opacityDelta;
     CCTouch *touch;
     CCRect territory;

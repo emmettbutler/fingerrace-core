@@ -39,11 +39,11 @@ public:
     int scoreTotal();
     
     CCSprite *tutButton;
-    CCLabelTTF *tutQLabel, *tutELabel, *tutNotify, *tutMessage;
+    CCLabelTTF *tutQLabel, *tutELabel, *tutNotify;
+    CCArray *tutMessages;
     std::list<CCSprite *> *titleSprites;
     std::list<CCPoint> *titleTouchPoints;
     CCArray *renderTextures;
-    bool tut_touchHasEnded, tut_touchHasRestarted;
     
     int numQueuedPlayers, kRenderTextureCount, currentRenderTextureIndex;
     CCLayer *titleLayer, *endgameLayer, *gameBackgroundLayer;
