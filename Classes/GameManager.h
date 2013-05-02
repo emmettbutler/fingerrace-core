@@ -65,6 +65,8 @@ public:
 
     void initStats();
     std::vector<int> *winCounts;
+
+    bool firstRun();
 };
 
 

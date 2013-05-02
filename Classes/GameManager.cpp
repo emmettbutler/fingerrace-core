@@ -8,6 +8,7 @@
 
 #include "GameManager.h"
 
+#include "FileManager.h"
 #include "Player.h"
 #include "SquareTarget.h"
 #include "ScoreCounter.h"
@@ -58,6 +59,10 @@ void GameManager::init(){
     allowedColors->push_back(ccc3(142, 172, 0));
 
     usedColors = new std::list<ccColor3B>();
+
+    if (this->firstRun()) {
+        this->tutorialActive = true;
+    }
 }
 
 void GameManager::setupCounterPositions(CCLayer *b){
@@ -129,6 +134,10 @@ void GameManager::resetCounterPositions(){
     usedCounterPositions->clear();
 }
 
+bool GameManager::firstRun() {
+    return !FileManager::readFile("tut");
+}
+
 long double GameManager::getElapsed(){
     return getCurrentTimeSeconds() - startTime;
 }
@@ -160,6 +169,11 @@ void GameManager::startGame(){
 }
 
 void GameManager::endGame(){
+
+    if (this->firstRun()) {
+        FileManager::saveFile("tut");
+    }
+
     currentState = kGameOverState;
     lastStateChangeTime = getCurrentTimeSeconds();
 }

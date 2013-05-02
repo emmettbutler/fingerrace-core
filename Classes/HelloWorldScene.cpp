@@ -43,33 +43,35 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
     instructionLabel2->setColor(p1Color);
     instructionLabel2->setRotation(90);
     titleLayer->addChild(instructionLabel2);
-    
-    tutButton = CCSprite::spriteWithFile("square.png");
-    tutButton->setScale(2);
-    tutButton->setColor(p2Color);
-    tutButton->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
-    titleLayer->addChild(tutButton);
-    
-    tutQLabel = CCLabelTTF::labelWithString("?", ROBOTO_FONT, 80);
-    tutQLabel->setRotation(90);
-    tutQLabel->setColor(p1Color);
-    tutQLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
-    titleLayer->addChild(tutQLabel);
-    
-    tutELabel = CCLabelTTF::labelWithString("!", ROBOTO_FONT, 80);
-    tutELabel->setRotation(90);
-    tutELabel->setColor(p1Color);
-    tutELabel->setOpacity(0);
-    tutELabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
-    titleLayer->addChild(tutELabel);
-    
-    tutNotify = CCLabelTTF::labelWithString("Tutorial ON", ROBOTO_FONT, 40);
-    tutNotify->setPosition(CCPoint(tutButton->getPosition().x, tutButton->getPosition().y - 150));
-    tutNotify->setRotation(90);
-    tutNotify->setColor(p2Color);
-    tutNotify->setOpacity(0);
-    titleLayer->addChild(tutNotify);
-    
+
+    if (!GameManager::sharedManager()->firstRun()) {
+        tutButton = CCSprite::spriteWithFile("square.png");
+        tutButton->setScale(2);
+        tutButton->setColor(p2Color);
+        tutButton->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
+        titleLayer->addChild(tutButton);
+
+        tutQLabel = CCLabelTTF::labelWithString("?", ROBOTO_FONT, 80);
+        tutQLabel->setRotation(90);
+        tutQLabel->setColor(p1Color);
+        tutQLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
+        titleLayer->addChild(tutQLabel);
+
+        tutELabel = CCLabelTTF::labelWithString("!", ROBOTO_FONT, 80);
+        tutELabel->setRotation(90);
+        tutELabel->setColor(p1Color);
+        tutELabel->setOpacity(0);
+        tutELabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
+        titleLayer->addChild(tutELabel);
+
+        tutNotify = CCLabelTTF::labelWithString("Tutorial ON", ROBOTO_FONT, 40);
+        tutNotify->setPosition(CCPoint(tutButton->getPosition().x, tutButton->getPosition().y - 150));
+        tutNotify->setRotation(90);
+        tutNotify->setColor(p2Color);
+        tutNotify->setOpacity(0);
+        titleLayer->addChild(tutNotify);
+    }
+
     this->addChild(titleLayer, 11);
 }
 
@@ -521,26 +523,29 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
-            if(CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
-                if(GameManager::sharedManager()->tutorialActive == false){
-                    GameManager::sharedManager()->tutorialActive = true;
-                    printf("tutorial activated\n");
-                    animateTutButtonActivation();
-                } else {
-                    GameManager::sharedManager()->tutorialActive = false;
-                    printf("tutorial deactivated\n");
-                    animateTutButtonDeactivation();
+
+            if(!GameManager::sharedManager()->firstRun()) {
+                if(CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
+                    if(GameManager::sharedManager()->tutorialActive == false){
+                        GameManager::sharedManager()->tutorialActive = true;
+                        printf("tutorial activated\n");
+                        animateTutButtonActivation();
+                    } else {
+                        GameManager::sharedManager()->tutorialActive = false;
+                        printf("tutorial deactivated\n");
+                        animateTutButtonDeactivation();
+                    }
                 }
-            } else {
-                for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
-                    CCSprite *sp = *iter;
-                    if(sp->getUserData() == NULL && CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){
-                        if(numQueuedPlayers < GameManager::sharedManager()->maxPlayers){
-                            printf("gained queued player\n");
-                            sp->setUserData(touch);  // use userdata as a lightweight "touched" indicator
-                            numQueuedPlayers++;
-                            lastPlayerQueueTime = GameManager::sharedManager()->getCurrentTimeSeconds();
-                        }
+            }
+
+            for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
+                CCSprite *sp = *iter;
+                if(sp->getUserData() == NULL && CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){
+                    if(numQueuedPlayers < GameManager::sharedManager()->maxPlayers){
+                        printf("gained queued player\n");
+                        sp->setUserData(touch);  // use userdata as a lightweight "touched" indicator
+                        numQueuedPlayers++;
+                        lastPlayerQueueTime = GameManager::sharedManager()->getCurrentTimeSeconds();
                     }
                 }
             }
