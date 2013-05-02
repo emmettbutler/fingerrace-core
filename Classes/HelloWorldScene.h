@@ -6,6 +6,7 @@ using namespace cocos2d;
 
 class Player;
 class ScoreCounter;
+class TitleSprite;
 
 class HelloWorld : public CCLayer{
 public:
@@ -38,10 +39,10 @@ public:
     Player *currentWinner();
     int scoreTotal();
     
-    CCSprite *tutButton;
+    CCSprite *tutButton, *insBox1, *insBox2;
     CCLabelTTF *tutQLabel, *tutELabel, *tutNotify;
     CCArray *tutMessages;
-    std::list<CCSprite *> *titleSprites;
+    std::list<TitleSprite *> *titleSprites;
     std::list<CCPoint> *titleTouchPoints;
     CCArray *renderTextures;
     

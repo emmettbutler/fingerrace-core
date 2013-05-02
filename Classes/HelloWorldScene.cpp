@@ -5,6 +5,7 @@
 #import "SquareTarget.h"
 #import "GameManager.h"
 #import "ScoreCounter.h"
+#import "TitleSprite.h"
 
 #include <sys/timeb.h>
 
@@ -32,15 +33,29 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
     subLabel->setColor(p2Color);
     titleLayer->addChild(subLabel);
     
-    CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p1 hold here", ROBOTO_FONT, 50);
-    instructionLabel1->setPosition(CCPoint(this->boundingBox().getMaxX() - 40, this->boundingBox().getMidY()));
-    instructionLabel1->setColor(p2Color);
+    insBox1 = CCSprite::spriteWithFile("square.png");
+    insBox1->setScaleX(2);
+    insBox1->setScaleY(6);
+    insBox1->setPosition(CCPoint(this->boundingBox().getMaxX() - 60, this->boundingBox().getMidY()));
+    insBox1->setColor(p2Color);
+    titleLayer->addChild(insBox1);
+    
+    CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p1 GO", ROBOTO_FONT, 50);
+    instructionLabel1->setPosition(insBox1->getPosition());
+    instructionLabel1->setColor(p1Color);
     instructionLabel1->setRotation(-90);
     titleLayer->addChild(instructionLabel1);
     
-    CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p2 hold here", ROBOTO_FONT, 50);
-    instructionLabel2->setPosition(CCPoint(this->boundingBox().getMinX() + 40, this->boundingBox().getMidY()));
-    instructionLabel2->setColor(p1Color);
+    insBox2 = CCSprite::spriteWithFile("square.png");
+    insBox2->setScaleX(2);
+    insBox2->setScaleY(6);
+    insBox2->setPosition(CCPoint(this->boundingBox().getMinX() + 60, this->boundingBox().getMidY()));
+    insBox2->setColor(p1Color);
+    titleLayer->addChild(insBox2);
+    
+    CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p2 GO", ROBOTO_FONT, 50);
+    instructionLabel2->setPosition(insBox2->getPosition());
+    instructionLabel2->setColor(p2Color);
     instructionLabel2->setRotation(90);
     titleLayer->addChild(instructionLabel2);
 
@@ -137,7 +152,7 @@ void HelloWorld::setupEndgameScreenTextOverlay(){
 }
 
 void HelloWorld::setupTitleScreen(){
-    titleSprites = new std::list<CCSprite *>();
+    titleSprites = new std::list<TitleSprite *>();
     titleTouchPoints = new std::list<CCPoint>();
     
     CCSize screenDimensions = CCEGLView::sharedOpenGLView()->getFrameSize();
@@ -147,7 +162,7 @@ void HelloWorld::setupTitleScreen(){
         GameManager::sharedManager()->maxPlayers = 2;
         GameManager::sharedManager()->numPlayers = 2;
 
-        CCSprite *p1 = new CCSprite();
+        TitleSprite *p1 = new TitleSprite();
         p1->initWithFile("square.png");
         p1->setPosition(CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY()));
         p1->setScaleX(this->getContentSize().width/p1->getContentSize().width/2);
@@ -156,7 +171,7 @@ void HelloWorld::setupTitleScreen(){
         this->addChild(p1, 10);
         titleSprites->push_back(p1);
 
-        CCSprite *p2 = new CCSprite();
+        TitleSprite *p2 = new TitleSprite();
         p2->initWithFile("square.png");
         p2->setPosition(CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY()));
         p2->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
@@ -171,7 +186,7 @@ void HelloWorld::setupTitleScreen(){
         GameManager::sharedManager()->maxPlayers = 2;
         GameManager::sharedManager()->numPlayers = 2;
 
-        CCSprite *p1 = new CCSprite();
+        TitleSprite *p1 = new TitleSprite();
         p1->initWithFile("square.png");
         p1->setPosition(CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY()));
         p1->setScaleX(this->getContentSize().width/p1->getContentSize().width/2);
@@ -180,7 +195,7 @@ void HelloWorld::setupTitleScreen(){
         this->addChild(p1, 10);
         titleSprites->push_back(p1);
 
-        CCSprite *p2 = new CCSprite();
+        TitleSprite *p2 = new TitleSprite();
         p2->initWithFile("square.png");
         p2->setPosition(CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY()));
         p2->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
@@ -205,7 +220,7 @@ void HelloWorld::setupTitleScreenFromEndgameScreen(){
                                       CCMoveTo::actionWithDuration(initTime, CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY())),
                                       NULL));
     
-    CCSprite *p2 = new CCSprite();
+    TitleSprite *p2 = new TitleSprite();
     p2->initWithFile("square.png");
     p2->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
     p2->setScaleY(this->getContentSize().height/p2->getContentSize().height);
@@ -225,11 +240,11 @@ void HelloWorld::dismissTitleScreen(){
     if(titleLayer != NULL){
         titleLayer->removeFromParentAndCleanup(true);
     }
-    for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
-        CCSprite *sp = *iter;
+    for(std::list<TitleSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
+        TitleSprite *sp = *iter;
         sp->runAction(CCScaleTo::actionWithDuration(animationDuration, 0));
         
-        CCPoint p = CCDirector::sharedDirector()->convertToGL(((CCTouch *)sp->getUserData())->getLocationInView());
+        CCPoint p = CCDirector::sharedDirector()->convertToGL(sp->touch->getLocationInView());
         sp->runAction(CCMoveTo::actionWithDuration(animationDuration, p));
 
         titleTouchPoints->push_back(p);
@@ -246,7 +261,7 @@ void HelloWorld::setupEndgameScreen(Player *winner){
     printf("Game over screen\n");
     float initTime = 0.5;
     
-    CCSprite *p1 = new CCSprite();
+    TitleSprite *p1 = new TitleSprite();
     p1->initWithFile("square.png");
     p1->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY()));
     p1->setOpacity(0);
@@ -464,11 +479,11 @@ void HelloWorld::setupGameScreen(){
     for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
         CCTouch *t = NULL;
         CCPoint tp;
-        CCSprite *ts = NULL;
+        TitleSprite *ts = NULL;
         if(titleSprites->size() > 0){
             ts = titleSprites->front();
             titleSprites->pop_front();
-            t = (CCTouch *)ts->getUserData();
+            t = ts->touch;
             tp = titleTouchPoints->front();
             titleTouchPoints->pop_front();
         }
@@ -561,12 +576,12 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                 }
             }
 
-            for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
-                CCSprite *sp = *iter;
-                if(sp->getUserData() == NULL && CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){
+            for(std::list<TitleSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
+                TitleSprite *sp = *iter;
+                if(sp->touch == NULL && CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){
                     if(numQueuedPlayers < GameManager::sharedManager()->maxPlayers){
                         printf("gained queued player\n");
-                        sp->setUserData(touch);  // use userdata as a lightweight "touched" indicator
+                        sp->touch = touch;
                         numQueuedPlayers++;
                         lastPlayerQueueTime = GameManager::sharedManager()->getCurrentTimeSeconds();
                     }
@@ -603,10 +618,10 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
-            for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
-                CCSprite *sp = *iter;
-                if(CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation) && (CCTouch *)sp->getUserData() != touch){
-                    sp->setUserData(NULL);
+            for(std::list<TitleSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
+                TitleSprite *sp = *iter;
+                if(CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation) && sp->touch != touch){
+                    sp->touch = NULL;
                     if(!CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
                         if(numQueuedPlayers > 0){
                             printf("lost queued player\n");
@@ -652,10 +667,10 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
-            for(std::list<CCSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
-                CCSprite *sp = *iter;
-                if((CCTouch *)sp->getUserData() == touch){
-                    sp->setUserData(NULL);
+            for(std::list<TitleSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
+                TitleSprite *sp = *iter;
+                if(sp->touch == touch){
+                    sp->touch = NULL;
                     if(numQueuedPlayers > 0){
                         printf("lost queued player\n");
                         numQueuedPlayers--;
