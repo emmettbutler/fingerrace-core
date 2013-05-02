@@ -218,7 +218,7 @@ void HelloWorld::setupTitleScreen(){
 
 void HelloWorld::setupTitleScreenFromEndgameScreen(){
     float initTime = .5;
-    CCSprite *p1 = titleSprites->front();
+    TitleSprite *p1 = titleSprites->front();
     p1->runAction(CCSequence::actions(
                                       CCScaleTo::actionWithDuration(initTime, this->getContentSize().width/p1->getContentSize().width/2, this->getContentSize().height/p1->getContentSize().height),
                                       NULL));
@@ -239,6 +239,12 @@ void HelloWorld::setupTitleScreenFromEndgameScreen(){
                                       CCMoveTo::actionWithDuration(.5, CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY())),
                                       NULL));
     setupTitleScreenTextOverlay(p1->getColor(), p2->getColor());
+    
+    p1->button = insBox1;
+    p1->touch = NULL;
+    
+    p2->button = insBox2;
+    p2->touch = NULL;
 }
 
 void HelloWorld::dismissTitleScreen(){
