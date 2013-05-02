@@ -14,19 +14,12 @@ TitleSprite::TitleSprite(){
 }
 
 void TitleSprite::runQueueingAnimation(CCLayer *parent){
-    CCSprite *as = CCSprite::spriteWithFile("square.png");
-    as->setScaleX(this->button->getScaleX());
-    as->setScaleY(.00001);
-    as->setAnchorPoint(CCPoint(.5, .5));
-    as->setPosition(this->button->getPosition());
-    as->setColor(ccc3(255, 0, 0));
-    as->setOpacity(100);
-    parent->addChild(as);
-    this->buttonQueueOverlay = as;
-    
-    as->runAction(CCScaleTo::actionWithDuration(GameManager::sharedManager()->queueingTime, this->button->getScaleX(), this->button->getScaleY()));
+    this->baseScale = this->button->getScaleY();
+    this->button->runAction(CCScaleTo::actionWithDuration(GameManager::sharedManager()->queueingTime, this->button->getScaleX(), 0));
 }
 
 void TitleSprite::stopQueueingAnimation(){
     this->buttonQueueOverlay->removeFromParentAndCleanup(true);
+    this->button->stopAllActions();
+    this->button->setScaleY(this->baseScale);
 }

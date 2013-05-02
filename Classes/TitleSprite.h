@@ -20,8 +20,9 @@ public:
     void runQueueingAnimation(CCLayer *parent);
     void stopQueueingAnimation();
     
+    float baseScale;
     CCTouch *touch;
-    CCSprite *button, *buttonQueueOverlay;
+    CCSprite *button;
 };
 
 #endif /* defined(__FingerRace__TitleSprite__) */
