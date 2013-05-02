@@ -35,12 +35,12 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
     
     insBox1 = CCSprite::spriteWithFile("square.png");
     insBox1->setScaleX(2);
-    insBox1->setScaleY(6);
+    insBox1->setScaleY(9);
     insBox1->setPosition(CCPoint(this->boundingBox().getMaxX() - 60, this->boundingBox().getMidY()));
     insBox1->setColor(p2Color);
     titleLayer->addChild(insBox1);
     
-    CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p1 GO", ROBOTO_FONT, 50);
+    CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p1 touch & hold", ROBOTO_FONT, 50);
     instructionLabel1->setPosition(insBox1->getPosition());
     instructionLabel1->setColor(p1Color);
     instructionLabel1->setRotation(-90);
@@ -48,12 +48,12 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
     
     insBox2 = CCSprite::spriteWithFile("square.png");
     insBox2->setScaleX(2);
-    insBox2->setScaleY(6);
+    insBox2->setScaleY(9);
     insBox2->setPosition(CCPoint(this->boundingBox().getMinX() + 60, this->boundingBox().getMidY()));
     insBox2->setColor(p1Color);
     titleLayer->addChild(insBox2);
     
-    CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p2 GO", ROBOTO_FONT, 50);
+    CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p2 touch & hold", ROBOTO_FONT, 50);
     instructionLabel2->setPosition(insBox2->getPosition());
     instructionLabel2->setColor(p2Color);
     instructionLabel2->setRotation(90);

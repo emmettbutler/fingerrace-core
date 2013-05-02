@@ -49,7 +49,7 @@ bool FileManager::readFile(string fname) {
     }
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     bool res = [[NSUserDefaults standardUserDefaults] boolForKey:@"firstrun_done"];
-    printf("res: %d\n", res);
+    //printf("res: %d\n", res);
     return res;
 #endif
 }

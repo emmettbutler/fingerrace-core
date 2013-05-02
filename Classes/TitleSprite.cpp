@@ -19,7 +19,6 @@ void TitleSprite::runQueueingAnimation(CCLayer *parent){
 }
 
 void TitleSprite::stopQueueingAnimation(){
-    this->buttonQueueOverlay->removeFromParentAndCleanup(true);
     this->button->stopAllActions();
     this->button->setScaleY(this->baseScale);
 }
