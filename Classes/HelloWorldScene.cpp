@@ -676,11 +676,9 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                 TitleSprite *sp = *iter;
                 if(CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation) && sp->touch != touch){
                     sp->touch = NULL;
-                    if(!CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
-                        if(numQueuedPlayers > 0){
-                            printf("lost queued player\n");
-                            numQueuedPlayers--;
-                        }
+                    if(numQueuedPlayers > 0){
+                        printf("lost queued player\n");
+                        numQueuedPlayers--;
                     }
                 }
             }
