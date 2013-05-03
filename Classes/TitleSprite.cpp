@@ -10,7 +10,7 @@
 #include "GameManager.h"
 
 TitleSprite::TitleSprite(){
-    CCSprite::CCSprite();
+    CCSprite();
 }
 
 void TitleSprite::runQueueingAnimation(CCLayer *parent){
