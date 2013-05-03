@@ -618,14 +618,16 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                         printf("tutorial deactivated\n");
                         animateTutButtonDeactivation();
                     }
-                } else if(CCRect::CCRectContainsPoint(howtoButton->boundingBox(), touchLocation)){
-                    if(instructionsVisible){
-                        instructionsVisible = false;
-                        instructions->runAction(CCFadeTo::actionWithDuration(.2, 0));
-                    } else {
-                        instructionsVisible = true;
-                        instructions->runAction(CCFadeTo::actionWithDuration(.2, 255));
-                    }
+                }
+            }
+
+            if(CCRect::CCRectContainsPoint(howtoButton->boundingBox(), touchLocation)){
+                if(instructionsVisible){
+                    instructionsVisible = false;
+                    instructions->runAction(CCFadeTo::actionWithDuration(.2, 0));
+                } else {
+                    instructionsVisible = true;
+                    instructions->runAction(CCFadeTo::actionWithDuration(.2, 255));
                 }
             }
 
