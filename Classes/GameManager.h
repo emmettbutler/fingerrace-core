@@ -44,7 +44,7 @@ public:
     int numPlayers, maxPlayers, goalCheckpoints, currentState, matchPoints;
     long double ttime, startTime, lastStateChangeTime;
     float queueingTime;
-    bool tutorialActive;
+    bool tutorialActive, tablet;
     
     void resetGameState();
     

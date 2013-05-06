@@ -19,62 +19,117 @@ CCScene* HelloWorld::scene(){
     return scene;
 }
 
-void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Color){
+void HelloWorld::setupTitleScreenTextOverlay(ccColor3B playerColors[]){
+
     titleLayer = CCLayer::node();
     CCLabelTTF *label = CCLabelTTF::labelWithString("BUMP", ROBOTO_FONT, 100);
     label->setRotation(-90);
     label->setPosition(CCPoint(this->boundingBox().getMidX() - 63, this->boundingBox().getMinY() + 135));
-    label->setColor(p1Color);
     titleLayer->addChild(label);
 
     CCLabelTTF *subLabel = CCLabelTTF::labelWithString("MAP", ROBOTO_FONT, 100);
     subLabel->setRotation(-90);
     subLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMinY() + 115));
-    subLabel->setColor(p2Color);
     titleLayer->addChild(subLabel);
-    
+
     insBox1 = CCSprite::spriteWithFile("square.png");
-    insBox1->setScaleX(2);
-    insBox1->setScaleY(9);
-    insBox1->setPosition(CCPoint(this->boundingBox().getMaxX() - 60, this->boundingBox().getMidY()));
-    insBox1->setColor(p2Color);
+    insBox1->setColor(playerColors[1]);
     titleLayer->addChild(insBox1);
-    
-    CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p1 touch & hold", ROBOTO_FONT, 50);
-    instructionLabel1->setPosition(insBox1->getPosition());
-    instructionLabel1->setColor(p1Color);
-    instructionLabel1->setRotation(-90);
-    titleLayer->addChild(instructionLabel1);
-    
+
     insBox2 = CCSprite::spriteWithFile("square.png");
-    insBox2->setScaleX(2);
-    insBox2->setScaleY(9);
-    insBox2->setPosition(CCPoint(this->boundingBox().getMinX() + 60, this->boundingBox().getMidY()));
-    insBox2->setColor(p1Color);
+    insBox2->setColor(playerColors[0]);
     titleLayer->addChild(insBox2);
-    
-    CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p2 touch & hold", ROBOTO_FONT, 50);
-    instructionLabel2->setPosition(insBox2->getPosition());
-    instructionLabel2->setColor(p2Color);
-    instructionLabel2->setRotation(90);
-    titleLayer->addChild(instructionLabel2);
+
+    if (GameManager::sharedManager()->tablet) {
+        label->setColor(playerColors[2]);
+        subLabel->setColor(playerColors[3]);
+
+        insBox1->setPosition(CCPoint(this->boundingBox().getMaxX() - 60, this->boundingBox().getMidY()+this->boundingBox().size.height/4));
+        insBox1->setScaleX(1.5);
+        insBox1->setScaleY(7);
+
+        CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p1 touch & hold", ROBOTO_FONT, 40);
+        instructionLabel1->setColor(playerColors[0]);
+        instructionLabel1->setRotation(-90);
+        instructionLabel1->setPosition(insBox1->getPosition());
+        titleLayer->addChild(instructionLabel1);
+
+        insBox2->setPosition(CCPoint(this->boundingBox().getMinX() + 60, this->boundingBox().getMidY()+this->boundingBox().size.height/4));
+        insBox2->setScaleX(1.5);
+        insBox2->setScaleY(7);
+
+        CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p2 touch & hold", ROBOTO_FONT, 40);
+        instructionLabel2->setColor(playerColors[1]);
+        instructionLabel2->setRotation(90);
+        instructionLabel2->setPosition(insBox2->getPosition());
+        titleLayer->addChild(instructionLabel2);
+
+        insBox3 = CCSprite::spriteWithFile("square.png");
+        insBox3->setScaleX(1.5);
+        insBox3->setScaleY(7);
+        insBox3->setColor(playerColors[3]);
+        insBox3->setPosition(CCPoint(this->boundingBox().getMaxX() - 60, this->boundingBox().getMidY()-this->boundingBox().size.height/4));
+        titleLayer->addChild(insBox3);
+
+        CCLabelTTF *instructionLabel3 = CCLabelTTF::labelWithString("p3 touch & hold", ROBOTO_FONT, 40);
+        instructionLabel3->setColor(playerColors[2]);
+        instructionLabel3->setRotation(-90);
+        instructionLabel3->setPosition(insBox3->getPosition());
+        titleLayer->addChild(instructionLabel3);
+
+        insBox4 = CCSprite::spriteWithFile("square.png");
+        insBox4->setScaleX(1.5);
+        insBox4->setScaleY(7);
+        insBox4->setColor(playerColors[2]);
+        insBox4->setPosition(CCPoint(this->boundingBox().getMinX() + 60, this->boundingBox().getMidY()-this->boundingBox().size.height/4));
+        titleLayer->addChild(insBox4);
+
+        CCLabelTTF *instructionLabel4 = CCLabelTTF::labelWithString("p4 touch & hold", ROBOTO_FONT, 40);
+        instructionLabel4->setColor(playerColors[3]);
+        instructionLabel4->setRotation(90);
+        instructionLabel4->setPosition(insBox4->getPosition());
+        titleLayer->addChild(instructionLabel4);
+    } else {
+        label->setColor(playerColors[0]);
+        subLabel->setColor(playerColors[1]);
+
+        insBox1->setPosition(CCPoint(this->boundingBox().getMaxX() - 60, this->boundingBox().getMidY()));
+        insBox1->setScaleX(2);
+        insBox1->setScaleY(9);
+
+        CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p1 touch & hold", ROBOTO_FONT, 50);
+        instructionLabel1->setColor(playerColors[0]);
+        instructionLabel1->setRotation(-90);
+        instructionLabel1->setPosition(insBox1->getPosition());
+        titleLayer->addChild(instructionLabel1);
+
+        insBox2->setPosition(CCPoint(this->boundingBox().getMinX() + 60, this->boundingBox().getMidY()));
+        insBox2->setScaleX(2);
+        insBox2->setScaleY(9);
+
+        CCLabelTTF *instructionLabel2 = CCLabelTTF::labelWithString("p2 touch & hold", ROBOTO_FONT, 50);
+        instructionLabel2->setColor(playerColors[1]);
+        instructionLabel2->setRotation(90);
+        instructionLabel2->setPosition(insBox2->getPosition());
+        titleLayer->addChild(instructionLabel2);
+    }
     
     howtoButton = CCSprite::spriteWithFile("square.png");
-    howtoButton->setColor(p1Color);
+    howtoButton->setColor(playerColors[0]);
     howtoButton->setScaleY(5.8);
     howtoButton->setScaleX(1.5);
     howtoButton->setPosition(CCPoint(this->boundingBox().getMidX() - 45, this->boundingBox().getMaxY() - 175));
     titleLayer->addChild(howtoButton);
     
     CCLabelTTF *howtoLabel = CCLabelTTF::labelWithString("Instructions", ROBOTO_FONT, 40);
-    howtoLabel->setColor(p2Color);
+    howtoLabel->setColor(playerColors[1]);
     howtoLabel->setRotation(90);
     howtoLabel->setPosition(howtoButton->getPosition());
     titleLayer->addChild(howtoLabel);
     
     instructions = CCLabelTTF::labelWithString("1. Touch and hold to pick your color.\n2. Keep your finger on the screen.\n3. Slide to your colored square.\n4. Go faster than your opponents.",
                                                CCSize(0, 0), kCCTextAlignmentLeft, ROBOTO_FONT, 25);
-    instructions->setColor(p2Color);
+    instructions->setColor(playerColors[1]);
     instructions->setOpacity(0);
     instructions->setAnchorPoint(CCPoint(0, 0));
     instructions->setPosition(CCPoint(this->boundingBox().getMidX() + 15, this->boundingBox().getMaxY() - 275));
@@ -83,19 +138,19 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
     if (!GameManager::sharedManager()->firstRun()) {
         tutButton = CCSprite::spriteWithFile("square.png");
         tutButton->setScale(2);
-        tutButton->setColor(p2Color);
+        tutButton->setColor(playerColors[1]);
         tutButton->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
         titleLayer->addChild(tutButton);
 
         tutQLabel = CCLabelTTF::labelWithString("?", ROBOTO_FONT, 80);
         tutQLabel->setRotation(90);
-        tutQLabel->setColor(p1Color);
+        tutQLabel->setColor(playerColors[0]);
         tutQLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
         titleLayer->addChild(tutQLabel);
 
         tutELabel = CCLabelTTF::labelWithString("!", ROBOTO_FONT, 80);
         tutELabel->setRotation(90);
-        tutELabel->setColor(p1Color);
+        tutELabel->setColor(playerColors[0]);
         tutELabel->setOpacity(0);
         tutELabel->setPosition(CCPoint(this->boundingBox().getMidX() + 55, this->boundingBox().getMaxY() - 100));
         titleLayer->addChild(tutELabel);
@@ -103,7 +158,7 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Colo
         tutNotify = CCLabelTTF::labelWithString("Tutorial ON", ROBOTO_FONT, 40);
         tutNotify->setPosition(CCPoint(tutButton->getPosition().x, tutButton->getPosition().y - 150));
         tutNotify->setRotation(90);
-        tutNotify->setColor(p2Color);
+        tutNotify->setColor(playerColors[1]);
         tutNotify->setOpacity(0);
         titleLayer->addChild(tutNotify);
     }
@@ -184,6 +239,7 @@ void HelloWorld::setupTitleScreen(){
     printf("Screen: %0.2f x %0.2f\n", screenDimensions.width, screenDimensions.height);
     if(screenDimensions.width <= 960 && screenDimensions.height <= 640){
         printf("Detected small screen\n");
+        GameManager::sharedManager()->tablet = false;
         GameManager::sharedManager()->maxPlayers = 2;
         GameManager::sharedManager()->numPlayers = 2;
 
@@ -205,37 +261,60 @@ void HelloWorld::setupTitleScreen(){
         this->addChild(p2, 10);
         titleSprites->push_back(p2);
         
-        setupTitleScreenTextOverlay(p1->getColor(), p2->getColor());
+        ccColor3B playerColors [2] = {p1->getColor(), p2->getColor()};
+        setupTitleScreenTextOverlay(playerColors);
         
         p1->button = insBox1;
         p2->button = insBox2;
     } else if(screenDimensions.width > 960 && screenDimensions.height > 640){
         printf("Detected large screen\n");
-        GameManager::sharedManager()->maxPlayers = 2;
-        GameManager::sharedManager()->numPlayers = 2;
+        GameManager::sharedManager()->tablet = true;
+        GameManager::sharedManager()->maxPlayers = 4;
+        GameManager::sharedManager()->numPlayers = 4;
 
         TitleSprite *p1 = new TitleSprite();
         p1->initWithFile("square.png");
-        p1->setPosition(CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY()));
+        p1->setPosition(CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY()+this->getContentSize().height/4));
         p1->setScaleX(this->getContentSize().width/p1->getContentSize().width/2);
-        p1->setScaleY(this->getContentSize().height/p1->getContentSize().height);
+        p1->setScaleY(this->getContentSize().height/p1->getContentSize().height/2);
         p1->setColor(GameManager::sharedManager()->getNextColor());
         this->addChild(p1, 10);
         titleSprites->push_back(p1);
 
         TitleSprite *p2 = new TitleSprite();
         p2->initWithFile("square.png");
-        p2->setPosition(CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY()));
+        p2->setPosition(CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY()+this->getContentSize().height/4));
         p2->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
-        p2->setScaleY(this->getContentSize().height/p2->getContentSize().height);
+        p2->setScaleY(this->getContentSize().height/p2->getContentSize().height/2);
         p2->setColor(GameManager::sharedManager()->getNextColor());
         this->addChild(p2, 10);
         titleSprites->push_back(p2);
 
-        setupTitleScreenTextOverlay(p1->getColor(), p2->getColor());
+        TitleSprite *p3 = new TitleSprite();
+        p3->initWithFile("square.png");
+        p3->setPosition(CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY()-this->getContentSize().height/4));
+        p3->setScaleX(this->getContentSize().width/p1->getContentSize().width/2);
+        p3->setScaleY(this->getContentSize().height/p1->getContentSize().height/2);
+        p3->setColor(GameManager::sharedManager()->getNextColor());
+        this->addChild(p3, 10);
+        titleSprites->push_back(p3);
+
+        TitleSprite *p4 = new TitleSprite();
+        p4->initWithFile("square.png");
+        p4->setPosition(CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY()-this->getContentSize().height/4));
+        p4->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
+        p4->setScaleY(this->getContentSize().height/p2->getContentSize().height/2);
+        p4->setColor(GameManager::sharedManager()->getNextColor());
+        this->addChild(p4, 10);
+        titleSprites->push_back(p4);
+
+        ccColor3B playerColors [4] = {p1->getColor(), p2->getColor(), p3->getColor(), p4->getColor()};
+        setupTitleScreenTextOverlay(playerColors);
         
         p1->button = insBox1;
         p2->button = insBox2;
+        p3->button = insBox3;
+        p4->button = insBox4;
     }
 
     GameManager::sharedManager()->initStats();
@@ -263,7 +342,8 @@ void HelloWorld::setupTitleScreenFromEndgameScreen(){
     p2->runAction(CCSequence::actions(
                                       CCMoveTo::actionWithDuration(.5, CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY())),
                                       NULL));
-    setupTitleScreenTextOverlay(p1->getColor(), p2->getColor());
+    ccColor3B playerColors [2] = {p1->getColor(), p2->getColor()};
+    setupTitleScreenTextOverlay(playerColors);
     
     p1->button = insBox1;
     p1->touch = NULL;
