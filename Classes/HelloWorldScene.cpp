@@ -593,8 +593,16 @@ void HelloWorld::setupGameScreen(){
         CCPoint tp;
         TitleSprite *ts = NULL;
         if(titleSprites->size() > 0){
-            ts = titleSprites->front();
-            titleSprites->pop_front();
+
+            while(ts == NULL) {
+                if(titleSprites->front()->touch == NULL) {
+                    titleSprites->pop_front();
+                } else {
+                    ts = titleSprites->front();
+                    titleSprites->pop_front();
+                }
+            }
+
             t = ts->touch;
             tp = titleTouchPoints->front();
             titleTouchPoints->pop_front();
