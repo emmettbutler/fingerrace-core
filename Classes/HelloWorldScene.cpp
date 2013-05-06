@@ -361,10 +361,12 @@ void HelloWorld::dismissTitleScreen(){
         TitleSprite *sp = *iter;
         sp->runAction(CCScaleTo::actionWithDuration(animationDuration, 0));
         
-        CCPoint p = CCDirector::sharedDirector()->convertToGL(sp->touch->getLocationInView());
-        sp->runAction(CCMoveTo::actionWithDuration(animationDuration, p));
+        if (sp->touch != NULL) {
+            CCPoint p = CCDirector::sharedDirector()->convertToGL(sp->touch->getLocationInView());
+            sp->runAction(CCMoveTo::actionWithDuration(animationDuration, p));
 
-        titleTouchPoints->push_back(p);
+            titleTouchPoints->push_back(p);
+        }
     }
 }
 
