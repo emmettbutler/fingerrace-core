@@ -62,11 +62,21 @@ void Player::initTerritory(CCRect screenBox) {
     territory.size.width /= 2;
 
     if (startingPoint.x < screenBox.getMidX()) {
-        territory.origin.x = screenBox.origin.x / 2 ;
-        this->_identifier = 0;
+        territory.origin.x = screenBox.origin.x / 2;
+
+        if (startingPoint.y > screenBox.getMidY()) {
+            this->_identifier = 0;
+        } else {
+            this->_identifier = 2;
+        }
     } else {
         territory.origin.x = screenBox.origin.x / 2 + screenBox.size.width / 2;
-        this->_identifier = 1;
+
+        if (startingPoint.y > screenBox.getMidY()) {
+            this->_identifier = 1;
+        } else {
+            this->_identifier = 3;
+        }
     }
 }
 
