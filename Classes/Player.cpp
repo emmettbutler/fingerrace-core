@@ -89,8 +89,11 @@ void Player::initScoreCounter() {
         sc->setScaleY(-1.0);
     } else if (this->_identifier == 1) {
         sc->setScaleX(-1.0);
-    } else {
-        // 3+ PLAYER STUFF
+    } else if (this->_identifier == 2) {
+        // correct rotation
+    } else if (this->_identifier == 3) {
+        sc->setScaleY(-1.0);
+        sc->setScaleX(-1.0);
     }
 
     parent->addChild(sc);
