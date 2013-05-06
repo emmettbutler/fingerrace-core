@@ -397,7 +397,7 @@ void HelloWorld::visit(){
     
     CCObject* node;
     CCARRAY_FOREACH(this->getChildren(), node){
-        if (((CCNode *)node)->getTag() == 10){
+        if (((CCNode *)node)->getTag() == GameManager::kMotionBlurTag){
             ((CCNode *)node)->visit();
         }
     }
@@ -424,7 +424,7 @@ void HelloWorld::visit(){
     
     // draw any remaining nodes
     CCARRAY_FOREACH(this->getChildren(), node){
-        if (((CCNode *)node)->getTag() != 10){
+        if (((CCNode *)node)->getTag() != GameManager::kMotionBlurTag){
             ((CCNode *)node)->visit();
         }
     }

@@ -41,10 +41,17 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     this->shineSprite->setOpacity(255*.05);
     this->shineSprite->retain();
     parent->addChild(this->shineSprite);
+    
+    this->grabNotify = CCLabelTTF::labelWithString("Grab", ROBOTO_FONT, 40);
+    this->grabNotify->setTag(GameManager::kMotionBlurTag);
+
+    this->grabNotify->setVisible(false);
+    parent->addChild(this->grabNotify);
 
     this->initWithFile("circle_blur.png");
     this->setScale(1.1);
     this->setOpacity(255*.2);
+    this->setTag(GameManager::kMotionBlurTag);
     this->setColor(this->color);
 
     return true;
@@ -63,10 +70,10 @@ void Player::initTerritory(CCRect screenBox) {
 
     if (startingPoint.x < screenBox.getMidX()) {
         territory.origin.x = screenBox.origin.x / 2 ;
-        this->_identifier = 0;
+        this->_identifier = GameManager::kPlayer1;
     } else {
         territory.origin.x = screenBox.origin.x / 2 + screenBox.size.width / 2;
-        this->_identifier = 1;
+        this->_identifier = GameManager::kPlayer2;
     }
 }
 
@@ -75,9 +82,9 @@ void Player::initScoreCounter() {
     sc->init(GameManager::sharedManager()->goalCheckpoints, this->color, this);
     sc->setPosition(GameManager::sharedManager()->getNextScoreCounterPosition());
 
-    if (this->_identifier == 0) {
+    if (this->_identifier == GameManager::kPlayer1) {
         sc->setScaleY(-1.0);
-    } else if (this->_identifier == 1) {
+    } else if (this->_identifier == GameManager::kPlayer2) {
         sc->setScaleX(-1.0);
     } else {
         // 3+ PLAYER STUFF
@@ -113,7 +120,7 @@ void Player::spawnNewTarget(CCPoint position) {
     
     this->scoreCounter->removePoint();
     
-    float halfHeight = this->currentTarget->boundingBox().getMaxY() - this->currentTarget->boundingBox().getMidY();
+    float halfHeight = (this->currentTarget->getContentSize().height*this->currentTarget->getScaleY())/2;
     
     this->scoreLabel->runAction(
         CCSequence::actions(
@@ -121,6 +128,8 @@ void Player::spawnNewTarget(CCPoint position) {
             NULL
         )
     );
+    
+    this->grabNotify->setPosition(CCPoint(position.x, position.y+halfHeight+30));
 }
 
 void Player::updateScoreText(){
@@ -182,6 +191,8 @@ void Player::activateTouch(CCTouch *touch){
     newColor.g *= activeColorScaleFactor;
     newColor.b *= activeColorScaleFactor;
     this->currentTarget->setColor(newColor);
+    
+    this->grabNotify->setVisible(false);
 }
 
 void Player::deactivateTouch(){
@@ -195,6 +206,8 @@ void Player::deactivateTouch(){
     this->scoreCounter->addPoint();
     
     this->lastCheckpointTime = GameManager::sharedManager()->getCurrentTimeSeconds();
+    
+    this->grabNotify->setVisible(true);
 }
 
 void Player::updatePosition(CCPoint glPosition) {

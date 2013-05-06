@@ -57,6 +57,14 @@ public:
         kTitleState, kPreGameState, kInGameState, kGameOverState
     };
     
+    enum kSpriteTag{
+        kMotionBlurTag
+    };
+    
+    enum kPlayerId{
+        kPlayer1, kPlayer2, kPlayer3, kPlayer4
+    };
+    
     ccColor3B getNextColor();
     void resetColors();
     
