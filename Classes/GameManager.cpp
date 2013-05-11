@@ -37,7 +37,12 @@ void GameManager::init(){
     currentState = kTitleState;
     goalCheckpoints = 20;
     matchPoints = 3;
-    queueingTime = 1;
+    
+    if(tabletDevice()){
+        queueingTime = 2;
+    } else {
+        queueingTime = 1;
+    }
     
     startTime = getCurrentTimeSeconds();
     
