@@ -41,6 +41,8 @@ public:
     long double timeSinceLastStateChange();
     long double getElapsed();
     CCLayer *baseLayer;
+    CCPoint PH_P1TPOS, PH_P2TPOS, TAB_P1TPOS, TAB_P2TPOS, TAB_P3TPOS, TAB_P4TPOS;  // title sprite positions for phone and tablet
+    float PH_TSCY, PH_TSCX, TAB_TSCX, TAB_TSCY;  // x and y title sprite scales for phone and tablet
     int numPlayers, maxPlayers, goalCheckpoints, currentState, matchPoints;
     long double ttime, startTime, lastStateChangeTime;
     float queueingTime;

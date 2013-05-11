@@ -216,7 +216,6 @@ void HelloWorld::animateTutButtonDeactivation(){
 }
 
 void HelloWorld::setupEndgameScreenTextOverlay(){
-
     ccColor3B statColor = GameManager::sharedManager()->getNextColor();
     endgameLayer = CCLayer::node();
     
@@ -255,18 +254,18 @@ void HelloWorld::setupTitleScreen(){
 
         TitleSprite *p1 = new TitleSprite();
         p1->initWithFile("square.png");
-        p1->setPosition(CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY()));
-        p1->setScaleX(this->getContentSize().width/p1->getContentSize().width/2);
-        p1->setScaleY(this->getContentSize().height/p1->getContentSize().height);
+        p1->setPosition(GameManager::sharedManager()->PH_P1TPOS);
+        p1->setScaleX(GameManager::sharedManager()->PH_TSCX);
+        p1->setScaleY(GameManager::sharedManager()->PH_TSCY);
         p1->setColor(GameManager::sharedManager()->getNextColor());
         this->addChild(p1, 10);
         titleSprites->push_back(p1);
 
         TitleSprite *p2 = new TitleSprite();
         p2->initWithFile("square.png");
-        p2->setPosition(CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY()));
-        p2->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
-        p2->setScaleY(this->getContentSize().height/p2->getContentSize().height);
+        p2->setPosition(GameManager::sharedManager()->PH_P2TPOS);
+        p2->setScaleX(GameManager::sharedManager()->PH_TSCX);
+        p2->setScaleY(GameManager::sharedManager()->PH_TSCY);
         p2->setColor(GameManager::sharedManager()->getNextColor());
         this->addChild(p2, 10);
         titleSprites->push_back(p2);
@@ -282,41 +281,41 @@ void HelloWorld::setupTitleScreen(){
 
         TitleSprite *p1 = new TitleSprite();
         p1->initWithFile("square.png");
-        p1->setPosition(CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY()+this->getContentSize().height/4));
-        p1->setScaleX(this->getContentSize().width/p1->getContentSize().width/2);
-        p1->setScaleY(this->getContentSize().height/p1->getContentSize().height/2);
+        p1->setPosition(GameManager::sharedManager()->TAB_P1TPOS);
+        p1->setScaleX(GameManager::sharedManager()->TAB_TSCX);
+        p1->setScaleY(GameManager::sharedManager()->TAB_TSCY);
         p1->setColor(GameManager::sharedManager()->getNextColor());
         this->addChild(p1, 10);
         titleSprites->push_back(p1);
 
         TitleSprite *p2 = new TitleSprite();
         p2->initWithFile("square.png");
-        p2->setPosition(CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY()+this->getContentSize().height/4));
-        p2->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
-        p2->setScaleY(this->getContentSize().height/p2->getContentSize().height/2);
+        p2->setPosition(GameManager::sharedManager()->TAB_P2TPOS);
+        p2->setScaleX(GameManager::sharedManager()->TAB_TSCX);
+        p2->setScaleY(GameManager::sharedManager()->TAB_TSCY);
         p2->setColor(GameManager::sharedManager()->getNextColor());
         this->addChild(p2, 10);
         titleSprites->push_back(p2);
 
         TitleSprite *p3 = new TitleSprite();
         p3->initWithFile("square.png");
-        p3->setPosition(CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY()-this->getContentSize().height/4));
-        p3->setScaleX(this->getContentSize().width/p1->getContentSize().width/2);
-        p3->setScaleY(this->getContentSize().height/p1->getContentSize().height/2);
+        p3->setPosition(GameManager::sharedManager()->TAB_P3TPOS);
+        p3->setScaleX(GameManager::sharedManager()->TAB_TSCX);
+        p3->setScaleY(GameManager::sharedManager()->TAB_TSCY);
         p3->setColor(GameManager::sharedManager()->getNextColor());
         this->addChild(p3, 10);
         titleSprites->push_back(p3);
 
         TitleSprite *p4 = new TitleSprite();
         p4->initWithFile("square.png");
-        p4->setPosition(CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY()-this->getContentSize().height/4));
-        p4->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
-        p4->setScaleY(this->getContentSize().height/p2->getContentSize().height/2);
+        p4->setPosition(GameManager::sharedManager()->TAB_P4TPOS);
+        p4->setScaleX(GameManager::sharedManager()->TAB_TSCX);
+        p4->setScaleY(GameManager::sharedManager()->TAB_TSCY);
         p4->setColor(GameManager::sharedManager()->getNextColor());
         this->addChild(p4, 10);
         titleSprites->push_back(p4);
 
-        ccColor3B playerColors [4] = {p1->getColor(), p2->getColor(), p3->getColor(), p4->getColor()};
+        ccColor3B playerColors[4] = {p1->getColor(), p2->getColor(), p3->getColor(), p4->getColor()};
         setupTitleScreenTextOverlay(playerColors);
         
         p1->button = insBox1;
@@ -335,7 +334,7 @@ void HelloWorld::setupTitleScreenFromEndgameScreen(){
                                       CCScaleTo::actionWithDuration(initTime, this->getContentSize().width/p1->getContentSize().width/2, this->getContentSize().height/p1->getContentSize().height),
                                       NULL));
     p1->runAction(CCSequence::actions(
-                                      CCMoveTo::actionWithDuration(initTime, CCPoint(this->boundingBox().getMidX()+this->getContentSize().width/4, this->boundingBox().getMidY())),
+                                      CCMoveTo::actionWithDuration(initTime, GameManager::sharedManager()->PH_P1TPOS),
                                       NULL));
     
     TitleSprite *p2 = new TitleSprite();
@@ -348,7 +347,7 @@ void HelloWorld::setupTitleScreenFromEndgameScreen(){
     titleSprites->push_back(p2);
     
     p2->runAction(CCSequence::actions(
-                                      CCMoveTo::actionWithDuration(.5, CCPoint(this->boundingBox().getMidX()-this->getContentSize().width/4, this->boundingBox().getMidY())),
+                                      CCMoveTo::actionWithDuration(.5, GameManager::sharedManager()->PH_P2TPOS),
                                       NULL));
     ccColor3B playerColors [2] = {p1->getColor(), p2->getColor()};
     setupTitleScreenTextOverlay(playerColors);
@@ -357,7 +356,6 @@ void HelloWorld::setupTitleScreenFromEndgameScreen(){
     p1->touch = NULL;
     
     p2->button = insBox2;
-    p2->touch = NULL;
 }
 
 void HelloWorld::dismissTitleScreen(){
@@ -446,7 +444,9 @@ void HelloWorld::iterateBackground(bool lots){
 bool HelloWorld::init(){
     if(!CCLayer::init()){ return false; }
     
+    // first-time setup
     GameManager::sharedManager();
+    GameManager::sharedManager()->setupCounterPositions(this);
     
     if(!GameManager::sharedManager()->retinaDevice()){
         CCDirector::sharedDirector()->setContentScaleFactor(2);
@@ -559,7 +559,6 @@ void HelloWorld::tick(float dt){
         if(GameManager::sharedManager()->getCurrentTimeSeconds() - lastPlayerQueueTime > GameManager::sharedManager()->queueingTime &&
            numQueuedPlayers <= GameManager::sharedManager()->maxPlayers && numQueuedPlayers > 1){
             printf("Starting pregame\n");
-            GameManager::sharedManager()->setupCounterPositions(this);
             dismissTitleScreen();
             GameManager::sharedManager()->numPlayers = numQueuedPlayers;
             setupGameScreen();  // depends on numQueuedPlayers being correct

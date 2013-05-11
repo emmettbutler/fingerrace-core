@@ -10,6 +10,7 @@
 
 #include "FileManager.h"
 #include "Player.h"
+#include "TitleSprite.h"
 #include "SquareTarget.h"
 #include "ScoreCounter.h"
 
@@ -57,7 +58,7 @@ void GameManager::init(){
     allowedColors->push_back(ccc3(252, 182, 83));
     allowedColors->push_back(ccc3(85, 98, 112));
     allowedColors->push_back(ccc3(142, 172, 0));
-
+    
     usedColors = new std::list<ccColor3B>();
 
     if (this->firstRun()) {
@@ -78,6 +79,24 @@ void GameManager::setupCounterPositions(CCLayer *b){
     counterPositions->push_back(CCPoint(b->boundingBox().getMaxX() - 366*scaleFactor,
                                         b->boundingBox().getMaxY() - 13*scaleFactor));
     usedCounterPositions = new std::list<CCPoint>();
+    
+    
+    PH_P1TPOS = CCPoint(b->boundingBox().getMidX()+b->getContentSize().width/4, b->boundingBox().getMidY());
+    PH_P2TPOS = CCPoint(b->boundingBox().getMidX()-b->getContentSize().width/4, b->boundingBox().getMidY());
+    TAB_P1TPOS = CCPoint(b->boundingBox().getMidX()+b->getContentSize().width/4, b->boundingBox().getMidY()+b->getContentSize().height/4);
+    TAB_P2TPOS = CCPoint(b->boundingBox().getMidX()-b->getContentSize().width/4, b->boundingBox().getMidY()+b->getContentSize().height/4);
+    TAB_P3TPOS = CCPoint(b->boundingBox().getMidX()+b->getContentSize().width/4, b->boundingBox().getMidY()-b->getContentSize().height/4);
+    TAB_P4TPOS = CCPoint(b->boundingBox().getMidX()-b->getContentSize().width/4, b->boundingBox().getMidY()-b->getContentSize().height/4);
+    
+    TitleSprite *p1 = new TitleSprite();  // make one just to have it around
+    p1->initWithFile("square.png");
+    
+    PH_TSCX = b->getContentSize().width/p1->getContentSize().width/2;
+    PH_TSCY = b->getContentSize().height/p1->getContentSize().height;
+    TAB_TSCX = b->getContentSize().width/p1->getContentSize().width/2;
+    TAB_TSCY = b->getContentSize().height/p1->getContentSize().height/2;
+    
+    free(p1);
 }
 
 void GameManager::resetGameState(){
