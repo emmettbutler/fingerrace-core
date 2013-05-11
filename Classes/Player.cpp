@@ -96,9 +96,9 @@ void Player::initScoreCounter() {
         sc->setScaleY(-1.0);
     } else if (this->_identifier == GameManager::kPlayer2) {
         sc->setScaleX(-1.0);
-    } else if (this->_identifier == 2) {
+    } else if (this->_identifier == GameManager::kPlayer3) {
         // correct rotation
-    } else if (this->_identifier == 3) {
+    } else if (this->_identifier == GameManager::kPlayer4) {
         sc->setScaleY(-1.0);
         sc->setScaleX(-1.0);
     }
