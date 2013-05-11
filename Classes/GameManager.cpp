@@ -61,10 +61,14 @@ void GameManager::setupCounterPositions(CCLayer *b){
     baseLayer = b;
     
     counterPositions = new std::list<CCPoint>();
-    counterPositions->push_back(CCPoint(b->boundingBox().getMaxX() - 366, b->boundingBox().getMinY() - 30));
-    counterPositions->push_back(CCPoint(b->boundingBox().getMinX() + 20, b->boundingBox().getMaxY() - 13));
-    counterPositions->push_back(CCPoint(b->boundingBox().getMinX() + 20, b->boundingBox().getMinY() - 30));
-    counterPositions->push_back(CCPoint(b->boundingBox().getMaxX() - 366, b->boundingBox().getMaxY() - 13));
+    counterPositions->push_back(CCPoint(b->boundingBox().getMaxX() - 366*scaleFactor,
+                                        b->boundingBox().getMinY() - 30*scaleFactor));
+    counterPositions->push_back(CCPoint(b->boundingBox().getMinX() + 20*scaleFactor,
+                                        b->boundingBox().getMaxY() - 13*scaleFactor));
+    counterPositions->push_back(CCPoint(b->boundingBox().getMinX() + 20*scaleFactor,
+                                        b->boundingBox().getMinY() - 30*scaleFactor));
+    counterPositions->push_back(CCPoint(b->boundingBox().getMaxX() - 366*scaleFactor,
+                                        b->boundingBox().getMaxY() - 13*scaleFactor));
     usedCounterPositions = new std::list<CCPoint>();
 }
 
@@ -195,6 +199,9 @@ void GameManager::initStats() {
 }
 
 bool GameManager::tabletDevice(){
+#ifdef PHONE_SIM_TABLET
+    return true;
+#endif
     CCSize screenDimensions = CCEGLView::sharedOpenGLView()->getFrameSize();
     printf("Screen: %0.2f x %0.2f\n", screenDimensions.width, screenDimensions.height);
     if(screenDimensions.width <= 960 && screenDimensions.height <= 640){

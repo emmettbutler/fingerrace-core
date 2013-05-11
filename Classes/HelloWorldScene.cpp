@@ -20,7 +20,6 @@ CCScene* HelloWorld::scene(){
 }
 
 void HelloWorld::setupTitleScreenTextOverlay(ccColor3B playerColors[]){
-
     titleLayer = CCLayer::node();
     CCLabelTTF *label = CCLabelTTF::labelWithString("BUMP", ROBOTO_FONT, 100*GameManager::sharedManager()->getScaleFactor());
     label->setRotation(-90);
@@ -280,7 +279,6 @@ void HelloWorld::setupTitleScreen(){
     } else {
         printf("Detected large screen\n");
         GameManager::sharedManager()->maxPlayers = 4;
-        GameManager::sharedManager()->numPlayers = 4;
 
         TitleSprite *p1 = new TitleSprite();
         p1->initWithFile("square.png");
@@ -371,7 +369,7 @@ void HelloWorld::dismissTitleScreen(){
         TitleSprite *sp = *iter;
         sp->runAction(CCScaleTo::actionWithDuration(animationDuration, 0));
         
-        if (sp->touch != NULL) {
+        if(sp->touch != NULL) {
             CCPoint p = CCDirector::sharedDirector()->convertToGL(sp->touch->getLocationInView());
             sp->runAction(CCMoveTo::actionWithDuration(animationDuration, p));
 
@@ -564,7 +562,7 @@ void HelloWorld::tick(float dt){
             GameManager::sharedManager()->setupCounterPositions(this);
             dismissTitleScreen();
             GameManager::sharedManager()->numPlayers = numQueuedPlayers;
-            setupGameScreen();
+            setupGameScreen();  // depends on numQueuedPlayers being correct
             GameManager::sharedManager()->setupGame();
             numQueuedPlayers = 0;
         }
@@ -604,24 +602,24 @@ void HelloWorld::tick(float dt){
 
 void HelloWorld::setupGameScreen(){
     for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
+        printf("Init player %d\n", i+1);
         CCTouch *t = NULL;
         CCPoint tp;
         TitleSprite *ts = NULL;
-        if(titleSprites->size() > 0){
-
-            while(ts == NULL) {
-                if(titleSprites->front()->touch == NULL) {
-                    titleSprites->pop_front();
-                } else {
-                    ts = titleSprites->front();
-                    titleSprites->pop_front();
-                }
+        while(ts == NULL) {
+            printf("titlesprites: %d\n", titleSprites->size());
+            if(titleSprites->front()->touch == NULL) {
+                titleSprites->pop_front();
+            } else {
+                ts = titleSprites->front();
+                titleSprites->pop_front();
             }
-
-            t = ts->touch;
-            tp = titleTouchPoints->front();
-            titleTouchPoints->pop_front();
         }
+
+        t = ts->touch;
+        tp = titleTouchPoints->front();
+        titleTouchPoints->pop_front();
+        
         Player *p = new Player();
         p->init(tp, ts->getColor(), this);
         p->initTerritory(this->boundingBox());
