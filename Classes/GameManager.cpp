@@ -74,6 +74,7 @@ void GameManager::resetGameState(){
         p1->scoreLabel->removeFromParentAndCleanup(true);
         p1->shineSprite->removeFromParentAndCleanup(true);
         p1->scoreCounter->removeFromParentAndCleanup(true);
+        p1->grabNotify->removeFromParentAndCleanup(true);
         if(this->tutorialActive){
             if(p1->tutMessage != NULL){
                 p1->tutMessage->removeFromParentAndCleanup(true);
