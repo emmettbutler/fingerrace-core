@@ -21,7 +21,7 @@ public:
     virtual void visit();
     void resolveTargetCollision();
     void setupTitleScreen();
-    void setupTitleScreenTextOverlay(ccColor3B p1Color, ccColor3B p2Color);
+    void setupTitleScreenTextOverlay(ccColor3B playerColors[]);
     void setupTitleScreenFromEndgameScreen();
     void dismissTitleScreen();
     void dismissEndgameScreen();
@@ -41,7 +41,7 @@ public:
     int scoreTotal();
     
     bool instructionsVisible;
-    CCSprite *tutButton, *insBox1, *insBox2, *howtoButton;
+    CCSprite *tutButton, *insBox1, *insBox2, *insBox3, *insBox4, *howtoButton;
     CCLabelTTF *tutQLabel, *tutELabel, *tutNotify, *instructions;
     CCArray *tutMessages;
     std::list<TitleSprite *> *titleSprites;

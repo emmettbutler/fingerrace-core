@@ -47,6 +47,8 @@ public:
     bool tutorialActive;
     
     void resetGameState();
+    bool tabletDevice();
+    bool retinaDevice();
     
     std::list<ccColor3B> *allowedColors;
     std::list<ccColor3B> *usedColors;
@@ -76,6 +78,12 @@ public:
     std::vector<int> *winCounts;
 
     bool firstRun();
+    
+    void setScaleFactor(float sf);
+    float getScaleFactor();
+    
+private:
+    float scaleFactor;
 };
 
 

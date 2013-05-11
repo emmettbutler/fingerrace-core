@@ -68,11 +68,21 @@ void Player::initTerritory(CCRect screenBox) {
     territory.size.width /= 2;
 
     if (startingPoint.x < screenBox.getMidX()) {
-        territory.origin.x = screenBox.origin.x / 2 ;
-        this->_identifier = GameManager::kPlayer1;
+        territory.origin.x = screenBox.origin.x / 2;
+
+        if (startingPoint.y > screenBox.getMidY()) {
+            this->_identifier = GameManager::kPlayer1;
+        } else {
+            this->_identifier = GameManager::kPlayer3;
+        }
     } else {
         territory.origin.x = screenBox.origin.x / 2 + screenBox.size.width / 2;
-        this->_identifier = GameManager::kPlayer2;
+
+        if (startingPoint.y > screenBox.getMidY()) {
+            this->_identifier = GameManager::kPlayer2;
+        } else {
+            this->_identifier = GameManager::kPlayer4;
+        }
     }
 }
 
@@ -85,8 +95,11 @@ void Player::initScoreCounter() {
         sc->setScaleY(-1.0);
     } else if (this->_identifier == GameManager::kPlayer2) {
         sc->setScaleX(-1.0);
-    } else {
-        // 3+ PLAYER STUFF
+    } else if (this->_identifier == GameManager::kPlayer3) {
+        // correct rotation
+    } else if (this->_identifier == GameManager::kPlayer4) {
+        sc->setScaleY(-1.0);
+        sc->setScaleX(-1.0);
     }
 
     parent->addChild(sc);

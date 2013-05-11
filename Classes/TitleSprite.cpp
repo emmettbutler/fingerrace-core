@@ -11,6 +11,7 @@
 
 TitleSprite::TitleSprite(){
     CCSprite();
+    this->touch = NULL;
 }
 
 void TitleSprite::runQueueingAnimation(CCLayer *parent){

@@ -61,8 +61,14 @@ void GameManager::setupCounterPositions(CCLayer *b){
     baseLayer = b;
     
     counterPositions = new std::list<CCPoint>();
-    counterPositions->push_back(CCPoint(b->boundingBox().getMaxX() - 366, b->boundingBox().getMinY() - 30));
-    counterPositions->push_back(CCPoint(b->boundingBox().getMinX() + 20, b->boundingBox().getMaxY() - 13));
+    counterPositions->push_back(CCPoint(b->boundingBox().getMaxX() - 366*scaleFactor,
+                                        b->boundingBox().getMinY() - 30*scaleFactor));
+    counterPositions->push_back(CCPoint(b->boundingBox().getMinX() + 20*scaleFactor,
+                                        b->boundingBox().getMaxY() - 13*scaleFactor));
+    counterPositions->push_back(CCPoint(b->boundingBox().getMinX() + 20*scaleFactor,
+                                        b->boundingBox().getMinY() - 30*scaleFactor));
+    counterPositions->push_back(CCPoint(b->boundingBox().getMaxX() - 366*scaleFactor,
+                                        b->boundingBox().getMaxY() - 13*scaleFactor));
     usedCounterPositions = new std::list<CCPoint>();
 }
 
@@ -74,6 +80,7 @@ void GameManager::resetGameState(){
         p1->scoreLabel->removeFromParentAndCleanup(true);
         p1->shineSprite->removeFromParentAndCleanup(true);
         p1->scoreCounter->removeFromParentAndCleanup(true);
+        p1->grabNotify->removeFromParentAndCleanup(true);
         if(this->tutorialActive){
             if(p1->tutMessage != NULL){
                 p1->tutMessage->removeFromParentAndCleanup(true);
@@ -189,4 +196,36 @@ long double GameManager::timeSinceLastStateChange(){
 
 void GameManager::initStats() {
     winCounts = new std::vector<int>(maxPlayers, 0);
+}
+
+bool GameManager::tabletDevice(){
+#ifdef PHONE_SIM_TABLET
+    return true;
+#endif
+    CCSize screenDimensions = CCEGLView::sharedOpenGLView()->getFrameSize();
+    printf("Screen: %0.2f x %0.2f\n", screenDimensions.width, screenDimensions.height);
+    if(screenDimensions.width <= 960 && screenDimensions.height <= 640){
+        printf("Detected small screen\n");
+        return false;
+    }
+    printf("Detected large screen\n");
+    return true;
+}
+
+bool GameManager::retinaDevice(){
+    CCSize screenDimensions = CCEGLView::sharedOpenGLView()->getFrameSize();
+    if(screenDimensions.width < 960 || screenDimensions.height < 640){
+        printf("detected non-retina device\n");
+        return false;
+    }
+    printf("detected retina device\n");
+    return true;
+}
+
+void GameManager::setScaleFactor(float sf){
+    this->scaleFactor = sf;
+}
+
+float GameManager::getScaleFactor(){
+    return this->scaleFactor;
 }
