@@ -358,6 +358,8 @@ bool HelloWorld::init(){
     
     GameManager::sharedManager();
     
+    //CCDirector::sharedDirector()->setContentScaleFactor(2);
+    
     this->setContentSize(CCEGLView::sharedOpenGLView()->getFrameSize());
     
     CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 0, false);
@@ -404,8 +406,6 @@ void HelloWorld::visit(){
     
     rtx->end();
     
-    // reorder the render textures so that the
-    // most recently rendered texture is drawn last
     this->selectNextRenderTexture();
     int index = currentRenderTextureIndex;
     for (int i = 0; i < kRenderTextureCount; i++){
@@ -422,7 +422,6 @@ void HelloWorld::visit(){
         }
     }
     
-    // draw any remaining nodes
     CCARRAY_FOREACH(this->getChildren(), node){
         if (((CCNode *)node)->getTag() != GameManager::kMotionBlurTag){
             ((CCNode *)node)->visit();
@@ -678,9 +677,11 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                 TitleSprite *sp = *iter;
                 if(CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation) && sp->touch != touch){
                     sp->touch = NULL;
-                    if(numQueuedPlayers > 0){
-                        printf("lost queued player\n");
-                        numQueuedPlayers--;
+                    if(!CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
+                        if(numQueuedPlayers > 0){
+                            printf("lost queued player\n");
+                            numQueuedPlayers--;
+                        }
                     }
                 }
             }
