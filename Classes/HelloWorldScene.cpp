@@ -698,21 +698,19 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                 Player *p1 = *iter;
                 
                 if(CCRect::CCRectContainsPoint(p1->currentTarget->boundingBox(), touchLocation)){
-                    if(p1->touch == NULL){
-                        p1->activateTouch((CCTouch *)*it);
-                        p1->updatePosition(touchLocation);
-                        this->addChild(p1);
-                        this->addChild(p1->shineSprite);
-                        p1->spawnNewTarget(nextTargetPosition(p1));
+                    p1->activateTouch((CCTouch *)*it);
+                    p1->updatePosition(touchLocation);
+                    this->addChild(p1);
+                    this->addChild(p1->shineSprite);
+                    p1->spawnNewTarget(nextTargetPosition(p1));
                         
-                        if(GameManager::sharedManager()->tutorialActive && p1->tut_touchHasEnded){
-                            p1->tut_touchHasEnded = false;
-                            p1->tutMessage->setString("Keep your finger on the screen");
-                            p1->tutColorMessage->setVisible(false);
-                        }
-                        
-                        break;
+                    if(GameManager::sharedManager()->tutorialActive && p1->tut_touchHasEnded){
+                        p1->tut_touchHasEnded = false;
+                        p1->tutMessage->setString("Keep your finger on the screen");
+                        p1->tutColorMessage->setVisible(false);
                     }
+                        
+                    break;
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
