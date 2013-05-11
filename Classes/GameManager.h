@@ -66,7 +66,7 @@ public:
     };
     
     enum kPlayerId{
-        kPlayer1, kPlayer2, kPlayer3, kPlayer4
+        kPlayer1=0, kPlayer2=1, kPlayer3=2, kPlayer4=3
     };
     
     ccColor3B getNextColor();

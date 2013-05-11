@@ -219,13 +219,12 @@ void HelloWorld::setupEndgameScreenTextOverlay(){
     ccColor3B statColor = GameManager::sharedManager()->getNextColor();
     endgameLayer = CCLayer::node();
     
-    int i = 0;
     std::list<Player *> *players = GameManager::sharedManager()->players;
     for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
         Player *p1 = *iter;
 
         char p1Score[1];
-        sprintf(p1Score, "%d", GameManager::sharedManager()->winCounts->at(i));
+        sprintf(p1Score, "%d", GameManager::sharedManager()->winCounts->at(p1->getID()));
         
         CCLabelTTF *p1ScoreLabel = CCLabelTTF::labelWithString(p1Score, ROBOTO_FONT, 200*GameManager::sharedManager()->getScaleFactor());
         p1ScoreLabel->setPosition(p1->homePoint);
@@ -238,7 +237,6 @@ void HelloWorld::setupEndgameScreenTextOverlay(){
         p1ScoreLabel->setOpacity(0);
         endgameLayer->addChild(p1ScoreLabel);
         p1ScoreLabel->runAction(CCFadeIn::actionWithDuration(1.0));
-        i++;
     }
 
     this->addChild(endgameLayer, 11);
@@ -294,7 +292,6 @@ void HelloWorld::setupTitleScreenFromEndgameScreen(){
     TitleSprite **tempTs = (TitleSprite **)malloc((sizeof(TitleSprite *) * GameManager::sharedManager()->maxPlayers));
     
     playerColors[0] = p1->getColor();
-    tempTs[0] = p1;
     
     p1->runAction(CCSequence::actions(
                                       CCScaleTo::actionWithDuration(initTime, GameManager::sharedManager()->getLayoutScale().x,
@@ -377,7 +374,7 @@ void HelloWorld::setupEndgameScreen(Player *winner){
 
     // increment win count stat for the winner
     if(GameManager::sharedManager()->winCounts->at(winner->getID()) == GameManager::sharedManager()->matchPoints){
-        GameManager::sharedManager()->initStats();
+        GameManager::sharedManager()->initStats();  // reset counters when match is over
     }
     GameManager::sharedManager()->winCounts->at(winner->getID())++;
     
