@@ -786,6 +786,7 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                 TitleSprite *sp = *iter;
                 if(CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation) && sp->touch != touch){
                     sp->touch = NULL;
+                    sp->stopQueueingAnimation();
                     if(!CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
                         if(numQueuedPlayers > 0){
                             printf("lost queued player\n");
