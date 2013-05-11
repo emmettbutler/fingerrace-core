@@ -58,6 +58,8 @@ void GameManager::init(){
     allowedColors->push_back(ccc3(252, 182, 83));
     allowedColors->push_back(ccc3(85, 98, 112));
     allowedColors->push_back(ccc3(142, 172, 0));
+    allowedColors->push_back(ccc3(255, 0, 0));
+    allowedColors->push_back(ccc3(0, 255, 0));
     
     usedColors = new std::list<ccColor3B>();
 
@@ -171,7 +173,7 @@ ccColor3B GameManager::getNextColor(){
             return ret;
         }
     }
-    return ccc3(255, 255, 255);
+    return ccc3(255, 255, 200);
 }
 
 void GameManager::resetColors(){

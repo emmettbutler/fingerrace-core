@@ -272,23 +272,16 @@ void HelloWorld::setupTitleScreen(){
         tempTs[i] = p1;
     }
     setupTitleScreenTextOverlay(playerColors);  // the time-dependency here is awful, awful, awful design - my fault
-    for(int i = 0; i < GameManager::sharedManager()->maxPlayers; i++){
-        switch(i){
-            case 0:
-                tempTs[i]->button = insBox1;  // must happen AFTER setupTitleScreenTextOverlay guh
-                break;
-            case 1:
-                tempTs[i]->button = insBox2;
-                break;
-            case 2:
-                tempTs[i]->button = insBox3;
-                break;
-            case 3:
-                tempTs[i]->button = insBox4;
-                break;
-        }
+ 
+    tempTs[0]->button = insBox1;  // must happen AFTER setupTitleScreenTextOverlay guh
+    tempTs[1]->button = insBox2;
+    if(GameManager::sharedManager()->tabletDevice()){
+        tempTs[2]->button = insBox3;
+        tempTs[3]->button = insBox4;
     }
+    
     free(tempTs);
+    free(playerColors);
     
     GameManager::sharedManager()->initStats();
 }
@@ -297,43 +290,49 @@ void HelloWorld::setupTitleScreenFromEndgameScreen(){
     float initTime = .5;
     TitleSprite *p1 = titleSprites->front();
     
-    // TODO - have a function getLayoutScale, getLayoutPos that internally checks for tablet and returns appropriate value
-    // this way, might be able to avoid all these conditionals and use loops instead
-    if(GameManager::sharedManager()->tabletDevice()){
-        p1->runAction(CCSequence::actions(
-                                          CCScaleTo::actionWithDuration(initTime, GameManager::sharedManager()->PH_TSCX, GameManager::sharedManager()->PH_TSCY),
+    ccColor3B *playerColors = (ccColor3B *)malloc(sizeof(ccColor3B) * GameManager::sharedManager()->maxPlayers);
+    TitleSprite **tempTs = (TitleSprite **)malloc((sizeof(TitleSprite *) * GameManager::sharedManager()->maxPlayers));
+    
+    playerColors[0] = p1->getColor();
+    tempTs[0] = p1;
+    
+    p1->runAction(CCSequence::actions(
+                                      CCScaleTo::actionWithDuration(initTime, GameManager::sharedManager()->getLayoutScale().x,
+                                                                    GameManager::sharedManager()->getLayoutScale().y),
                                           NULL));
-        p1->runAction(CCSequence::actions(
-                                          CCMoveTo::actionWithDuration(initTime, GameManager::sharedManager()->PH_P1TPOS),
+    p1->runAction(CCSequence::actions(
+                                    CCMoveTo::actionWithDuration(initTime, GameManager::sharedManager()->getLayoutPosition(0)),
                                           NULL));
-    } else {
-        p1->runAction(CCSequence::actions(
-                                          CCScaleTo::actionWithDuration(initTime, GameManager::sharedManager()->PH_TSCX, GameManager::sharedManager()->PH_TSCY),
-                                          NULL));
-        p1->runAction(CCSequence::actions(
-                                          CCMoveTo::actionWithDuration(initTime, GameManager::sharedManager()->PH_P1TPOS),
-                                          NULL));
-        
+    
+    for(int i = 1; i < GameManager::sharedManager()->maxPlayers; i++){
         TitleSprite *p2 = new TitleSprite();
         p2->initWithFile("square.png");
-        p2->setScaleX(this->getContentSize().width/p2->getContentSize().width/2);
-        p2->setScaleY(this->getContentSize().height/p2->getContentSize().height);
+        p2->setScaleX(GameManager::sharedManager()->getLayoutScale().x);
+        p2->setScaleY(GameManager::sharedManager()->getLayoutScale().y);
         p2->setPosition(CCPoint(this->boundingBox().getMinX()-p2->getContentSize().width*p2->getScaleX(), this->boundingBox().getMidY()));
         p2->setColor(GameManager::sharedManager()->getNextColor());
+        playerColors[i] = p2->getColor();
         this->addChild(p2, 10);
         titleSprites->push_back(p2);
+        tempTs[i] = p2;
         
         p2->runAction(CCSequence::actions(
-                                          CCMoveTo::actionWithDuration(.5, GameManager::sharedManager()->PH_P2TPOS),
+                                          CCMoveTo::actionWithDuration(.5, GameManager::sharedManager()->getLayoutPosition(i)),
                                           NULL));
-        ccColor3B playerColors [2] = {p1->getColor(), p2->getColor()};
-        setupTitleScreenTextOverlay(playerColors);
-        
-        p1->button = insBox1;
-        p1->touch = NULL;
-        
-        p2->button = insBox2;
     }
+    setupTitleScreenTextOverlay(playerColors);
+        
+    p1->button = insBox1;
+    p1->touch = NULL;
+        
+    tempTs[1]->button = insBox2;
+    if(GameManager::sharedManager()->tabletDevice()){
+        tempTs[2]->button = insBox3;
+        tempTs[3]->button = insBox4;
+    }
+    
+    free(playerColors);
+    free(tempTs);
 }
 
 void HelloWorld::dismissTitleScreen(){
