@@ -76,6 +76,7 @@ void GameManager::resetGameState(){
         p1->scoreLabel->removeFromParentAndCleanup(true);
         p1->shineSprite->removeFromParentAndCleanup(true);
         p1->scoreCounter->removeFromParentAndCleanup(true);
+        p1->grabNotify->removeFromParentAndCleanup(true);
         if(this->tutorialActive){
             if(p1->tutMessage != NULL){
                 p1->tutMessage->removeFromParentAndCleanup(true);
@@ -191,4 +192,33 @@ long double GameManager::timeSinceLastStateChange(){
 
 void GameManager::initStats() {
     winCounts = new std::vector<int>(maxPlayers, 0);
+}
+
+bool GameManager::tabletDevice(){
+    CCSize screenDimensions = CCEGLView::sharedOpenGLView()->getFrameSize();
+    printf("Screen: %0.2f x %0.2f\n", screenDimensions.width, screenDimensions.height);
+    if(screenDimensions.width <= 960 && screenDimensions.height <= 640){
+        printf("Detected small screen\n");
+        return false;
+    }
+    printf("Detected large screen\n");
+    return true;
+}
+
+bool GameManager::retinaDevice(){
+    CCSize screenDimensions = CCEGLView::sharedOpenGLView()->getFrameSize();
+    if(screenDimensions.width < 960 || screenDimensions.height < 640){
+        printf("detected non-retina device\n");
+        return false;
+    }
+    printf("detected retina device\n");
+    return true;
+}
+
+void GameManager::setScaleFactor(float sf){
+    this->scaleFactor = sf;
+}
+
+float GameManager::getScaleFactor(){
+    return this->scaleFactor;
 }

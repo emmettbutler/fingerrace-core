@@ -44,9 +44,11 @@ public:
     int numPlayers, maxPlayers, goalCheckpoints, currentState, matchPoints;
     long double ttime, startTime, lastStateChangeTime;
     float queueingTime;
-    bool tutorialActive, tablet;
+    bool tutorialActive;
     
     void resetGameState();
+    bool tabletDevice();
+    bool retinaDevice();
     
     std::list<ccColor3B> *allowedColors;
     std::list<ccColor3B> *usedColors;
@@ -55,6 +57,14 @@ public:
 
     enum kScreenState{
         kTitleState, kPreGameState, kInGameState, kGameOverState
+    };
+    
+    enum kSpriteTag{
+        kMotionBlurTag
+    };
+    
+    enum kPlayerId{
+        kPlayer1, kPlayer2, kPlayer3, kPlayer4
     };
     
     ccColor3B getNextColor();
@@ -68,6 +78,12 @@ public:
     std::vector<int> *winCounts;
 
     bool firstRun();
+    
+    void setScaleFactor(float sf);
+    float getScaleFactor();
+    
+private:
+    float scaleFactor;
 };
 
 

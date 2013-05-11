@@ -24,7 +24,7 @@ public:
     SquareTarget *currentTarget;
     CCSprite *shineSprite;
     CCLayer *parent;
-    CCLabelTTF *scoreLabel, *tutMessage, *tutColorMessage;
+    CCLabelTTF *scoreLabel, *tutMessage, *tutColorMessage, *grabNotify;
     bool touchLock, touchActive;
     ScoreCounter *scoreCounter;
     int checkpointCount, remainingCheckpoints;
