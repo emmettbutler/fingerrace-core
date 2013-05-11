@@ -50,6 +50,7 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B playerColors[]){
         insBox1->setScaleX(1.5);
         insBox1->setScaleY(7);
 
+        // TODO - unnecessary code duplication between this and else block
         CCLabelTTF *instructionLabel1 = CCLabelTTF::labelWithString("p1 touch & hold", ROBOTO_FONT, 40*GameManager::sharedManager()->getScaleFactor());
         instructionLabel1->setColor(playerColors[0]);
         instructionLabel1->setRotation(-90);
@@ -218,29 +219,28 @@ void HelloWorld::setupEndgameScreenTextOverlay(){
 
     ccColor3B statColor = GameManager::sharedManager()->getNextColor();
     endgameLayer = CCLayer::node();
+    
+    int i = 0;
+    std::list<Player *> *players = GameManager::sharedManager()->players;
+    for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
+        Player *p1 = *iter;
 
-    char p1Score [1];
-    sprintf(p1Score, "%d", GameManager::sharedManager()->winCounts->at(0));
-    CCLabelTTF *p1ScoreLabel = CCLabelTTF::labelWithString(p1Score, ROBOTO_FONT, 200*GameManager::sharedManager()->getScaleFactor());
-    p1ScoreLabel->setPosition(CCPoint(this->boundingBox().getMidX() - 300*GameManager::sharedManager()->getScaleFactor(),
-                                      this->boundingBox().getMidY()));
-    p1ScoreLabel->setRotation(90);
-    p1ScoreLabel->setColor(statColor);
-    p1ScoreLabel->setOpacity(0);
-    endgameLayer->addChild(p1ScoreLabel);
-
-    char p2Score [1];
-    sprintf(p2Score, "%d", GameManager::sharedManager()->winCounts->at(1));
-    CCLabelTTF *p2ScoreLabel = CCLabelTTF::labelWithString(p2Score, ROBOTO_FONT, 200*GameManager::sharedManager()->getScaleFactor());
-    p2ScoreLabel->setPosition(CCPoint(this->boundingBox().getMidX() + 300*GameManager::sharedManager()->getScaleFactor(),
-                                      this->boundingBox().getMidY()));
-    p2ScoreLabel->setRotation(-90);
-    p2ScoreLabel->setColor(statColor);
-    p2ScoreLabel->setOpacity(0);
-    endgameLayer->addChild(p2ScoreLabel);
-
-    p1ScoreLabel->runAction(CCFadeIn::actionWithDuration(1.0));
-    p2ScoreLabel->runAction(CCFadeIn::actionWithDuration(1.0));
+        char p1Score[1];
+        sprintf(p1Score, "%d", GameManager::sharedManager()->winCounts->at(i));
+        
+        CCLabelTTF *p1ScoreLabel = CCLabelTTF::labelWithString(p1Score, ROBOTO_FONT, 200*GameManager::sharedManager()->getScaleFactor());
+        p1ScoreLabel->setPosition(p1->homePoint);
+        if(p1ScoreLabel->getPosition().x > this->boundingBox().getMidX()){
+            p1ScoreLabel->setRotation(-90);
+        } else {
+            p1ScoreLabel->setRotation(90);
+        }
+        p1ScoreLabel->setColor(statColor);
+        p1ScoreLabel->setOpacity(0);
+        endgameLayer->addChild(p1ScoreLabel);
+        p1ScoreLabel->runAction(CCFadeIn::actionWithDuration(1.0));
+        i++;
+    }
 
     this->addChild(endgameLayer, 11);
 }
@@ -624,6 +624,7 @@ void HelloWorld::setupGameScreen(){
         p->init(tp, ts->getColor(), this);
         p->initTerritory(this->boundingBox());
         p->initScoreCounter();
+        p->homePoint = ts->getPosition();
         p->touch = t;
         p->spawnNewTarget(p->startingPoint);
         p->initScoreLabel();

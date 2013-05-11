@@ -32,7 +32,7 @@ public:
     float baseScale, velocity, opacityDelta, lastCheckpointTime;
     CCTouch *touch;
     CCRect territory;
-    CCPoint startingPoint;
+    CCPoint startingPoint, homePoint;
     
     Player();
     bool init(CCPoint p, ccColor3B c, CCLayer *parent);

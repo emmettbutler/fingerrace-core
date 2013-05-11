@@ -36,6 +36,9 @@ void GameManager::init(){
     players = new std::list<Player *>();
     currentState = kTitleState;
     goalCheckpoints = 20;
+#ifdef PHONE_SIM_TABLET
+    goalCheckpoints = 3;
+#endif
     matchPoints = 3;
     
     if(tabletDevice()){
