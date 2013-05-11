@@ -38,7 +38,7 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     this->shineSprite = CCSprite::spriteWithFile("circle_blur.png");
     this->shineSprite->setColor(ccc3(255, 255, 255));
     this->shineSprite->setScale(1);
-    this->shineSprite->setOpacity(255*.05);
+    this->shineSprite->setOpacity(255*.4);
     this->shineSprite->retain();
     parent->addChild(this->shineSprite);
     
@@ -50,7 +50,6 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
 
     this->initWithFile("circle_blur.png");
     this->setScale(1.1);
-    this->setOpacity(255*.2);
     this->setTag(GameManager::kMotionBlurTag);
     this->setColor(this->color);
 
@@ -166,10 +165,6 @@ void Player::gainPoint(){
     if(op <= 255){
         this->setOpacity(op);
     }
-    op = this->shineSprite->getOpacity()+255*.3*this->opacityDelta;
-    if(op <= 255){
-        this->shineSprite->setOpacity(op);
-    }
 }
 
 void Player::losePoint(){
@@ -177,10 +172,6 @@ void Player::losePoint(){
     float op = this->getOpacity()-255*this->opacityDelta;
     if(op >= .2){
         this->setOpacity(op);
-    }
-    op = this->shineSprite->getOpacity()-255*.3*this->opacityDelta;
-    if(op >= .2){
-        this->shineSprite->setOpacity(op);
     }
 }
 
