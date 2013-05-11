@@ -99,6 +99,39 @@ void GameManager::setupCounterPositions(CCLayer *b){
     free(p1);
 }
 
+CCPoint GameManager::getLayoutPosition(int i){
+    switch(i){
+        case 0:
+            if(tabletDevice()){
+                return TAB_P1TPOS;
+            } else {
+                return PH_P1TPOS;
+            }
+            break;
+        case 1:
+            if(tabletDevice()){
+                return TAB_P2TPOS;
+            } else {
+                return PH_P2TPOS;
+            }
+            break;
+        case 2:
+            return TAB_P3TPOS;
+            break;
+        case 3:
+            return TAB_P4TPOS;
+            break;
+    }
+    return TAB_P4TPOS;
+}
+
+CCPoint GameManager::getLayoutScale(){
+    if(tabletDevice()){
+        return CCPoint(TAB_TSCX, TAB_TSCY);
+    }
+    return CCPoint(PH_TSCX, PH_TSCY);
+}
+
 void GameManager::resetGameState(){
     std::list<Player *> *players = this->players;
     for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){

@@ -73,6 +73,8 @@ public:
     void resetColors();
     
     CCPoint getNextScoreCounterPosition();
+    CCPoint getLayoutScale();
+    CCPoint getLayoutPosition(int i);
     void resetCounterPositions();
     void setupCounterPositions(CCLayer *b);
 
