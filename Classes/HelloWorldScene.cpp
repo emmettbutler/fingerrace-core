@@ -360,6 +360,8 @@ void HelloWorld::setupEndgameScreen(Player *winner){
     printf("Game over screen\n");
     float initTime = 0.5;
     
+    titleSprites->clear();
+    
     TitleSprite *p1 = new TitleSprite();
     p1->initWithFile("square.png");
     p1->setPosition(CCPoint(this->boundingBox().getMidX(), this->boundingBox().getMidY()));
