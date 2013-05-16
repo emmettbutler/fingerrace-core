@@ -422,8 +422,7 @@ bool HelloWorld::init(){
     
     // first-time setup
     GameManager::sharedManager();
-    GameManager::sharedManager()->setupCounterPositions(this);
-    
+
     if(!GameManager::sharedManager()->retinaDevice()){
         CCDirector::sharedDirector()->setContentScaleFactor(2);
         GameManager::sharedManager()->setScaleFactor(.5);
@@ -431,6 +430,8 @@ bool HelloWorld::init(){
         CCDirector::sharedDirector()->setContentScaleFactor(1);
         GameManager::sharedManager()->setScaleFactor(1);
     }
+
+    GameManager::sharedManager()->setupCounterPositions(this);
     
     this->setContentSize(CCEGLView::sharedOpenGLView()->getFrameSize());
     
@@ -561,7 +562,6 @@ void HelloWorld::tick(float dt){
             if(GameManager::sharedManager()->usedColors->size() >= GameManager::sharedManager()->allowedColors->size()){
                 GameManager::sharedManager()->resetColors();
             }
-            GameManager::sharedManager()->resetCounterPositions();
         }
         if(GameManager::sharedManager()->tutorialActive){
             GameManager::sharedManager()->tutorialActive = false;

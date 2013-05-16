@@ -70,18 +70,26 @@ void Player::initTerritory(CCRect screenBox) {
     if (startingPoint.x < screenBox.getMidX()) {
         territory.origin.x = screenBox.origin.x / 2;
 
-        if (startingPoint.y > screenBox.getMidY()) {
-            this->_identifier = GameManager::kPlayer1;
+        if (GameManager::sharedManager()->tabletDevice()) {
+            if (startingPoint.y > screenBox.getMidY()) {
+                this->_identifier = GameManager::kPlayer1;
+            } else {
+                this->_identifier = GameManager::kPlayer3;
+            }
         } else {
-            this->_identifier = GameManager::kPlayer3;
+            this->_identifier = GameManager::kPlayer1;
         }
     } else {
         territory.origin.x = screenBox.origin.x / 2 + screenBox.size.width / 2;
 
-        if (startingPoint.y > screenBox.getMidY()) {
-            this->_identifier = GameManager::kPlayer2;
+        if (GameManager::sharedManager()->tabletDevice()) {
+            if (startingPoint.y > screenBox.getMidY()) {
+                this->_identifier = GameManager::kPlayer2;
+            } else {
+                this->_identifier = GameManager::kPlayer4;
+            }
         } else {
-            this->_identifier = GameManager::kPlayer4;
+            this->_identifier = GameManager::kPlayer2;
         }
     }
 }
@@ -89,16 +97,21 @@ void Player::initTerritory(CCRect screenBox) {
 void Player::initScoreCounter() {
     ScoreCounter *sc = new ScoreCounter();
     sc->init(GameManager::sharedManager()->goalCheckpoints, this->color, this);
-    sc->setPosition(GameManager::sharedManager()->getNextScoreCounterPosition());
+    sc->setPosition(GameManager::sharedManager()->getScoreCounterPosition(this->_identifier));
 
     if (this->_identifier == GameManager::kPlayer1) {
         sc->setScaleY(-1.0);
     } else if (this->_identifier == GameManager::kPlayer2) {
         sc->setScaleX(-1.0);
+        if (GameManager::sharedManager()->tabletDevice()) {
+            sc->setScaleY(-1.0);
+        }
     } else if (this->_identifier == GameManager::kPlayer3) {
         // TODO - correct rotation
     } else if (this->_identifier == GameManager::kPlayer4) {
-        sc->setScaleY(-1.0);
+        if (!GameManager::sharedManager()->tabletDevice()) {
+            sc->setScaleY(-1.0);
+        }
         sc->setScaleX(-1.0);
     }
 

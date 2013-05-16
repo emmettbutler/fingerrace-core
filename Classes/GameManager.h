@@ -41,7 +41,8 @@ public:
     long double timeSinceLastStateChange();
     long double getElapsed();
     CCLayer *baseLayer;
-    CCPoint PH_P1TPOS, PH_P2TPOS, TAB_P1TPOS, TAB_P2TPOS, TAB_P3TPOS, TAB_P4TPOS;  // title sprite positions for phone and tablet
+    CCPoint PH_P1TPOS, PH_P2TPOS, TAB_P1TPOS, TAB_P2TPOS, TAB_P3TPOS, TAB_P4TPOS,           // title sprite positions for phone and tablet
+            PH_P1SCPOS, PH_P2SCPOS, TAB_P1SCPOS, TAB_P2SCPOS, TAB_P3SCPOS, TAB_P4SCPOS;     // score counter positions
     float PH_TSCY, PH_TSCX, TAB_TSCX, TAB_TSCY;  // x and y title sprite scales for phone and tablet
     int numPlayers, maxPlayers, goalCheckpoints, currentState, matchPoints;
     long double ttime, startTime, lastStateChangeTime;
@@ -54,8 +55,6 @@ public:
     
     std::list<ccColor3B> *allowedColors;
     std::list<ccColor3B> *usedColors;
-    std::list<CCPoint> *counterPositions;
-    std::list<CCPoint> *usedCounterPositions;
 
     enum kScreenState{
         kTitleState, kPreGameState, kInGameState, kGameOverState
@@ -72,10 +71,9 @@ public:
     ccColor3B getNextColor();
     void resetColors();
     
-    CCPoint getNextScoreCounterPosition();
+    CCPoint getScoreCounterPosition(int i);
     CCPoint getLayoutScale();
     CCPoint getLayoutPosition(int i);
-    void resetCounterPositions();
     void setupCounterPositions(CCLayer *b);
 
     void initStats();

@@ -70,18 +70,19 @@ void GameManager::init(){
 
 void GameManager::setupCounterPositions(CCLayer *b){
     baseLayer = b;
-    
-    counterPositions = new std::list<CCPoint>();
-    counterPositions->push_back(CCPoint(b->boundingBox().getMaxX() - 366*scaleFactor,
-                                        b->boundingBox().getMinY() - 30*scaleFactor));
-    counterPositions->push_back(CCPoint(b->boundingBox().getMinX() + 20*scaleFactor,
-                                        b->boundingBox().getMaxY() - 13*scaleFactor));
-    counterPositions->push_back(CCPoint(b->boundingBox().getMinX() + 20*scaleFactor,
-                                        b->boundingBox().getMinY() - 30*scaleFactor));
-    counterPositions->push_back(CCPoint(b->boundingBox().getMaxX() - 366*scaleFactor,
-                                        b->boundingBox().getMaxY() - 13*scaleFactor));
-    usedCounterPositions = new std::list<CCPoint>();
-    
+
+    PH_P1SCPOS = CCPoint(b->boundingBox().getMinX() + 20*scaleFactor,
+                         b->boundingBox().getMaxY() - 13*scaleFactor);
+    PH_P2SCPOS = CCPoint(b->boundingBox().getMaxX() - 366*scaleFactor,
+                         b->boundingBox().getMinY() - 30*scaleFactor);
+    TAB_P1SCPOS = CCPoint(b->boundingBox().getMinX() + 20*scaleFactor,
+                          b->boundingBox().getMaxY() - 13*scaleFactor);
+    TAB_P2SCPOS = CCPoint(b->boundingBox().getMaxX() - 366*scaleFactor,
+                          b->boundingBox().getMaxY() - 13*scaleFactor);
+    TAB_P3SCPOS = CCPoint(b->boundingBox().getMinX() + 20*scaleFactor,
+                          b->boundingBox().getMinY() - 30*scaleFactor);
+    TAB_P4SCPOS = CCPoint(b->boundingBox().getMaxX() - 366*scaleFactor,
+                          b->boundingBox().getMinY() - 30*scaleFactor);
     
     PH_P1TPOS = CCPoint(b->boundingBox().getMidX()+b->getContentSize().width/4, b->boundingBox().getMidY());
     PH_P2TPOS = CCPoint(b->boundingBox().getMidX()-b->getContentSize().width/4, b->boundingBox().getMidY());
@@ -180,27 +181,31 @@ void GameManager::resetColors(){
     usedColors->clear();
 }
 
-CCPoint GameManager::getNextScoreCounterPosition(){
-    CCPoint ret;
-    for(std::list<CCPoint>::iterator iter = counterPositions->begin(); iter != counterPositions->end(); ++iter){
-        ret = *iter;
-        bool found = false;
-        for(std::list<CCPoint>::iterator iter2 = usedCounterPositions->begin(); iter2 != usedCounterPositions->end(); ++iter2){
-            CCPoint test = *iter2;
-            if(ret.x == test.x && ret.y == test.y){
-                found = true;
-            }
-        }
-        if(!found){
-            usedCounterPositions->push_back(ret);
-            return ret;
-        }
-    }
-    return CCPoint(0, 0);
-}
+CCPoint GameManager::getScoreCounterPosition(int i){
 
-void GameManager::resetCounterPositions(){
-    usedCounterPositions->clear();
+    switch(i){
+        case GameManager::kPlayer1:
+            if(tabletDevice()){
+                return TAB_P1SCPOS;
+            } else {
+                return PH_P1SCPOS;
+            }
+            break;
+        case GameManager::kPlayer2:
+            if(tabletDevice()){
+                return TAB_P2SCPOS;
+            } else {
+                return PH_P2SCPOS;
+            }
+            break;
+        case GameManager::kPlayer3:
+            return TAB_P3SCPOS;
+            break;
+        case GameManager::kPlayer4:
+            return TAB_P4SCPOS;
+            break;
+    }
+    return TAB_P4TPOS;
 }
 
 bool GameManager::firstRun() {
