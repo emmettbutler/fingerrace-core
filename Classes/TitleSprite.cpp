@@ -11,6 +11,7 @@
 
 TitleSprite::TitleSprite(){
     CCSprite();
+    this->queued = false;
     this->touch = NULL;
 }
 
@@ -22,4 +23,16 @@ void TitleSprite::runQueueingAnimation(CCLayer *parent){
 void TitleSprite::stopQueueingAnimation(){
     this->button->stopAllActions();
     this->button->setScaleY(this->baseScale);
+}
+
+void TitleSprite::queue(){
+    this->queued = true;
+}
+
+void TitleSprite::dequeue(){
+    this->queued = false;
+}
+
+bool TitleSprite::isQueued(){
+    return this->queued;
 }

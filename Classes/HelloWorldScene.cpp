@@ -272,10 +272,14 @@ void HelloWorld::setupTitleScreen(){
     setupTitleScreenTextOverlay(playerColors);  // the time-dependency here is awful, awful, awful design - my fault
  
     tempTs[0]->button = insBox1;  // must happen AFTER setupTitleScreenTextOverlay guh
+    tempTs[0]->baseScale = tempTs[0]->button->getScaleY();
     tempTs[1]->button = insBox2;
+    tempTs[1]->baseScale = tempTs[1]->button->getScaleY();
     if(GameManager::sharedManager()->tabletDevice()){
         tempTs[2]->button = insBox3;
+        tempTs[2]->baseScale = tempTs[2]->button->getScaleY();
         tempTs[3]->button = insBox4;
+        tempTs[3]->baseScale = tempTs[3]->button->getScaleY();
     }
     
     free(tempTs);
@@ -533,18 +537,28 @@ void HelloWorld::tick(float dt){
             }
         }
     } else if(GameManager::sharedManager()->titleScreenIsActive()){
+        numQueuedPlayers = 0;
+        for(std::list<TitleSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
+            TitleSprite *sp = *iter;
+            if(sp->isQueued()){
+                numQueuedPlayers++;
+            }
+        }
+        if(numQueuedPlayers > 0){
+            printf("%0.2f: queued: %d\n", ttime, numQueuedPlayers);
+        }
+        
         if(GameManager::sharedManager()->getCurrentTimeSeconds() - lastPlayerQueueTime > GameManager::sharedManager()->queueingTime &&
            numQueuedPlayers <= GameManager::sharedManager()->maxPlayers && numQueuedPlayers > 1){
-            printf("Starting pregame\n");
             dismissTitleScreen();
             GameManager::sharedManager()->numPlayers = numQueuedPlayers;
             setupGameScreen();  // depends on numQueuedPlayers being correct
             GameManager::sharedManager()->setupGame();
-            numQueuedPlayers = 0;
         }
+        
+        numQueuedPlayers = 0;
     } else if(GameManager::sharedManager()->pregameIsActive()){
         if (GameManager::sharedManager()->timeSinceLastStateChange() > .5){
-            printf("Starting game\n");
             std::list<Player *> *players = GameManager::sharedManager()->players;
             for(std::list<Player *>::iterator iter = players->begin(); iter != players->end(); ++iter){
                 Player *p = *iter;
@@ -661,6 +675,7 @@ void HelloWorld::resolveTargetCollision(){
 }
 
 void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
+    printf("num touches: %d\n", touches->count());
     for(auto it = touches->begin(); it != touches->end(); it++){
         CCTouch *touch = (CCTouch *)*it;
         CCPoint touchLocation = touch->getLocationInView();
@@ -690,6 +705,17 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                 }
             }
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
+            for(std::list<TitleSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
+                TitleSprite *sp = *iter;
+                if(sp->touch == NULL && CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){
+                    sp->touch = touch;
+                    sp->touch->retain();
+                    sp->runQueueingAnimation(titleLayer);
+                    sp->queue();
+                    lastPlayerQueueTime = GameManager::sharedManager()->getCurrentTimeSeconds();
+                }
+            }
+            
             if(!GameManager::sharedManager()->firstRun()) {
                 if(CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
                     if(GameManager::sharedManager()->tutorialActive == false){
@@ -711,20 +737,6 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
                 } else {
                     instructionsVisible = true;
                     instructions->runAction(CCFadeTo::actionWithDuration(.2, 255));
-                }
-            }
-
-            for(std::list<TitleSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
-                TitleSprite *sp = *iter;
-                if(sp->touch == NULL && CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){
-                    printf("queued: %d\n", numQueuedPlayers);
-                    if(numQueuedPlayers < GameManager::sharedManager()->maxPlayers){
-                        printf("gained queued player\n");
-                        sp->touch = touch;
-                        sp->runQueueingAnimation(titleLayer);
-                        numQueuedPlayers++;
-                        lastPlayerQueueTime = GameManager::sharedManager()->getCurrentTimeSeconds();
-                    }
                 }
             }
         }
@@ -763,12 +775,7 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
                 if(CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation) && sp->touch != touch){
                     sp->touch = NULL;
                     sp->stopQueueingAnimation();
-                    if(!CCRect::CCRectContainsPoint(tutButton->boundingBox(), touchLocation)){
-                        if(numQueuedPlayers > 0){
-                            printf("lost queued player\n");
-                            numQueuedPlayers--;
-                        }
-                    }
+                    sp->dequeue();
                 }
             }
         }
@@ -814,13 +821,10 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
         } else if(GameManager::sharedManager()->titleScreenIsActive()){
             for(std::list<TitleSprite *>::iterator iter = titleSprites->begin(); iter != titleSprites->end(); ++iter){
                 TitleSprite *sp = *iter;
-                if(sp->touch == touch){
+                if(sp->touch == touch && CCRect::CCRectContainsPoint(sp->boundingBox(), touchLocation)){
                     sp->touch = NULL;
                     sp->stopQueueingAnimation();
-                    if(numQueuedPlayers > 0){
-                        printf("lost queued player\n");
-                        numQueuedPlayers--;
-                    }
+                    sp->dequeue();
                 }
             }
         } else if(GameManager::sharedManager()->pregameIsActive()){
@@ -874,7 +878,7 @@ CCPoint HelloWorld::nextTargetPosition(Player *p){
     
     while((point->x == 0 && point->y == 0) || CCRect::CCRectContainsPoint(playerBounds, *point)){
         //printf("Retrying position after overlap\n");
-        if (p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.4) {
+        if (GameManager::sharedManager()->maxPlayers == 2 || p->checkpointCount < GameManager::sharedManager()->goalCheckpoints * 0.4) {
             int territoryAddition = this->boundingBox().size.width / GameManager::sharedManager()->goalCheckpoints * 0.4 / 2;
             p->territory.size.width += territoryAddition;
             

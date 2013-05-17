@@ -17,12 +17,18 @@ class TitleSprite : public cocos2d::CCSprite {
     
 public:
     TitleSprite();
+    void queue();
+    void dequeue();
+    bool isQueued();
     void runQueueingAnimation(CCLayer *parent);
     void stopQueueingAnimation();
     
     float baseScale;
     CCTouch *touch;
     CCSprite *button;
+
+private:
+    bool queued;
 };
 
 #endif /* defined(__FingerRace__TitleSprite__) */

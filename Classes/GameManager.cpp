@@ -38,7 +38,7 @@ void GameManager::init(){
     currentState = kTitleState;
     goalCheckpoints = 20;
 #ifdef PHONE_SIM_TABLET
-    goalCheckpoints = 3;
+    goalCheckpoints = 20;
 #endif
     matchPoints = 3;
     
