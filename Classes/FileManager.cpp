@@ -16,6 +16,13 @@
 
 using namespace std;
 
+/*!
+ * Sets the first run flag.
+ * On Android: writes a file with hardcoded string.
+ * On iOS: writes to NSUserDefaults.
+ *
+ * @param fname Name of file to be written.
+ */
 void FileManager::saveFile(string fname) {
     printf("setting first run flag\n");
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
@@ -35,6 +42,14 @@ void FileManager::saveFile(string fname) {
 #endif
 }
 
+/*!
+ * Checks for the presence of the first run flag
+ * On Android: attempts to open the first run file.
+ * On iOS: reads from NSUserDefaults.
+ *
+ * @param fname Name of file to be checked.
+ * @return True if first run flag is present, false if not.
+ */
 bool FileManager::readFile(string fname) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
     string path = android_getFilePath(fname);
@@ -54,11 +69,11 @@ bool FileManager::readFile(string fname) {
 #endif
 }
 
+/*!
+ * @return Android app data directory as string.
+ */
 string FileManager::android_getFilePath(string fname) {
     string path("");
-    // In android, every programe has a director under /data/data.
-    // The path is /data/data/ + start activity package name.
-    // You can save application specific data here.
     path.append("/data/data/com.eperiod.fingerrace/");
     path.append(fname);
 

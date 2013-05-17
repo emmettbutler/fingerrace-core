@@ -9,6 +9,13 @@
 #include "ScoreCounter.h"
 #include "Player.h"
 
+/*!
+ * Creates a bunch of square sprites in a fixed pattern to be used as the score counter.
+ *
+ * @param goalCheckpoints Initial capacity of score counter.
+ * @param c               Color for square sprites.
+ * @param p               Player for which this counter is being generated.
+ */
 bool ScoreCounter::init(int goalCheckpoints, ccColor3B c, Player *p){
     if(!CCLayer::init()){ return false; }
 
@@ -40,6 +47,9 @@ bool ScoreCounter::init(int goalCheckpoints, ccColor3B c, Player *p){
     return true;
 }
 
+/*!
+ * Removes the last point from the counter. Called when player scores a point.
+ */
 void ScoreCounter::removePoint(){
     if(numPoints < player->remainingCheckpoints) return;
     
@@ -51,6 +61,9 @@ void ScoreCounter::removePoint(){
     currentPointSpriteIndex--;
 }
 
+/*!
+ * Adds another point to the counter. Called when the player removes a touch.
+ */
 void ScoreCounter::addPoint(){
     if(numPoints > player->remainingCheckpoints || currentPointSpriteIndex+1 > pointSprites->count()-1) return;
     

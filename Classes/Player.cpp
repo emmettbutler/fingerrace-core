@@ -14,10 +14,20 @@ using namespace cocos2d;
 #include "ScoreCounter.h"
 #include "GameManager.h"
 
+/*!
+ * Constructor for Player class.
+ */
 Player::Player() {
     this->currentTarget = NULL;
 }
 
+/*!
+ * Initializes all sprites associated with a given player.
+ *
+ * @param p      Initial location for this player's target.
+ * @param c      Color of the player.
+ * @param parent Parent layer to which we're adding this player.
+ */
 bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     this->parent = parent;
     this->color = c;
@@ -56,12 +66,21 @@ bool Player::init(CCPoint p, ccColor3B c, CCLayer *parent){
     return true;
 }
 
+/*!
+ * Initializes score label for this player. For debugging only.
+ */
 void Player::initScoreLabel(){
     CCPoint pos = this->currentTarget->getPosition();
     this->scoreLabel->setPosition(CCPoint(pos.x, this->currentTarget->boundingBox().getMaxY()+30));
     parent->addChild(scoreLabel);
 }
 
+/*!
+ * Determines initial territory size for this player based on the size of the screen and the location of the initial touch.
+ * Sets player identifier based on initial territory.
+ *
+ * @param screenBox Size of the screen.
+ */
 void Player::initTerritory(CCRect screenBox) {
 
     this->territory = CCRectMake(screenBox.origin.x, screenBox.origin.y, screenBox.size.width, screenBox.size.height);
@@ -94,6 +113,9 @@ void Player::initTerritory(CCRect screenBox) {
     }
 }
 
+/*!
+ * Initializes score counter for this player. Depends on player location and screen layout.
+ */
 void Player::initScoreCounter() {
     ScoreCounter *sc = new ScoreCounter();
     sc->init(GameManager::sharedManager()->goalCheckpoints, this->color, this);
@@ -119,6 +141,11 @@ void Player::initScoreCounter() {
     this->scoreCounter = sc;
 }
 
+/*!
+ * Creates new target and removes point from this player.
+ *
+ * @param position Location of the next target for this player.
+ */
 void Player::spawnNewTarget(CCPoint position) {
     if(this->touchLock) return;
 
@@ -157,12 +184,18 @@ void Player::spawnNewTarget(CCPoint position) {
     this->grabNotify->setPosition(CCPoint(position.x, position.y+halfHeight+30));
 }
 
+/*!
+ * Updates text for score label dependent on current score. Debugging only.
+ */
 void Player::updateScoreText(){
     char buff[3];
     sprintf(buff, "%d", this->remainingCheckpoints);
     this->scoreLabel->setString(buff);
 }
 
+/*!
+ * Runs shrinking animation on this player's target. Called if player is winning.
+ */
 void Player::shrinkTarget(){
     if(this->currentTarget->getScale() > this->baseScale*.5){
         this->currentTarget->runAction(
@@ -174,6 +207,9 @@ void Player::shrinkTarget(){
     }
 }
 
+/*!
+ * Runs growing animation on this player's target. Called if player is losing.
+ */
 void Player::growTarget(){
     if(this->currentTarget->getScale() < this->baseScale){
         this->currentTarget->runAction(
@@ -185,6 +221,9 @@ void Player::growTarget(){
     }
 }
 
+/*!
+ * Adds a point to player's score.
+ */
 void Player::gainPoint(){
     this->checkpointCount++;
     float op = this->getOpacity()+255*this->opacityDelta;
@@ -193,6 +232,9 @@ void Player::gainPoint(){
     }
 }
 
+/*!
+ * Removes a point from player's score.
+ */
 void Player::losePoint(){
     this->checkpointCount--;
     float op = this->getOpacity()-255*this->opacityDelta;
@@ -201,6 +243,11 @@ void Player::losePoint(){
     }
 }
 
+/*!
+ * Sets a single touch to be assigned to this player. De-dims target.
+ *
+ * @param touch Touch belonging to this player.
+ */
 void Player::activateTouch(CCTouch *touch){
     this->touch = touch;
     ccColor3B newColor = this->currentTarget->getColor();
@@ -212,6 +259,9 @@ void Player::activateTouch(CCTouch *touch){
     this->grabNotify->setVisible(false);
 }
 
+/*!
+ * Removes the touch from this player. Dims target.
+ */
 void Player::deactivateTouch(){
     this->touch = NULL;
     ccColor3B newColor = this->currentTarget->getColor();
@@ -227,6 +277,11 @@ void Player::deactivateTouch(){
     this->grabNotify->setVisible(true);
 }
 
+/*!
+ * Updates position of player sprite to current touch location.
+ *
+ * @param glPosition Location of current touch.
+ */
 void Player::updatePosition(CCPoint glPosition) {
     if (this->touch != NULL) {
         this->setPosition(glPosition);
@@ -234,10 +289,16 @@ void Player::updatePosition(CCPoint glPosition) {
     }
 }
 
+/*!
+ * @return Time elapsed since last target was acquired.
+ */
 float Player::timeSinceLastCheckpoint(){
     return GameManager::sharedManager()->getCurrentTimeSeconds() - this->lastCheckpointTime;
 }
 
+/*!
+ * @return Identifier assigned to this player.
+ */
 int Player::getID(){
     return this->_identifier;
 }

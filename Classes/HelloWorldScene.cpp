@@ -11,7 +11,9 @@
 
 using namespace cocos2d;
 
-
+/*!
+ * Constructor for HelloWorldScene.
+ */
 CCScene* HelloWorld::scene(){
     CCScene *scene = CCScene::create();
     HelloWorld *layer = HelloWorld::create();
@@ -19,6 +21,11 @@ CCScene* HelloWorld::scene(){
     return scene;
 }
 
+/*!
+ * Sets labels for title screen based on player colors.
+ *
+ * @param playerColors Array of player colors.
+ */
 void HelloWorld::setupTitleScreenTextOverlay(ccColor3B playerColors[]){
     titleLayer = CCLayer::node();
     CCLabelTTF *label = CCLabelTTF::labelWithString("BUMP", ROBOTO_FONT, 100*GameManager::sharedManager()->getScaleFactor());
@@ -179,6 +186,9 @@ void HelloWorld::setupTitleScreenTextOverlay(ccColor3B playerColors[]){
     this->addChild(titleLayer, 11);
 }
 
+/*!
+ * Runs rotation animation on the tutorial button.
+ */
 void HelloWorld::animateTutButtonActivation(){
     tutQLabel->runAction(CCSequence::actions(CCRotateTo::actionWithDuration(.3, -90), NULL));
     tutQLabel->runAction(CCSequence::actions(CCFadeTo::actionWithDuration(.3, 0), NULL));
@@ -197,6 +207,9 @@ void HelloWorld::animateTutButtonActivation(){
     }
 }
 
+/*!
+ * Runs opposite rotation animation on the tutorial button.
+ */
 void HelloWorld::animateTutButtonDeactivation(){
     tutQLabel->runAction(CCSequence::actions(CCRotateTo::actionWithDuration(.3, 90), NULL));
     tutQLabel->runAction(CCSequence::actions(CCFadeTo::actionWithDuration(.3, 255), NULL));
@@ -215,6 +228,9 @@ void HelloWorld::animateTutButtonDeactivation(){
     }
 }
 
+/*!
+ * Gets the scores for each player and puts labels for them on the endgame screen.
+ */
 void HelloWorld::setupEndgameScreenTextOverlay(){
     ccColor3B statColor = GameManager::sharedManager()->getNextColor();
     endgameLayer = CCLayer::node();
@@ -242,6 +258,9 @@ void HelloWorld::setupEndgameScreenTextOverlay(){
     this->addChild(endgameLayer, 11);
 }
 
+/*!
+ * Creates title sprites for each player and adds them to the title screen.
+ */
 void HelloWorld::setupTitleScreen(){
     titleSprites = new std::list<TitleSprite *>();
     titleTouchPoints = new std::list<CCPoint>();
@@ -288,6 +307,9 @@ void HelloWorld::setupTitleScreen(){
     GameManager::sharedManager()->initStats();
 }
 
+/*!
+ * Destroys endgame screen and creates new title sprites for the title screen.
+ */
 void HelloWorld::setupTitleScreenFromEndgameScreen(){
     float initTime = .5;
     TitleSprite *p1 = titleSprites->front();
@@ -336,6 +358,9 @@ void HelloWorld::setupTitleScreenFromEndgameScreen(){
     free(tempTs);
 }
 
+/*!
+ * Runs scaling animation on the title sprites to reveal the in-game screen.
+ */
 void HelloWorld::dismissTitleScreen(){
     float animationDuration = .4;
     if(titleLayer != NULL){
@@ -354,12 +379,20 @@ void HelloWorld::dismissTitleScreen(){
     }
 }
 
+/*!
+ * Destroys the endgame screen.
+ */
 void HelloWorld::dismissEndgameScreen(){
     if(endgameLayer != NULL){
         endgameLayer->removeFromParentAndCleanup(true);
     }
 }
 
+/*!
+ * Sets up a single sprite to fill the endgame screen based on the winner of the round.
+ *
+ * @param winner Player who won the most recent round.
+ */
 void HelloWorld::setupEndgameScreen(Player *winner){
     printf("Game over screen\n");
     float initTime = 0.5;
@@ -392,6 +425,11 @@ void HelloWorld::RemoveChildSeq(CCNode* pObj){
     this->removeChild(pObj, true);
 }
 
+/*!
+ * Creates new background sprites and runs animation based on who is winning the game.
+ *
+ * @param lots True if game is over, false if not.
+ */
 void HelloWorld::iterateBackground(bool lots){
     int limit = 1 + currentWinner()->checkpointCount;
     if(limit == 0){
@@ -421,6 +459,11 @@ void HelloWorld::iterateBackground(bool lots){
     }
 }
 
+/*!
+ * Initializes the singleton game manager.
+ * Sets up motion blur variables.
+ * Schedules the tick method.
+ */
 bool HelloWorld::init(){
     if(!CCLayer::init()){ return false; }
     
@@ -470,6 +513,9 @@ bool HelloWorld::init(){
     return true;
 }
 
+/*!
+ * Renders all sprites with motion blur.
+ */
 void HelloWorld::visit(){
     CCRenderTexture* rtx = (CCRenderTexture *)renderTextures->objectAtIndex(currentRenderTextureIndex);
     rtx->beginWithClear(0, 0, 0, 0);
@@ -513,6 +559,9 @@ void HelloWorld::selectNextRenderTexture(){
 	}
 }
 
+/*!
+ * Main loop. Calls all relevant methods for processing each game state.
+ */
 void HelloWorld::tick(float dt){
     ttime = GameManager::sharedManager()->getElapsed();
     
@@ -589,6 +638,9 @@ void HelloWorld::tick(float dt){
     }
 }
 
+/*!
+ * Creates new players, assigns their initial touch, and creates their first target.
+ */
 void HelloWorld::setupGameScreen(){
     for(int i = 0; i < GameManager::sharedManager()->numPlayers; i++){
         printf("Init player %d\n", i+1);
@@ -641,6 +693,12 @@ void HelloWorld::setupGameScreen(){
     }
 }
 
+/*!
+ * Shows initial tutorial label during the game.
+ *
+ * @param p  Player to notify.
+ * @param tp Location for the tutorial label.
+ */
 void HelloWorld::showTutorialSlideToNotify(Player *p, CCPoint tp){
     int sep = 75;
     p->tutMessage->setString("Slide to");
@@ -674,6 +732,9 @@ void HelloWorld::resolveTargetCollision(){
     }
 }
 
+/*!
+ * Called when a touch is initialized. Touch actions are dependent on the game state.
+ */
 void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
     printf("num touches: %d\n", touches->count());
     for(auto it = touches->begin(); it != touches->end(); it++){
@@ -743,6 +804,9 @@ void HelloWorld::ccTouchesBegan(CCSet *touches, CCEvent *event) {
     }
 }
 
+/*!
+ * Called when a touch is moved. Touch actions are dependent on the game state.
+ */
 void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
     for(auto it = touches->begin(); it != touches->end(); it++){
         CCTouch *touch = (CCTouch *)*it;
@@ -782,6 +846,9 @@ void HelloWorld::ccTouchesMoved(CCSet *touches, CCEvent *event) {
     }
 }
 
+/*!
+ * Called when a touch is ended. Touch actions are dependent on the game state.
+ */
 void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
     for(auto it = touches->begin(); it != touches->end(); it++){
         CCTouch *touch = (CCTouch *)*it;
@@ -842,6 +909,9 @@ void HelloWorld::ccTouchesEnded(CCSet *touches, CCEvent *event){
     }
 }
 
+/*!
+ * @return Player with the highest score.
+ */
 Player *HelloWorld::currentWinner(){
     Player *top = NULL;
     std::list<Player *> *players = GameManager::sharedManager()->players;
@@ -854,6 +924,11 @@ Player *HelloWorld::currentWinner(){
     return top;
 }
 
+/*!
+ * Change a given player's target size based on who is currently winning.
+ *
+ * @param p Player whose target is changing.
+ */
 void HelloWorld::adjustTargetSize(Player *p){
     // called when this player's score just increased
     if(p->checkpointCount == currentWinner()->checkpointCount){
@@ -870,6 +945,12 @@ void HelloWorld::adjustTargetSize(Player *p){
     }
 }
 
+/*!
+ * Finds a new target position based on given player's current territory.
+ * Adjusts territory size accordingly.
+ *
+ * @param p Player who is getting a new target.
+ */
 CCPoint HelloWorld::nextTargetPosition(Player *p){
     float x, y;
     int targetSize = p->currentTarget->boundingBox().size.width;
@@ -897,6 +978,9 @@ CCPoint HelloWorld::nextTargetPosition(Player *p){
     return *point;
 }
 
+/*!
+ * @return Total points score by all players during the current game.
+ */
 int HelloWorld::scoreTotal() {
     int score = 0;
 
